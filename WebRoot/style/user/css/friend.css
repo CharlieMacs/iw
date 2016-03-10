@@ -1,0 +1,92 @@
+@charset "utf-8";
+/*------------------------------------------------------------
+	index
+------------------------------------------------------------*/
+.listUl li {
+	margin-right: 30px;
+}
+
+h3 {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 15px;
+}
+
+#addFriendInfo {
+	top: 50%;
+	margin-top: -80px;
+}
+
+#addFriendInfo dd:last-child {
+	border-bottom: none;
+}
+
+#addFriendInfo2 {
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	left: 50%;
+	top: 50%;
+	padding: 10px;
+	margin: -160px 0 0 -230px;
+	position: absolute;
+	width: 460px;
+	display: none;
+}
+
+#addFriendInfo2 dt,
+#addFriendInfo2 dd {
+	border-bottom: 1px solid #DDD;
+	font-size: 18px;
+	padding: 5px 0;
+}
+
+#addFriendInfo2 dd {
+	font-size: 16px;
+}
+
+#addFriendInfo2 dd .colorRed {
+	color: #906;
+}
+
+#addFriendInfo2 .addMail li {
+	padding-bottom: 10px;
+}
+/*
+#addFriendInfo2 .add {
+	border: 1px solid #DDD;
+	background-color: #FFF;
+	border-radius: 5px;
+	width: 100px;
+	height: 34px;
+	cursor: pointer;
+}*/
+
+#addFriendInfo2 .textInput {
+	width: 340px;
+	height: 30px;
+	padding: 0;
+}
+
+#addFriendInfo2 .addMail li input {
+	height: 30px;
+	width: 360px;
+	padding: 0;
+}
+
+#addFriendInfo2 .addMail li button {
+	width: 80px;
+	height: 32px;
+	cursor: pointer;
+	float: right;
+}
+
+#addFriendInfo2 textarea {
+	border-radius: 5px;
+	border: 1px solid #DDD;
+	width: 450px;
+	height: 50px;
+	font-size: 13px;
+	line-height: 16px;
+	margin-bottom: 10px;
+	resize: none;
+}

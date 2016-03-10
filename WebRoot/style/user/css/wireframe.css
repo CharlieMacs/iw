@@ -1,0 +1,102 @@
+@charset "utf-8";
+/*------------------------------------------------------------
+	index
+------------------------------------------------------------*/
+#conts .lBox .inner .photo {
+	float: left;
+	width: 136px;
+	height: 136px;
+	border: 1px solid #DDD;
+}
+
+#conts .lBox .inner ul {
+	padding: 10px 0 0 150px;
+	font-size: 14px;
+}
+
+#conts .talkBox {
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+#conts .talkBox .title {
+	border-bottom: 2px solid #DDD;
+	font-size: 14px;
+	padding: 0 0 0 10px;
+}
+
+#conts .talkBox .title span {
+	display: inline-block;
+	text-align: center;
+	padding: 3px 15px;
+	border-bottom: 2px solid #F00;
+	margin-bottom: -2px;
+}
+
+#conts .talkList {
+	margin-bottom: 10px;
+}
+
+#conts .talkList li {
+	border-bottom: 1px solid #DDD;
+	padding: 10px 0;
+}
+
+#conts .talkBox .photo {
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+#conts .talkBox .photo img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: 1px solid #DDD;
+}
+
+#conts .talkBox .textBox {
+	padding-left: 60px;
+}
+
+#conts .talkBox .textBox .topBox {
+	padding: 5px 0;
+	overflow: hidden;
+	zoom: 1;
+}
+
+#conts .sendBox .textBox {
+	border: 1px solid #DDD;
+	margin-left: 60px;
+	width: 87%;
+	padding-left: 0;
+}
+
+#conts .sendBox .textBox textarea {
+	width: 98%;
+	height: 50px;
+	resize: none;
+	border: none;
+	margin: 0;
+}
+
+#conts .sendBox .textBox .btmBox {
+	border-top: 1px solid #DDD;
+	padding: 3px 10px 3px 0;
+}
+
+#conts .sendBox .textBox .btmBox .btn {
+	padding: 5px 10px;
+}
+
+#conts .sendBox .textBox .btmBox li {
+	float: left;
+	min-width: 40px;
+	min-height: 28px;
+	text-align: center;
+}
+
+#conts .sendBox .textBox .btmBox li:first-child {
+	border-right: 1px solid #DDD;
+}

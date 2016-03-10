@@ -1,0 +1,64 @@
+@charset "utf-8";
+/*------------------------------------------------------------
+	index
+------------------------------------------------------------*/
+#main .menuUl li {
+	margin-right: 30px;
+	/*font-weight: normal;*/
+}
+
+#main h3 {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 10px;
+}
+
+#main h3 .ttlBox {
+	float: left;
+}
+
+#addProGroup {
+	border: 1px solid #DDD;
+	background-color: #FFF;
+	border-radius: 10px;
+	box-shadow: 0 6px 8px #EEE;
+	width: 440px;
+	height: 280px;
+	top: 50%;
+	left: 50%;
+	margin: -150px 0 0 -220px;
+	position: fixed;
+	padding: 10px 20px;
+	z-index: 25;
+	overflow-y: auto;
+}
+
+#addProGroup h1 {
+	border-bottom: 1px solid #DDD;
+	font-size: 16px;
+	text-align: center;
+	padding-bottom: 5px;
+}
+
+#addProGroup .title {
+	border-bottom: 1px solid #DDD;
+	font-size: 14px;
+	padding: 10px 0;
+}
+
+#addProGroup ul {
+	margin-bottom: 20px;
+}
+	
+#addProGroup li {
+	font-size: 14px;
+	padding: 8px 0;
+}
+
+#addProGroup .textInput {
+	width: 340px;
+	margin: 0 0 0 10px;
+}
+
+#addProGroup .btnBox {
+	text-align: center;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 是否使用站内信息功能，若开启，则访问任何页面都会读数据库判断是否有新的未读信息 -->
+	<useMessage>true</useMessage>
+	
+</configuration>

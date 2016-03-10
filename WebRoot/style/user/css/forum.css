@@ -1,0 +1,264 @@
+@charset "utf-8";
+/*------------------------------------------------------------
+	index
+------------------------------------------------------------*/
+#conts .lBox {
+	width: 300px;
+	position: fixed;
+	background-color: #FFF;
+	z-index: 5;
+}
+
+#conts .lBox .searchP {
+	margin-bottom: 10px;
+}
+
+#conts .lBox .searchP input {
+	width: 100%;
+	height: 40px;
+}
+
+#conts .borderUl {
+	border-top: 1px solid #DDD;
+	font-size: 15px;
+}
+
+#conts .borderUl li {
+	border-bottom: 1px solid #DDD;
+	padding: 10px 0;
+	text-align: center;
+}
+
+#conts .borderUl li a {
+	color: #333;
+	display: block;
+}
+
+#conts .borderUl li a:hover {
+	color: #f36;
+}
+
+#conts .rBox {
+	width: auto;
+	float: none;
+	padding-left: 350px; 
+}
+
+#conts .rBox .borderUl li {
+	float: left;
+	overflow: hidden;
+	width: 100%;
+	text-align: left;
+	position: relative;
+}
+
+#conts .rBox .borderUl li .photo {
+	width: 70px;
+	height: 70px;
+	float: left;
+	border-radius: 50%;
+}
+
+#conts .rBox .borderUl li .textBox {
+	padding: 10px 50px 0 80px;
+}
+
+#conts .rBox .borderUl li .textBox .title {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+#conts .rBox .borderUl li .textBox .title a {
+	display: inline-block;
+}
+
+#conts .rBox .borderUl li .textBox p {
+	color: #666;
+	margin-bottom: 10px;
+}
+
+#conts .rBox .borderUl li .textBox p:last-child {
+	margin-bottom: 0;
+}
+
+#conts .rBox .borderUl li .numP {
+	border-radius: 50%;
+	background-color: #f36;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	line-height: 40px;
+	color: #FFF;
+	position: absolute;
+	right: 15px;
+	top: 50%;
+	margin-top: -20px;
+}
+
+#conts .pageUl {
+	margin: 20px auto 0;
+	width: 440px;
+}
+
+#conts .pageUl li {
+	float: left;
+	font-size: 15px;
+	line-height: 20px;
+	border: 1px solid #DDD;
+	margin-right: 10px;
+}
+
+#conts .pageUl li a {
+	color: #333;
+	display: block;
+	padding: 5px 10px;
+}
+
+#conts .pageUl li a:hover {
+	color: #f36;
+}
+
+#conts .pageUl li:last-child {
+	margin-right: 0;
+}
+
+#conts .inner {
+	margin-bottom: 10px;
+}
+
+#conts .inner .photoBox {
+	float: left;
+	width: 15%;
+	text-align: center;
+	font-size: 14px;
+}
+
+#conts .inner .photoBox img {
+	border-radius: 50%;
+	margin-bottom: 10px;
+	width: 70px;
+	height: 70px;
+}
+
+#conts .inner .photoBox .name {
+	font-weight: bold;
+}
+
+#conts .inner .photoBox .time {
+	color: #666;
+}
+
+#conts .inner .photoBox .category {
+	background-color: #f36;
+	color: #FFF;
+	border-radius: 10px;
+	width: 100px;
+	margin: 0 auto;
+}
+
+#conts .inner .textBox {
+	border-top: 1px solid #DDD;
+	float: right;
+	width: 80%;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+
+#conts .inner .textBox img {
+	display: block;
+	margin: 0 auto 10px;
+}
+
+#conts .inner .textBox p {
+	font-size: 14px;
+}
+
+#conts .topInner {
+	margin-bottom: 30px;
+}
+
+#conts .topInner .photoBox {
+	margin-top: 55px; 
+}
+
+#conts .topInner .photoBox p {
+	line-height: 25px;
+}
+
+#conts .topInner .photoBox .name {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+#conts .topInner .photoBox img {
+	width: 100px;
+	height: 100px;
+}
+
+#conts .topInner .textBox {
+	border-top: none;
+}
+
+#conts .topInner .textBox .titleP {
+	font-size: 22px;
+	font-weight: bold;
+	border-bottom: 1px solid #DDD;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+#conts .topInner .textBox p {
+	font-size: 16px;
+	line-height: 25px;
+	margin-bottom: 10px;
+}
+
+#conts .review {
+	padding-top: 40px;
+	margin-bottom: 0;
+}
+
+#conts .review textarea {
+	margin-bottom: 10px;
+	width: 99%;
+	border: 1px solid #DDD;
+	resize: none;
+	height: 120px;
+}
+
+#conts .review .textBox {
+	padding-top: 30px;
+}
+
+.btnUl {
+	text-align: center;
+}
+
+.btnUl li {
+	display: inline;
+	margin: 0 30px;
+	position: relative;
+}
+
+.btnUl li .fileInput {
+	opacity: 0;
+	width: 100px;
+	height: 38px;
+	position: absolute;
+	left: 0;
+	top: -12px;
+}
+
+#conts .btn01 {
+	background-color: #F36;
+}
+
+#conts .review .photoBox {
+	margin-top: 50px;
+}
+
+#conts .review .photoBox img {
+	width: 80px;
+	height: 80px;
+}

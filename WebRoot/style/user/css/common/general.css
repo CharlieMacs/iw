@@ -1,0 +1,684 @@
+@charset "utf-8";
+/*------------------------------------------------------------
+	样式设定
+------------------------------------------------------------*/
+.taLeft { text-align: left !important; }
+.taCenter { text-align: center !important; }
+.taRight { text-align: right !important; }
+.vaTop { vertical-align: top !important; }
+.vaMiddle { vertical-align: middle !important; }
+.fsP1 { font-size: 1.08em !important; }
+.fsP2 { font-size: 1.16em !important; }
+.fsP3 { font-size: 1.24em !important; }
+.fsP4 { font-size: 1.32em !important; }
+.fsP5 { font-size: 1.4em !important; }
+.fsM1 { font-size: 0.92em !important; }
+.fsM2 { font-size: 0.84em !important; }
+.fsM3 { font-size: 0.76em !important; }
+.fsM4 { font-size: 0.68em !important; }
+.fsM5 { font-size: 0.6em !important; }
+.fwNormal { font-weight: normal !important; }
+.fwBold { font-weight: bold !important; }
+/*------------------------------------------------------------
+	间距
+------------------------------------------------------------*/
+.mt0 { margin-top: 0 !important; }
+.mtf1 { margin-top: -1px !important; }
+.mtf2 { margin-top: -2px !important; }
+.mtf3 { margin-top: -3px !important; }
+.mtf4 { margin-top: -4px !important; }
+.mb0 { margin-bottom: 0 !important; }
+.mb5 { margin-bottom: 5px !important; }
+.mb10 { margin-bottom: 10px !important; }
+.ml10 { margin-left: 10px !important; }
+.mr10 { margin-right: 10px !important; }
+.borderB {
+	border-bottom: none !important;
+}
+
+.borderT {
+	border-top: none !important;
+}
+
+.borderL {
+	border-left: none !important;
+}
+
+.borderR {
+	border-right: none !important;
+}
+
+.none {
+	display: none;
+}
+
+/*------------------------------------------------------------
+	clearfix
+------------------------------------------------------------*/
+	* html .clearfix {
+		zoom: 1;
+	}
+
+	*+html .clearfix {
+		zoom: 1;
+	}
+
+.clearfix:after {
+	height: 0;
+	visibility: hidden;
+	content: ".";
+	display: block;
+	clear: both;
+}
+
+body img {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/*------------------------------------------------------------
+	#conts h2
+------------------------------------------------------------*/
+.fL {
+	float: left !important;
+}
+
+.fR {
+	float: right !important;
+}
+
+/*------------------------------------------------------------
+	#main h2
+------------------------------------------------------------*/
+#main h2 {
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+	font-size: 16px;
+	margin-bottom: 10px;
+	padding: 10px 20px;
+}
+
+#main h2 img {
+	margin: -1px 2px 0 0;
+	vertical-align: middle;
+}
+
+#main .iconText {
+	background-color: #999;
+	border-radius: 10px;
+	color: #FFF;
+	display: inline-block;
+	font-size: 13px;
+	margin-left: 5px;
+	min-width: 20px;
+	padding: 1px 4px;
+	text-align: center;
+	line-height: 20px;
+}
+
+h2 .btn {
+	background-color: #F36;
+	padding: 4px;
+	margin-top: -5px;
+}
+
+/*------------------------------------------------------------
+	#main menuUl
+------------------------------------------------------------*/
+/*.menuUl {
+	padding-bottom: 20px;
+}*/
+
+#main .menuUl li {
+	background-color: #eee;
+	border: 1px solid #DDD;
+	border-radius: 15px;
+	font-size: 16px;
+	font-weight: bold;
+	float: left;
+	margin: 10px 10px 0 0;
+	min-width: 136px;
+	line-height: 56px;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+}
+
+#main .menuUl li img {
+	margin: -3px 2px 0 0;
+	vertical-align: middle;
+}
+
+#main .menuUl li .close {
+	font-size: 12px;
+	font-weight: normal;
+	position: absolute;
+	right: -10px;
+	top: -10px;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	line-height: 20px;
+}
+
+#main .menuUl li a {
+	color: #666;
+	display: block;
+}
+
+#main .menuTop {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 10px;
+	padding-left: 20px;
+}
+
+#main .menuTop li {
+	border-radius: 15px 15px 0 0;
+	margin-bottom: -1px;
+}
+
+#main .menuTop .on {
+	background-color: #FFF;
+	border-bottom: 1px solid #FFF;
+}
+
+#main .menuUl .addLi {font-size: 30px;}
+
+/*------------------------------------------------------------
+	titleDl
+------------------------------------------------------------*/
+#main .titleDl {
+	border-top: 1px solid #666;
+	border-bottom: 1px solid #666;
+}
+
+#main .titleDl dt {
+	border-right: 1px solid #666;
+	color: #222;
+	float: left;
+	font-size: 22px;
+	font-weight: bold;
+	padding: 10px;
+}
+
+#main .titleDl dd {
+	font-size: 16px;
+	font-weight: bold;
+	padding: 14px 10px 10px 80px;
+}
+
+/*------------------------------------------------------------
+	.infoDl
+------------------------------------------------------------*/
+#main .infoDl dt {
+	border-bottom: 1px solid #DDD;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 10px 20px;
+}
+
+#main .infoDl dt .ttlBox {
+	float: left;
+	margin: 5px 10px 0 0;
+}
+
+#main .infoDl dt ul {
+	font-size: 13px;
+	font-weight: normal;
+	float: left;
+}
+
+#main .infoDl dt li img {
+	margin-right: 5px;
+	width: 18px;
+}
+
+#main .infoDl dt img {
+	margin: -1px 2px 0 0;
+	vertical-align: middle;
+}
+
+#main .infoDl dd {
+	border-bottom: 1px solid #DDD;
+	padding: 15px 20px;
+}
+
+#main .infoDl dd .menuUl {
+	padding-bottom: 0;
+}
+
+#main .infoDl dd .menuUl li {
+	font-weight: normal;
+}
+
+/*------------------------------------------------------------
+	.listUl
+------------------------------------------------------------*/
+#main .listUl li {
+	float: left;
+	text-align: center;
+	padding: 0 30px 10px 0;
+	width: 70px;
+	min-height: 110px;
+}
+
+#main .listUl li .close {
+	font-size: 12px;
+	width: 15px;
+	height: 15px;
+	position: absolute;
+	top: -4px;
+	right: -4px;
+	cursor: pointer;
+}
+
+.listUl li .addDiv {
+	width: 70px;
+	height: 70px;
+	border: 1px solid #DDD;
+	border-radius: 50%;
+	font-size: 46px;
+	line-height: 70px;
+	cursor: pointer;
+}
+
+#main .listUl li .photoBox {
+	width: 70px;
+	height: 75px;
+	position: relative;
+}
+
+#main .listUl li .photo {
+	border: 1px solid #DDD;
+	border-radius: 30px;
+	width: 70px;
+	height: 75px;
+}
+
+#main .listUl li .suo {
+	position: absolute;
+	left: -2px;
+	top: -3px;
+	cursor: pointer;
+}
+
+#main .listUl li .onLine {
+	position: absolute;
+	right: -2px;
+	bottom: -2px;
+}
+
+#main .listUl li p {
+	font-size: 13px;
+	line-height: 25px;
+}
+
+#main .listUl li button {width: 60px; text-align: center; border: 1px solid #DDD; background-color: #FFF; padding: 5px 0; margin: 0 auto; cursor: pointer; color: #999;
+border-radius: 5px; }
+
+#main .listUl li button:hover {background-color: #096; color: #FFF;}
+/*------------------------------------------------------------
+	.naviUl
+------------------------------------------------------------*/
+.naviUl {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 10px;
+	padding: 0 10px;
+}
+
+.naviUl li {
+	float: left;
+	font-size: 18px;
+	line-height: 30px;
+	margin-right: 50px;
+	cursor: pointer;
+}
+
+.naviUl li a {
+	color: #333;
+}
+
+.naviUl .on {
+	border-bottom: 4px solid #F00;
+}
+
+/*------------------------------------------------------------
+	#main h3
+------------------------------------------------------------*/
+#main h3 {
+	font-size: 17px;
+	font-weight: normal;
+	padding: 10px 0;
+}
+
+#main h3 img {
+	margin: -1px 5px 0 0;
+	vertical-align: middle;
+}
+
+/*------------------------------------------------------------
+	innerBox
+------------------------------------------------------------*/
+.innerBox {
+	font-size: 16px;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #DDD;
+}
+
+.innerBox .photo {
+	width: 80px;
+	float: left;
+}
+
+.innerBox .photo img {
+	border-radius: 5px;
+	height: 80px;
+	width: 80px;
+	margin-bottom: 10px;
+}
+
+.innerBox .changePhoto span {
+	border-radius: 10px;
+	border: 1px solid #666;
+	cursor: pointer;
+	display: block;
+	font-size: 14px;
+	width: 70px;
+	text-align: center;
+	padding: 5px;
+	margin-top: -33px;
+}
+
+.innerBox .changePhoto form {
+	float: left;
+	margin-right: 10px;
+}
+
+.innerBox .changePhoto input {
+	width: 80px;
+	height: 33px;
+	padding: 0;
+	cursor: pointer;
+	z-index: 2;
+}
+
+.innerBox .textBox {
+	padding: 30px 0 0 100px;
+}
+
+/*------------------------------------------------------------
+	btn
+------------------------------------------------------------*/
+.btn {
+	background-color: #096;
+	border-radius: 5px;
+	border: none;
+	color: #FFF;
+	font-size: 16px;
+	min-width: 100px;
+	padding: 10px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.btn:hover {
+	background-color: #09A;
+}
+
+/*------------------------------------------------------------
+	borderBox
+------------------------------------------------------------*/
+.borderBox {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+
+.borderBox p {
+	font-size: 15px;
+	line-height: 30px;
+}
+
+/*------------------------------------------------------------
+	table
+------------------------------------------------------------*/
+table {
+	width: 100%;
+}
+
+th,
+td {
+	font-size: 14px;
+	padding: 10px;
+}
+
+/*------------------------------------------------------------
+	ulList
+------------------------------------------------------------*/
+.ulList {
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+
+.ulList li {
+	float: left;
+	padding: 0 1.5%;
+	text-align: center;
+}
+
+.ulList li .photo {
+	background-color: #06C;
+	height: 100px;
+	width: 100%;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.ulList3 li {
+	width: 30%;
+}
+
+.ulList4 li {
+	width: 22%;
+}
+/*------------------------------------------------------------
+	addSpan
+------------------------------------------------------------*/
+.addSpan {
+	background-color: #EEE;
+	border-radius: 20px;
+	border: 1px solid #DDD;
+	display: inline-block;	
+	font-size: 28px;
+	line-height: 28px;
+	margin-left: 20px;
+	text-align: center;
+	width: 70px;
+	color: #333;
+	cursor: pointer;
+}
+
+/*------------------------------------------------------------
+	bgBox
+------------------------------------------------------------*/
+.bgBox {
+	background-color: #000;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20;
+	opacity: 0.8;
+	display: none;	
+}
+
+/*------------------------------------------------------------
+	btnBox
+------------------------------------------------------------*/
+.btnBox .btn {
+	margin-right: 10px;
+	padding: 5px 10px;
+}
+
+.btnBox .cancel {
+	background-color: #FFF;
+	border-radius: 5px;
+	border: 1px solid #DDD;
+	color: #333;
+	font-size: 16px;
+	min-width: 100px;
+	padding: 5px 10px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.textInput {
+	width: auto;
+	border: 1px solid #DDD;
+	border-radius: 5px;
+	line-height: 30px;
+	height: 30px;
+	padding: 0;
+	margin: 0;
+	text-indent: 10px;
+}
+
+/*------------------------------------------------------------
+	addInfo
+------------------------------------------------------------*/
+#addInfo {width: 300px; padding: 10px; height: 140px; position: fixed; top: 50%; left: 50%;
+	border: 1px solid #DDD;
+	background-color: #FFF;
+	border-radius: 10px;
+	margin: -90px 0 0 -100px;
+	position: fixed;
+	z-index: 30;
+}
+#addInfo h1 img {margin-top: -2px;}
+#addInfo h1 {font-size: 16px; color: #666; border-bottom: 1px solid #DDD; margin-bottom: 15px; padding-bottom: 10px;}
+#addInfo span {float: left; font-size: 14px; line-height: 30px; margin-right: 10px;}
+#addInfo .textInput {width: 240px;}
+#addInfo .btnBox {margin-top: 15px;}
+
+/*------------------------------------------------------------
+	.addInfo
+------------------------------------------------------------*/
+.addInfo {width: 300px; padding: 10px; height: 140px; position: fixed; top: 50%; left: 50%;
+	border: 1px solid #DDD;
+	background-color: #FFF;
+	border-radius: 10px;
+	margin: -90px 0 0 -100px;
+	position: fixed;
+	z-index: 30;
+}
+.addInfo h1 img {margin-top: -2px;}
+.addInfo h1 {font-size: 16px; color: #666; border-bottom: 1px solid #DDD; margin-bottom: 15px; padding-bottom: 10px;}
+.addInfo span {float: left; font-size: 14px; line-height: 30px; margin-right: 10px;}
+.addInfo .textInput {width: 240px;}
+.addInfo .btnBox {margin-top: 15px;}
+
+/*------------------------------------------------------------
+	addFriendInfo
+------------------------------------------------------------*/
+#addFriendInfo {
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	left: 50%;
+	top: 160px;
+	padding: 10px;
+	margin: 0 0 0 -230px;
+	position: fixed;
+	width: 460px;
+	display: none;
+}
+
+.winClose {
+	float: right;
+	cursor: pointer;
+}
+
+#addFriendInfo dt,
+#addFriendInfo dd {
+	border-bottom: 1px solid #DDD;
+	font-size: 18px;
+	padding: 5px 0;
+}
+
+#addFriendInfo dd {
+	font-size: 16px;
+}
+
+#addFriendInfo dd .colorRed {
+	color: #906;
+}
+
+#addFriendInfo .addMail li {
+	padding-bottom: 10px;
+}
+
+#addFriendInfo .add {
+	border: 1px solid #DDD;
+	background-color: #FFF;
+	border-radius: 5px;
+	width: 100px;
+	height: 34px;
+	cursor: pointer;
+}
+
+#addFriendInfo .textInput {
+	width: 340px;
+	height: 30px;
+	padding: 0;
+}
+
+#addFriendInfo .addMail li input {
+	height: 30px;
+	width: 360px;
+	padding: 0;
+}
+
+#addFriendInfo .addMail li button {
+	width: 80px;
+	height: 32px;
+	cursor: pointer;
+	float: right;
+}
+
+#addFriendInfo textarea {
+	border-radius: 5px;
+	border: 1px solid #DDD;
+	width: 450px;
+	height: 50px;
+	font-size: 13px;
+	line-height: 16px;
+	margin-bottom: 10px;
+	resize: none;
+}
+
+
+/*------------------------------------------------------------
+	lBox/rBox
+------------------------------------------------------------*/
+
+#conts .lBox {
+	float: left;
+	width: 40%;
+}
+
+#conts .rBox {
+	float: right;
+	width: 55%;
+}
+
+
+#main textarea {
+	width: 99%;
+	border: 1px solid #DDD;
+	resize: none;
+	border-radius: 5px;
+	font-size: 14px;
+}

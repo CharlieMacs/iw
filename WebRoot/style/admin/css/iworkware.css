@@ -1,0 +1,25 @@
+
+
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{
+    vertical-align:baseline;
+    padding:5px;
+}
+.form-horizontal.bucket-form .form-group{
+	border:0;
+}
+.news-btn{
+	margin-left:8%;
+}
+.news-btn .btn{
+	padding:6px 20px;
+	margin-right:10px;
+}
+.input-append{
+	width:87%;
+}
+.numeric{
+	text-align:center;
+}
+a{
+	color:#767676;
+}
