@@ -38,6 +38,13 @@ public interface UserService {
 	public List<User> findByRegip(Object regip);
 
 	public List<User> findByLastip(Object lastip);
+	
+	/**
+	 * 根据手机号取用户信息。若手机号不存在，返回null
+	 * @param phone
+	 * @return
+	 */
+	public User findByPhone(Object phone);
 
 	public List findAll();
 	

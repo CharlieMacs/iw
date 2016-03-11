@@ -1,8 +1,11 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.xnx3.j2ee.dao.UserDAO;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.entity.*;
@@ -134,6 +137,13 @@ public class UserServiceImpl implements UserService{
 		userDao.findByReferrerid(referrerid);
 	}
 
-	
+	public User findByPhone(Object phone){
+		List<User> list = userDao.findByPhone(phone);
+		if(list.size()>0){
+			return list.get(0);
+		}else{
+			return null;
+		}
+	}
 	
 }

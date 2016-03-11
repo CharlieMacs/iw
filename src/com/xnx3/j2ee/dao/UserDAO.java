@@ -38,6 +38,7 @@ public class UserDAO {
 	public static final String REGIP = "regip";
 	public static final String LASTIP = "lastip";
 	public static final String REFERRERID = "referrerid";
+	public static final String PHONE = "phone";
 	
 	private SessionFactory sessionFactory;
 
@@ -153,10 +154,14 @@ public class UserDAO {
 		return findByProperty(REGIP, regip);
 	}
 
+	public List<User> findByPhone(Object phone) {
+		return findByProperty(PHONE, phone);
+	}
+
 	public List<User> findByLastip(Object lastip) {
 		return findByProperty(LASTIP, lastip);
 	}
-
+	
 	public List findAll() {
 		log.debug("finding all User instances");
 		try {
