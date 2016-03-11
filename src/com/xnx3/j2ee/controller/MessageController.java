@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
@@ -144,7 +143,7 @@ public class MessageController extends BaseController {
 
 					Log log = new Log();
 					log.setAddtime(new Date());
-					log.setType(DBConfigure.LOG_MESSAGE_READ);
+					log.setType(Log.typeMap.get("MESSAGE_READ"));
 					log.setGoalid(message.getId());
 					log.setUserid(getUser().getId());
 					log.setValue(messageData.getContent());

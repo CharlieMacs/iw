@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
@@ -113,7 +112,7 @@ public class BbsAdminController extends BaseController {
 				
 				Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_ADMIN_SYSTEM_BBS_POST_DELETE);
+				log.setType(Log.typeMap.get("ADMIN_SYSTEM_BBS_POST_DELETE"));
 				log.setUserid(getUser().getId());
 				log.setGoalid(p.getId());
 				log.setValue(p.getTitle());
@@ -153,7 +152,7 @@ public class BbsAdminController extends BaseController {
 			
 			Log log = new Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_ADMIN_SYSTEM_BBS_CLASS_SAVE);
+			log.setType(Log.typeMap.get("ADMIN_SYSTEM_BBS_CLASS_SAVE"));
 			log.setUserid(getUser().getId());
 			log.setGoalid(postClass.getId());
 			log.setValue(postClass.getName());
@@ -202,7 +201,7 @@ public class BbsAdminController extends BaseController {
 				
 				Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_ADMIN_SYSTEM_BBS_CLASS_DELETE);
+				log.setType(Log.typeMap.get("ADMIN_SYSTEM_BBS_CLASS_DELETE"));
 				log.setUserid(getUser().getId());
 				log.setGoalid(pc.getId());
 				log.setValue(pc.getName());

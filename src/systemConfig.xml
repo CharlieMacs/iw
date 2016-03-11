@@ -3,4 +3,44 @@
 	<!-- 是否使用站内信息功能，若开启，则访问任何页面都会读数据库判断是否有新的未读信息 -->
 	<useMessage>true</useMessage>
 	
+	<!-- 日志表 Log 里面，type字段的值，每个值代表一个功能记录 -->
+	<logTypeList>
+		<!-- <type>程序内调用的名字#写入数据库的数值#此分类的描述</type> -->
+		<type>USER_LOGOUT#10#用户注销登录</type>
+		<type>USER_LOGIN_SUCCESS#11#用户登录</type>
+		<type>USER_UPDATEHEAD#12#修改头像</type>
+		<type>USER_UPDATEPASSWORD#13#修改密码</type>
+		<type>USER_EMAIL_INVITE#14#邮件邀请注册</type>
+		<type>USER_UPDATE_NICKNAME#15#修改昵称</type>
+		<type>USER_INVITEREG_AWARD#16#邀请注册增加站内货币奖励</type>
+		<type>BBS_POST_ADD#21#发表帖子</type>
+		<type>BBS_POST_COMMENT_ADD#22#发表帖子评论</type>
+		<type>BBS_POST_VIEW#23#查看帖子</type>
+		<type>FRIEND_ADD#31#添加好友</type>
+		<type>FRIEND_DELETE#32#删除好友</type>
+		<type>MESSAGE_READ#41#查看未读信息</type>
+		<type>ADMIN_SYSTEM_GENERATEALLCACHE#71#刷新所有缓存数据（系统设置）</type>
+		<type>ADMIN_SYSTEM_REG_ROLE#72#修改用户注册后的权限</type>
+		<type>ADMIN_SYSTEM_EDITSYSTEM#73#修改系统参数设置</type>
+		<type>ADMIN_SYSTEM_ROLE_SAVE#81#添加或修改角色</type>
+		<type>ADMIN_SYSTEM_ROLE_DELETE#82#删除角色</type>
+		<type>ADMIN_SYSTEM_PERMISSION_SAVE#91#添加或修改资源permission</type>
+		<type>ADMIN_SYSTEM_PERMISSION_DELETE#92#删除资源permission</type>
+		<type>ADMIN_SYSTEM_ROLE_PERMISSION_SAVE#101#编辑角色所属的资源permission</type>
+		<type>ADMIN_SYSTEM_USER_ROLE_SAVE#111#编辑角色所属的资源permission</type>
+		<type>ADMIN_SYSTEM_MESSAGE_DELETE#121#后台删除站内信息</type>
+		<type>ADMIN_SYSTEM_BBS_POST_DELETE#131#后台删除帖子</type>
+		<type>ADMIN_SYSTEM_BBS_CLASS_SAVE#141#添加或修改板块</type>
+		<type>ADMIN_SYSTEM_BBS_CLASS_DELETE#142#删除板块</type>
+		
+		<!-- 	
+		<type>PAINT_ADD#51#创建图表</type>
+		<type>PAINT_COMMENT_ADD#52#添加图表评论</type>
+		<type>PROJECT_ADD#61#添加项目组</type>
+		<type>PROJECT_DELETE#62#删除项目组</type>
+		<type>PROJECT_ADD_MEMBER#63#项目组添加成员</type>
+		 -->
+		
+	</logTypeList>
+	
 </configuration>

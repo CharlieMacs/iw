@@ -15,8 +15,9 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
-import com.xnx3.j2ee.DBConfigure;
+
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.User;
@@ -47,8 +48,7 @@ public class CustomRealm extends AuthorizingRealm {
 	
 	//realm的认证方法，从数据库查询用户信息
 	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(
-			AuthenticationToken token) throws AuthenticationException {
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException{
 		// token是用户输入的用户名和密码 
 		// 第一步从token中取出用户名
 		String username = (String) token.getPrincipal();
@@ -59,12 +59,11 @@ public class CustomRealm extends AuthorizingRealm {
     			if(l!=null){
     				user = l.get(0);
     				user.setLasttime(DateUtil.timeForUnix10());
-//    				user.setLastip(request.getRemoteAddr());
     				userService.save(user);
     				
     				Log log = new Log();
     				log.setAddtime(new Date());
-    				log.setType(DBConfigure.LOG_USER_LOGIN_SUCCESS);
+    				log.setType(Log.typeMap.get("USER_LOGIN_SUCCESS"));
     				log.setUserid(user.getId());
     				logService.save(log);
     			}
@@ -86,10 +85,11 @@ public class CustomRealm extends AuthorizingRealm {
         		//将activeUser设置simpleAuthenticationInfo
         		SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
         				activeUser, user.getPassword(),ByteSource.Util.bytes(user.getSalt()), this.getName());
+        		
         		return simpleAuthenticationInfo;
-            }  
+            }
         }  
-  
+        
         return null;  
 	}
 	
@@ -118,7 +118,6 @@ public class CustomRealm extends AuthorizingRealm {
 				permissions.add(permission.getPercode());
 			}
 		}
-				
 		//查到权限数据，返回授权信息(要包括 上边的permissions)
 		SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 		//将上边查询到授权信息填充到simpleAuthorizationInfo对象中

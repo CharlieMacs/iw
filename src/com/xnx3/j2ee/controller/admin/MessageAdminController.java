@@ -3,17 +3,14 @@ package com.xnx3.j2ee.controller.admin;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
@@ -84,7 +81,7 @@ public class MessageAdminController extends BaseController {
 					
 					Log log = new Log();
 					log.setAddtime(new Date());
-					log.setType(DBConfigure.LOG_ADMIN_SYSTEM_MESSAGE_DELETE);
+					log.setType(Log.typeMap.get("ADMIN_SYSTEM_MESSAGE_DELETE"));
 					log.setUserid(getUser().getId());
 					log.setGoalid(m.getId());
 					log.setValue(md.getContent());

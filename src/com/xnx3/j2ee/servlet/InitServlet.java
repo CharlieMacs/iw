@@ -13,8 +13,9 @@ import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.HibernateSessionFactory;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
-import com.xnx3.j2ee.generateCache.Log;
+import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.generateCache.Message;
+import com.xnx3.j2ee.util.ConfigManagerUtil;
 
 /**
  * 初始化项目，将使用到的一些东东加入Global以方便后续使用
@@ -32,7 +33,7 @@ public class InitServlet extends HttpServlet {
 		initCacheFolder();
 		generateCache_postClass();
 		new Message().state();
-		new Log().type(); 
+		loadLogType();
 		
 		readSystemTable();
 	}
@@ -49,6 +50,23 @@ public class InitServlet extends HttpServlet {
 				file.mkdir();
 			}
 			path = path+folders[i]+"/";
+		}
+	}
+	
+	/**
+	 * 加载Log的type类型，同时将其做js文件缓存
+	 */
+	public static void loadLogType(){
+		Log.typeMap.clear();
+		List<String> list = ConfigManagerUtil.getSingleton("systemConfig.xml").getList("logTypeList.type");
+		new com.xnx3.j2ee.generateCache.Log().type(list);
+    	for (int i = 0; i < list.size(); i++) {
+    		String[] array = list.get(i).split("#");
+    		String name = array[0];
+    		Short value = (short) Lang.stringToInt(array[1], 0);
+    		String description = array[2];
+    		Log.typeMap.put(name, value);
+    		Log.typeDescriptionMap.put(value, description);
 		}
 	}
 	

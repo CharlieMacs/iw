@@ -3,19 +3,15 @@ package com.xnx3.j2ee.controller;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
@@ -123,7 +119,7 @@ public class BbsController extends BaseController {
 			
 			Log log = new Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_BBS_POST_ADD);
+			log.setType(Log.typeMap.get("BBS_POST_ADD"));
 			log.setGoalid(post.getId());
 			log.setUserid(getUser().getId());
 			log.setValue(post.getTitle());
@@ -175,7 +171,7 @@ public class BbsController extends BaseController {
 			
 			Log log = new Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_BBS_POST_VIEW);
+			log.setType(Log.typeMap.get("BBS_POST_VIEW"));
 			log.setGoalid(post.getId());
 			log.setUserid(getUser().getId());
 			log.setValue(post.getTitle());
@@ -228,7 +224,7 @@ public class BbsController extends BaseController {
 				
 				Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_BBS_POST_COMMENT_ADD);
+				log.setType(Log.typeMap.get("BBS_POST_COMMENT_ADD"));
 				log.setGoalid(postComment.getId());
 				log.setUserid(getUser().getId());
 				log.setValue(post.getTitle());

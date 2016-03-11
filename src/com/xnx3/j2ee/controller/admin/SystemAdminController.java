@@ -2,21 +2,16 @@ package com.xnx3.j2ee.controller.admin;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.System;
 import com.xnx3.j2ee.generateCache.Bbs;
-import com.xnx3.j2ee.generateCache.Log;
 import com.xnx3.j2ee.generateCache.Message;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
@@ -49,7 +44,7 @@ public class SystemAdminController extends BaseController {
 	@RequiresPermissions("adminSystemIndex")
 	@RequestMapping("index")
 	public String index(Model model){
-		List<com.xnx3.j2ee.entity.System> systemList = systemService.findByListshow(DBConfigure.SYSTEM_LISTSHOW_SHOW);
+		List<com.xnx3.j2ee.entity.System> systemList = systemService.findByListshow(com.xnx3.j2ee.entity.System.LISTSHOW_SHOW);
 		model.addAttribute("systemList", systemList);
 		return "/admin/system/index";
 	}
@@ -63,11 +58,11 @@ public class SystemAdminController extends BaseController {
 	public String generateAllCache(Model model){
 		new Bbs().postClass(postClassService.findAll());
 		new Message().state();
-		new Log().type(); 
+//		new Log().type(); 
 		
 		com.xnx3.j2ee.entity.Log log = new com.xnx3.j2ee.entity.Log();
 		log.setAddtime(new Date());
-		log.setType(DBConfigure.LOG_ADMIN_SYSTEM_GENERATEALLCACHE);
+		log.setType(com.xnx3.j2ee.entity.Log.typeMap.get("ADMIN_SYSTEM_GENERATEALLCACHE"));
 		log.setUserid(getUser().getId());
 		logService.save(log);
 		
@@ -99,7 +94,7 @@ public class SystemAdminController extends BaseController {
 			
 			com.xnx3.j2ee.entity.Log log = new com.xnx3.j2ee.entity.Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_ADMIN_SYSTEM_REG_ROLE);
+			log.setType(com.xnx3.j2ee.entity.Log.typeMap.get("ADMIN_SYSTEM_REG_ROLE"));
 			log.setUserid(getUser().getId());
 			logService.save(log);
 			
@@ -127,7 +122,7 @@ public class SystemAdminController extends BaseController {
 		com.xnx3.j2ee.entity.System system = new System();
 		
 		System systemWhere = new System();
-		systemWhere.setListshow(DBConfigure.SYSTEM_LISTSHOW_SHOW);
+		systemWhere.setListshow(com.xnx3.j2ee.entity.System.LISTSHOW_SHOW);
 		systemWhere.setName(name);
 		List<com.xnx3.j2ee.entity.System> systemList = systemService.findByExample(systemWhere);
 		if(systemList!=null&&systemList.size()==1){
@@ -145,7 +140,7 @@ public class SystemAdminController extends BaseController {
 			
 			com.xnx3.j2ee.entity.Log log = new com.xnx3.j2ee.entity.Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_ADMIN_SYSTEM_EDITSYSTEM);
+			log.setType(com.xnx3.j2ee.entity.Log.typeMap.get("ADMIN_SYSTEM_EDITSYSTEM"));
 			log.setUserid(getUser().getId());
 			log.setValue(system.getName());
 			logService.save(log);

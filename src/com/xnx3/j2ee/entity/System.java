@@ -14,6 +14,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "system")
 public class System implements java.io.Serializable {
+	public final static Short LISTSHOW_SHOW=1;		//此项会再后台系统管理列表显示
+	public final static Short LISTSHOW_UNSHOW=0;	//此项不会再后台系统管理列表显示
 
 	private Integer id;
 	private String description;

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.entity.UserRole;
@@ -73,7 +72,7 @@ public class LoginController extends BaseController {
 		user.setRegtime(DateUtil.timeForUnix10());
 		user.setLasttime(DateUtil.timeForUnix10());
 		user.setNickname(user.getUsername());
-		user.setAuthority(Global.system.get("USERREG_ROLE"));
+		user.setAuthority(Global.system.get("USER_REG_ROLE"));
 		user.setCurrency(0);
 		user.setReferrerid(0);
 		
@@ -158,7 +157,7 @@ public class LoginController extends BaseController {
 			log.setUserid(user.getId());
 			log.setValue(addCurrency+"");
 			log.setGoalid(regUser.getId());
-			log.setType(DBConfigure.LOG_USER_INVITEREG_AWARD);
+			log.setType(Log.typeMap.get("USER_INVITEREG_AWARD"));
 			logService.save(log);
 		}
 	}

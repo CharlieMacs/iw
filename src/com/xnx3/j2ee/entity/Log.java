@@ -3,6 +3,8 @@ package com.xnx3.j2ee.entity;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +20,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "log")
 public class Log implements java.io.Serializable {
+	/**
+	 * 取type的值，根据name获取数字
+	 */
+	public static Map<String, Short> typeMap = new HashMap<String, Short>();	
+	/**
+	 * 根据type的值，取type的说明描述
+	 */
+	public static Map<Short, String> typeDescriptionMap = new HashMap<Short, String>();
 	
 	private Integer id;
 	private Integer userid;

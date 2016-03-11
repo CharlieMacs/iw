@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -21,9 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.LogService;
@@ -89,7 +85,7 @@ public class UserController extends BaseController {
 		        
 		        Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_USER_UPDATEHEAD);
+				log.setType(Log.typeMap.get("USER_UPDATEHEAD"));
 				log.setUserid(getUser().getId());
 				logService.save(log);
 		        
@@ -125,7 +121,7 @@ public class UserController extends BaseController {
 	        
 			Log log = new Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_USER_UPDATE_NICKNAME);
+			log.setType(Log.typeMap.get("USER_UPDATE_NICKNAME"));
 			log.setUserid(getUser().getId());
 			log.setValue(oldNickName);
 			logService.save(log);
@@ -158,7 +154,7 @@ public class UserController extends BaseController {
 				
 				Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_USER_UPDATEPASSWORD);
+				log.setType(Log.typeMap.get("USER_UPDATEPASSWORD"));
 				log.setUserid(getUser().getId());
 				logService.save(log);
 			}else{
@@ -206,7 +202,7 @@ public class UserController extends BaseController {
 			
 			Log log = new Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_USER_EMAIL_INVITE);
+			log.setType(Log.typeMap.get("USER_EMAIL_INVITE"));
 			log.setUserid(getUser().getId());
 			log.setValue(email);
 			logService.save(log);
@@ -230,7 +226,7 @@ public class UserController extends BaseController {
 		if (subject.isAuthenticated()) {
 			Log log = new Log();
 			log.setAddtime(new Date());
-			log.setType(DBConfigure.LOG_USER_LOGOUT);
+			log.setType(Log.typeMap.get("USER_LOGOUT"));
 			log.setUserid(getUser().getId());
 			logService.save(log);
 			

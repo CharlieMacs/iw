@@ -1,22 +1,18 @@
 package com.xnx3.j2ee.interceptor;
 
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.shiro.ActiveUser;
-import com.xnx3.j2ee.util.ConfigManager;
+import com.xnx3.j2ee.util.ConfigManagerUtil;
 
 /**
  * 站内信息最新未读信息查询
@@ -29,7 +25,7 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 	private MessageService messageService;
 	
 	static{
-		useMessage = ConfigManager.getSingleton("systemConfig.xml").selectValue("useMessage").equals("true");
+		useMessage = ConfigManagerUtil.getSingleton("systemConfig.xml").selectValue("useMessage").equals("true");
 	}
 	
 	@Override

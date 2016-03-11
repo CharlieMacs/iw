@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.xnx3.j2ee.DBConfigure;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.Role;
@@ -98,7 +97,7 @@ public class RoleAdminController extends BaseController {
 		
 		Log log = new Log();
 		log.setAddtime(new Date());
-		log.setType(DBConfigure.LOG_ADMIN_SYSTEM_ROLE_SAVE);
+		log.setType(Log.typeMap.get("ADMIN_SYSTEM_ROLE_SAVE"));
 		log.setUserid(getUser().getId());
 		log.setGoalid(role.getId());
 		log.setValue(role.getName());
@@ -122,7 +121,7 @@ public class RoleAdminController extends BaseController {
 				
 				Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_ADMIN_SYSTEM_ROLE_DELETE);
+				log.setType(Log.typeMap.get("ADMIN_SYSTEM_ROLE_DELETE"));
 				log.setUserid(getUser().getId());
 				log.setGoalid(role.getId());
 				log.setValue(role.getName());
@@ -213,7 +212,7 @@ public class RoleAdminController extends BaseController {
 		
 		Log log = new Log();
 		log.setAddtime(new Date());
-		log.setType(DBConfigure.LOG_ADMIN_SYSTEM_PERMISSION_SAVE);
+		log.setType(Log.typeMap.get("ADMIN_SYSTEM_PERMISSION_SAVE"));
 		log.setUserid(getUser().getId());
 		log.setGoalid(permission.getId());
 		log.setValue(permission.getName());
@@ -236,7 +235,7 @@ public class RoleAdminController extends BaseController {
 				
 				Log log = new Log();
 				log.setAddtime(new Date());
-				log.setType(DBConfigure.LOG_ADMIN_SYSTEM_PERMISSION_DELETE);
+				log.setType(Log.typeMap.get("ADMIN_SYSTEM_PERMISSION_DELETE"));
 				log.setUserid(getUser().getId());
 				log.setGoalid(permission.getId());
 				log.setValue(permission.getName());
@@ -354,7 +353,7 @@ public class RoleAdminController extends BaseController {
 		
 		Log log = new Log();
 		log.setAddtime(new Date());
-		log.setType(DBConfigure.LOG_ADMIN_SYSTEM_ROLE_PERMISSION_SAVE);
+		log.setType(Log.typeMap.get("ADMIN_SYSTEM_ROLE_PERMISSION_SAVE"));
 		log.setUserid(getUser().getId());
 		log.setGoalid(roleId);
 		log.setValue(roleService.findById(roleId).getName());
@@ -461,7 +460,7 @@ public class RoleAdminController extends BaseController {
 		
 		Log log = new Log();
 		log.setAddtime(new Date());
-		log.setType(DBConfigure.LOG_ADMIN_SYSTEM_USER_ROLE_SAVE);
+		log.setType(Log.typeMap.get("ADMIN_SYSTEM_USER_ROLE_SAVE"));
 		log.setUserid(getUser().getId());
 		log.setGoalid(userid);
 		logService.save(log);
