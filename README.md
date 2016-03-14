@@ -1,14 +1,14 @@
-# iw
-web 快速开发，基础功能集成底层
-
-使用框架：
-hibernate 4.2
-spring 4.2
-spring mvc 4.2
-shiro 1.2.3
-urlrewritefilter 4.0.3
-xnx3 1.5
-fastdfs
+# iw &nbsp;web 快速开发，基础功能集成底层
+<br/>
+<br/>
+使用框架：<br/>
+hibernate 4.2<br/>
+spring 4.2<br/>
+spring mvc 4.2<br/>
+shiro 1.2.3<br/>
+urlrewritefilter 4.0.3<br/>
+xnx3 1.5<br/>
+fastdfs<br/>
 
 Web project<br/>
 /src								java源代码<br/>
@@ -31,8 +31,9 @@ Web project<br/>
 com.xnx3.j2ee.Global						基础配置、集中管理。全局控制，全局的参数、常亮，都是在这里<br/>
 com.xnx3.j2ee.Global.get("systemName");	直接调用system表配置的值<br/>
 src/systemConfig.xml						系统某些实用功能的配置文件所在<br/>
-<br/>
-jsp页面可用参数：<br/>
-	用户信息参数：<pre>${user}<br/>如调用user表的id为${user.id}</pre><br/>
-	
-	未读信息条数：<pre>${unreadMessage}</pre>
+<br/><br/>
+<h2>
+<pre>
+	用户信息参数：${user}，如调用user表的id为${user.id}<br/>
+	未读信息条数：${unreadMessage}
+</pre>
