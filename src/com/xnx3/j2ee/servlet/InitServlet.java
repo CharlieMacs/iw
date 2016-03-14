@@ -4,9 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.http.HttpServlet;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
@@ -15,7 +19,6 @@ import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.generateCache.Message;
-import com.xnx3.j2ee.util.ConfigManagerUtil;
 
 /**
  * 初始化项目，将使用到的一些东东加入Global以方便后续使用
