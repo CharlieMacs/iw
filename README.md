@@ -7,7 +7,7 @@ spring 4.2<br/>
 spring mvc 4.2<br/>
 shiro 1.2.3<br/>
 urlrewritefilter 4.0.3<br/>
-xnx3 1.5<br/>
+xnx3 2.0<br/>
 fastdfs<br/>
 
 Web project<br/>
@@ -32,7 +32,7 @@ com.xnx3.j2ee.Global						基础配置、集中管理。全局控制，全局的
 com.xnx3.j2ee.Global.get("systemName");	直接调用system表配置的值<br/>
 src/systemConfig.xml						系统某些实用功能的配置文件所在<br/>
 <br/><br/>
-<h2>
+<h2>JSP页面全局参数获取</h2>
 <pre>
 	用户信息参数：${user}，如调用user表的id为${user.id}<br/>
 	未读信息条数：${unreadMessage}
