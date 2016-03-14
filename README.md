@@ -13,10 +13,15 @@ fastdfs
 Web project
 /src								java源代码
 /src/com/xnx3/j2ee/bean			相关bean类
+
 /src/com/xnx3/j2ee/controller		springmvc控制器
+
 /src/com/xnx3/j2ee/controller/admin管理后台
+
 /src/com/xnx3/j2ee/dao			数据库相关操作
+
 /src/com/xnx3/j2ee/entity			数据库关联的实体类
+
 /src/com/xnx3/j2ee/generateCache	程序数据的缓存文件生成
 /src/com/xnx3/j2ee/interceptor		springmvc拦截器
 /src/com/xnx3/j2ee/service			service层
