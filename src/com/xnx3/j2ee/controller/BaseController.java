@@ -15,22 +15,33 @@ public class BaseController {
 	
 	/**
 	 * 获取用户登录之后的用户相关信息
-	 * @return
+	 * @return	<li>登陆了，则返回ActiveUser对象
+	 * 			<li>未登陆，返回null
 	 */
 	protected ActiveUser getActiveUser() {
 		//从shiro的session中取activeUser
 		Subject subject = SecurityUtils.getSubject();
 		//取身份信息
 		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
-		return activeUser;
+		if(activeUser != null){
+			return activeUser;
+		}else{
+			return null;
+		}
 	}
 	
 	/**
-	 * 如果用户登录了，获取登录用户的信息
-	 * @return
+	 * 获取当前登录用户的信息
+	 * @return 	<li>登陆了，则返回User对象
+	 * 			<li>未登陆，返回null
 	 */
 	protected User getUser(){
-		return getActiveUser().getUser();
+		ActiveUser activeUser = getActiveUser();
+		if(activeUser!=null){
+			return activeUser.getUser();
+		}else{
+			return null;
+		}
 	}
 
 	/**
