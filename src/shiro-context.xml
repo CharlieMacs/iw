@@ -18,16 +18,16 @@
 		<property name="filterChainDefinitions">
 			<value>
 				/index.jsp = anon
+				/login.do = authc <!-- authc 表示需要认证才能访问的页面 -->  
 				/cache/** = anon
 				/*.jsp = anon
+				/*.do = anon
 				/*.html = anon
 				/style/** = anon
 				/upload/** = anon
 				/reg*.do = anon
 				/bbs/list.do = anon
 				/bbs/view.do = anon
-				/*.do = anon 
-				<!-- authc 表示需要认证才能访问的页面 -->  
 				/** = authc 
 			</value>
 		</property>
