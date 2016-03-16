@@ -7,9 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand">
-    <a href="index.html" class="logo">
-        <img src="<%=basePath %>style/admin/images/logo.png" alt="">
-    </a>
+	<h1 style="padding-left:90px;">IW</h1>
     <div class="sidebar-toggle-box">
         <div class="fa fa-bars"></div>
     </div>
