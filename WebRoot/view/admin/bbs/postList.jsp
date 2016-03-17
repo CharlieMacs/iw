@@ -64,10 +64,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
 	                            <input type="text" name="title" class="form-control" value="<%=request.getParameter("title")==null? "":request.getParameter("title")  %>">
 	                        </div>
+	                        
+	                        <span style="float:left;line-height:34px;margin-left:10px;">板块：</span>
+	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
+	                        <select name="classid" class="form-control">
+	                        		<script type="text/javascript">
+	                        			if('<%=request.getParameter("classid") %>'==''){
+	                        				document.write('<option value="" selected="selected">所有</option>');
+	                        			}else{
+	                        				document.write('<option value="">所有</option>');
+	                        			}
+	                        			for(var p in postClass){  
+	                        				if(p == '<%=request.getParameter("classid") %>'){
+	                        					document.write('<option value="'+p+'" selected="selected">'+postClass[p]+'</option>');
+	                        				}else{
+	                        					document.write('<option value="'+p+'">'+postClass[p]+'</option>');
+	                        				}
+	  									}  
+	                        		</script>
+								</select>
+	                        </div>
+	                        
 	                        <span style="float:left;line-height:34px;margin-left:10px;">时间：</span>
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
 	                            <input type="text" name="addtime" class="form-control" value="<%=request.getParameter("addtime")==null? "2015-12-12 12:12:12":request.getParameter("addtime")  %>">
 	                        </div>
+	                        
+	                        
 	                        
 	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
 	                            <span class="input-group-btn">
@@ -77,11 +100,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                            </span>
 	                        </div>
                         </form>   
-                        <!-- <div style="float: right">
-                            <a type="button" class="btn btn-primary" style="float: left;margin-right: 10px" href="#">
+                        <div style="float: right">
+                            <a type="button" class="btn btn-primary" style="float: left;margin-right: 10px" href="post.do?classid=<%=request.getParameter("classid") %>">
                                 <i class="fa fa-plus"></i>
                             </a>
-                        </div> -->
+                        </div>
                     </div>
                         <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
@@ -105,9 +128,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                                    </td>
 	                                    <td class="numeric"><x:time linuxTime="${post.addtime }"></x:time></td>
 	                                    <td class="numeric">
-	                                    	<!-- <a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="<%=basePath %>/bbs/view.do?id=${post.id }">
-	                                    		<i class="fa fa-pencil"></i>
-	                                    	</a> -->
+	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="<%=basePath %>/admin/bbs/post.do?id=${post.id }">
+	                                    		修改
+	                                    	</a>
 	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deletePost(${post.id });">
 	                                    		<i class="fa fa-trash-o"></i>
 	                                    	</button>
