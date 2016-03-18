@@ -32,6 +32,7 @@ public class User implements java.io.Serializable {
 	private String phone;		//手机号
 	private Integer currency;	//资金，可以是积分、金币、等等
 	private Integer referrerid;	//推荐人的用户id。若没有推荐人则默认为0
+	private Integer freezecurrency;	//冻结资金，可以是积分、金币、等等
 
 	// Constructors
 
@@ -210,13 +211,24 @@ public class User implements java.io.Serializable {
 		this.referrerid = referrerid;
 	}
 
+	public Integer getFreezecurrency() {
+		return freezecurrency;
+	}
+
+	public void setFreezecurrency(Integer freezecurrency) {
+		this.freezecurrency = freezecurrency;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", email=" + email
 				+ ", password=" + password + ", head=" + head + ", nickname="
 				+ nickname + ", authority=" + authority + ", regtime="
 				+ regtime + ", lasttime=" + lasttime + ", regip=" + regip
-				+ "]";
+				+ ", salt=" + salt + ", phone=" + phone + ", currency="
+				+ currency + ", referrerid=" + referrerid + ", freezecurrency="
+				+ freezecurrency + "]";
 	}
+
 
 }
