@@ -88,4 +88,41 @@ public class SmsLogServiceImpl implements SmsLogService {
 		return smsLogDAO.merge(detachedInstance);
 	}
 
+	@Override
+	public List<SmsLog> findByPhone(Object phone) {
+		// TODO Auto-generated method stub
+		return smsLogDAO.findByPhone(phone);
+	}
+
+	@Override
+	public int findByPhoneNum(String phone,Short type) {
+		// TODO Auto-generated method stub
+		return smsLogDAO.findByPhoneNum(phone, type);
+	}
+
+	@Override
+	public List<SmsLog> findByIp(Object ip) {
+		// TODO Auto-generated method stub
+		return smsLogDAO.findByIp(ip);
+	}
+
+	@Override
+	public int findByIpNum(String ip,Short type) {
+		// TODO Auto-generated method stub
+		return smsLogDAO.findByIpNum(ip, type);
+	}
+	
+	/**
+	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表
+	 * @param phone 手机号
+	 * @param addtime 添加使用，即发送时间，查询数据的时间大于此时间
+	 * @param used 是否使用，如 {@link SmsLog#USED_FALSE}
+	 * @param type 短信验证码类型，如 {@link SmsLog#TYPE_LOGIN}
+	 * @param code 短信验证码
+	 * @return
+	 */
+	public List findByPhoneAddtimeUsedType(String phone,int addtime,Short used,Short type,String code){
+		return smsLogDAO.findByPhoneAddtimeUsedType(phone, addtime, used, type,code);
+	}
+
 }

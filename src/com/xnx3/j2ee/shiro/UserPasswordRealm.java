@@ -3,9 +3,7 @@ package com.xnx3.j2ee.shiro;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -15,9 +13,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
-
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.User;
@@ -28,11 +24,11 @@ import com.xnx3.DateUtil;
 import com.xnx3.j2ee.bean.PermissionTree;
 
 /**
- * 自定义realm
+ * 用户名／邮箱／ID 密码登录的realm
  * @author 管雷鸣
  *
  */
-public class CustomRealm extends AuthorizingRealm {
+public class UserPasswordRealm extends AuthorizingRealm {
 	@Resource
 	private UserService userService;
 	@Resource
@@ -43,7 +39,7 @@ public class CustomRealm extends AuthorizingRealm {
 	// 设置realm的名称
 	@Override
 	public void setName(String name) {
-		super.setName("customRealm");
+		super.setName("UserPasswordRealm");
 	}
 	
 	//realm的认证方法，从数据库查询用户信息

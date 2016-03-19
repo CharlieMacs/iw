@@ -1,7 +1,10 @@
 package com.xnx3.j2ee.entity;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -32,7 +35,7 @@ public class SmsLog implements java.io.Serializable {
 	/**
 	 * 未使用
 	 */
-	public final static short USED_FALSE = 1;
+	public final static short USED_FALSE = 0;
 	
 	
 	// Fields
@@ -43,6 +46,8 @@ public class SmsLog implements java.io.Serializable {
 	private Short used;
 	private Short type;
 	private Integer addtime;
+	private String phone;
+	private String ip;
 
 	// Constructors
 
@@ -68,6 +73,7 @@ public class SmsLog implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	public Integer getId() {
 		return this.id;
@@ -121,5 +127,22 @@ public class SmsLog implements java.io.Serializable {
 	public void setAddtime(Integer addtime) {
 		this.addtime = addtime;
 	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
 
 }

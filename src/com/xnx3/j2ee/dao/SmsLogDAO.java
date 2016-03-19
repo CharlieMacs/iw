@@ -1,11 +1,14 @@
 package com.xnx3.j2ee.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.transform.Transformers;
 
 import static org.hibernate.criterion.Example.create;
 
@@ -14,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xnx3.DateUtil;
+import com.xnx3.Lang;
 import com.xnx3.j2ee.entity.SmsLog;
 
 /**
@@ -36,6 +41,8 @@ public class SmsLogDAO {
 	public static final String USED = "used";
 	public static final String TYPE = "type";
 	public static final String ADDTIME = "addtime";
+	public static final String PHONE = "phone";
+	public static final String IP = "ip";
 
 	private SessionFactory sessionFactory;
 
@@ -90,6 +97,7 @@ public class SmsLogDAO {
 		try {
 			List<SmsLog> results = (List<SmsLog>) getCurrentSession()
 					.createCriteria("com.xnx3.j2ee.dao.SmsLog")
+					.addOrder(Order.desc("id"))
 					.add(create(instance)).list();
 			log.debug("find by example successful, result size: "
 					+ results.size());
@@ -133,6 +141,14 @@ public class SmsLogDAO {
 
 	public List<SmsLog> findByAddtime(Object addtime) {
 		return findByProperty(ADDTIME, addtime);
+	}
+	
+	public List<SmsLog> findByPhone(Object phone) {
+		return findByProperty(PHONE, phone);
+	}
+	
+	public List<SmsLog> findByIp(Object ip) {
+		return findByProperty(IP,ip);
 	}
 
 	public List findAll() {
@@ -179,6 +195,64 @@ public class SmsLogDAO {
 			log.debug("attach successful");
 		} catch (RuntimeException re) {
 			log.error("attach failed", re);
+			throw re;
+		}
+	}
+
+	/**
+	 * 获取当前条件下的这个手机号，当天信息记录有多少
+	 * @param ip 发送者ip
+	 * @param type 类型，如{@link SmsLog#TYPE_LOGIN}
+	 * @return 记录数
+	 */
+	public int findByPhoneNum(String phone,Short type){
+		int weeHours = DateUtil.dateToInt10(DateUtil.weeHours(new Date()));
+		try {
+			String queryString = "SELECT count(id) FROM sms_log WHERE phone = '"+phone+"' AND addtime > "+weeHours + " AND type = "+type;
+			Object count = getCurrentSession().createSQLQuery(queryString).uniqueResult();
+			return Lang.stringToInt(count+"", 0);
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+	
+	/**
+	 * 获取当前条件下的IP，当天信息记录有多少
+	 * @param ip 发送者ip
+	 * @param type 类型，如{@link SmsLog#TYPE_LOGIN}
+	 * @return 记录数
+	 */
+	public int findByIpNum(String ip,Short type){
+		int weeHours = DateUtil.dateToInt10(DateUtil.weeHours(new Date()));
+		try {
+			String queryString = "SELECT count(id) FROM sms_log WHERE ip = '"+ip+"' AND addtime > "+weeHours + " AND type = "+type;
+			Object count = getCurrentSession().createSQLQuery(queryString).uniqueResult();
+			return Lang.stringToInt(count+"", 0);
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+	
+	/**
+	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表
+	 * @param phone 手机号
+	 * @param addtime 添加使用，即发送时间，查询数据的时间大于此时间
+	 * @param used 是否使用，如 {@link SmsLog#USED_FALSE}
+	 * @param type 短信验证码类型，如 {@link SmsLog#TYPE_LOGIN}
+	 * @param code 短信验证码
+	 * @return
+	 */
+	public List findByPhoneAddtimeUsedType(String phone,int addtime,Short used,Short type,String code){
+		try {
+			String queryString = "from SmsLog as model where model.phone= ? and model.addtime > ? and model.used = ? and model.type = ? and model.code = ?";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setParameter(0, phone);
+			queryObject.setParameter(1, addtime);
+			queryObject.setParameter(2, used);
+			queryObject.setParameter(3, type);
+			queryObject.setParameter(4, code);
+			return queryObject.list();
+		} catch (RuntimeException re) {
 			throw re;
 		}
 	}
