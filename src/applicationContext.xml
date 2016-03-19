@@ -194,5 +194,9 @@
 			<ref bean="sessionFactory" />
 		</property>
 	</bean> -->
-	
+	<bean id="SmsLogDAO" class="com.xnx3.j2ee.dao.SmsLogDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
 </beans>
