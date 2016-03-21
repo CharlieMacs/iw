@@ -36,7 +36,7 @@ public class LogAdminController extends BaseController{
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
 		Sql sql = new Sql();
-		String[] column = {"userid","type","goalid","addtime"};
+		String[] column = {"userid","type","goalid=","addtime"};
 		String where = sql.generateWhere(request, column, "isdelete = 0");
 		int count = globalService.count("log", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
