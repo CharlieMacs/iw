@@ -52,9 +52,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 	                        <span style="float:left;line-height:34px;margin-left:10px;">动作：</span>
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
 	                        	<select name="type" class="form-control">
-	                        		<option value="">所有</option>
-	                        		<option value="11"  <c:if test="${type == '11'}">selected="selected"</c:if>>登录成功</option>
-	                        		<option value="23"  <c:if test="${type == '23'}">selected="selected"</c:if>>查看帖子</option>
+	                        		<script type="text/javascript">writeSelectAllOptionFortype(${type});</script>
 	                        	</select>
 	                        </div>(遍历type数组，将结果集放到select中)
 	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
