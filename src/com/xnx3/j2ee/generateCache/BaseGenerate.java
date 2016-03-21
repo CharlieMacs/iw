@@ -36,10 +36,16 @@ public class BaseGenerate {
 	 * 生成js缓存文件保存
 	 */
 	void generateCacheFile(){
+		addCommonJsFunction();
 		FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content);
 		this.content=null;
 	}
 	
-
+	/**
+	 * 增加一些常用的js函数
+	 */
+	void addCommonJsFunction(){
+		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectId){ var content = \"\"; if(selectId==''){ content = content + '<option value=\"\" selected=\"selected\">所有</option>'; }else{ content = content + '<option value=\"\">所有</option>'; } for(var p in "+this.objName+"){ if(p == selectId){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write(content); }";
+	}
 }
 
