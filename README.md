@@ -37,3 +37,11 @@ src/systemConfig.xml						系统某些实用功能的配置文件所在<br/>
 	用户信息参数：${user}，如调用user表的id为${user.id}<br/>
 	未读信息条数：${unreadMessage}
 </pre>
+
+<br/>
+<br/>
+前端开发：杨建伟<br/>
+架构设计：管雷鸣<br/>
+联系QQ：921153866<br/>
+
+
