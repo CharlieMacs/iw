@@ -1,5 +1,7 @@
 # iw &nbsp;web 快速开发，基础功能集成底层
 <br/>
+整合权限分配管理、论坛、会员、日志、消息、系统缓存管理等功能
+<br/>加入了<a href="http://github.com/xnx3/xnx3" target="_black">xnx3.jar</a>，快速开发列表、搜索页面、分布式附件上传等常用工具
 <br/>
 使用框架：<br/>
 hibernate 4.2<br/>
