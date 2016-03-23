@@ -16,6 +16,7 @@
 		<type>BBS_POST_ADD#21#发表帖子</type>
 		<type>BBS_POST_COMMENT_ADD#22#发表帖子评论</type>
 		<type>BBS_POST_VIEW#23#查看帖子</type>
+		<type>BBS_POST_DELETE_COMMENT#24#删除回帖</type>
 		<type>FRIEND_ADD#31#添加好友</type>
 		<type>FRIEND_DELETE#32#删除好友</type>
 		<type>MESSAGE_READ#41#查看未读信息</type>

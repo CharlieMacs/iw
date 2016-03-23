@@ -23,6 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        <li><a href="<%=basePath %>/admin/bbs/addClass.do">添加板块</a></li>
 			        <li><a href="<%=basePath %>/admin/bbs/classList.do">板块列表</a></li>
 			        <li><a href="<%=basePath %>/admin/bbs/postList.do">帖子列表</a></li>
+			        <li><a href="<%=basePath %>/admin/bbs/commentList.do">回帖列表</a></li>
 			    </ul>
 			</li>
 		</shiro:hasPermission>

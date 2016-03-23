@@ -16,6 +16,7 @@ import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
+import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.service.GlobalService;
@@ -299,4 +300,27 @@ public class BbsAdminController extends BaseController {
 		
 		return error(model, "删除失败");
 	}
+	
+
+	/**
+	 * 评论列表
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("adminBbsPostCommentList")
+	@RequestMapping("commentList")
+	public String commentList(HttpServletRequest request,Model model){
+		Sql sql = new Sql();
+		String[] column = {"postid=","userid="};
+		String where = sql.generateWhere(request, column, null);
+		int count = globalService.count("post_comment", where);
+		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post_comment", where+" ORDER BY id DESC", page,PostComment.class);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("list", list);
+		return "/admin/bbs/commentList";
+	}
+	
+	
 }
