@@ -127,7 +127,18 @@ public class BaseController {
 		return "/prompt";
 	}
 	
-	public static void main(String[] args) {
-		
+	/**
+	 * 重定向跳转页面
+	 * @param redirectUtl 重定向到的url地址
+	 * 					<li>站内跳转，如：user/info.do	内网页面，前面无须/，默认自动补齐之前路径。此便是跳转到当前项目根目录下/user/info.do页面，
+	 * 					<li>站外跳转，如：http://www.xnx3.com	外网页面，写全即可
+	 * @return 组合后的字符串，如：redirect:/admin/user/list.do
+	 */
+	protected String redirect(String redirectUtl) {
+		if(redirectUtl != null && redirectUtl.indexOf("http")>-1){
+			return "redirect:"+redirectUtl;
+		}else{
+			return "redirect:/"+redirectUtl;
+		}
 	}
 }
