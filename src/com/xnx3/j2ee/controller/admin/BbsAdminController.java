@@ -322,5 +322,32 @@ public class BbsAdminController extends BaseController {
 		return "/admin/bbs/commentList";
 	}
 	
+
+	/**
+	 * 删除帖子评论
+	 * @return
+	 */
+	@RequiresPermissions("adminBbsDeletePostComment")
+	@RequestMapping("deleteComment")
+	public String deleteComment(@RequestParam(value = "id", required = true) int id, Model model){
+		if(id>0){
+			PostComment pc = postCommentService.findById(id);
+			if(pc!=null){
+				postCommentService.delete(pc);
+				
+				Log log = new Log();
+				log.setAddtime(new Date());
+				log.setType(Log.typeMap.get("BBS_POST_DELETE_COMMENT"));
+				log.setUserid(getUser().getId());
+				log.setGoalid(pc.getPostid());
+				log.setValue(pc.getText());
+				logService.save(log);
+				
+				return success(model, "删除成功");
+			}
+		}
+		
+		return error(model, "删除失败");
+	}
 	
 }
