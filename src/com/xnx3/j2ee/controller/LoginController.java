@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Resource;
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
@@ -33,7 +32,6 @@ import com.xnx3.j2ee.service.UserRoleService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
-import com.xnx3.net.HttpUtil;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
@@ -130,7 +128,7 @@ public class LoginController extends BaseController {
 			if(user.getId()>0){
 				//赋予该用户系统设置的默认角色
 				UserRole userRole = new UserRole();
-				userRole.setRoleid(Lang.stringToInt(Global.system.get("USERREG_ROLE"), 0));
+				userRole.setRoleid(Lang.stringToInt(Global.system.get("USER_REG_ROLE"), 0));
 				userRole.setUserid(user.getId());
 				userRoleService.save(userRole);
 				

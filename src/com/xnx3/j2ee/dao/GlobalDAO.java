@@ -1,14 +1,18 @@
 package com.xnx3.j2ee.dao;
 
+import java.awt.Robot;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 
@@ -76,6 +80,45 @@ public class GlobalDAO {
 			String queryString = sql+" LIMIT "+limitStart+","+limitNumber;
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			return queryObject.list();
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+	
+	/**
+	 * 添加/修改
+	 * @param entity 实体类
+	 */
+	public void save(Object entity) {
+		try {
+			getCurrentSession().saveOrUpdate(entity);
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+
+	/**
+	 * 删除
+	 * @param entity 实体类
+	 */
+	public void delete(Object entity) {
+		try {
+			getCurrentSession().delete(entity);
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+
+	/**
+	 * 根据主键查记录
+	 * @param entity 实体类
+	 * @param id 主键id
+	 * @return Object 可直接转换为实体类
+	 */
+	public Object findById(Object entity , int id) {
+		try {
+			Object instance = getCurrentSession().get(entity.getClass().getPackage().getName(), id);
+			return instance;
 		} catch (RuntimeException re) {
 			throw re;
 		}
