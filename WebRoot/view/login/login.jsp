@@ -21,7 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<c:if test="${error != null}">
 					<h1><span>出错：${error }</span></h1>
 				</c:if>
-				<form action="<%=basePath %>login.do" method="post" id="form">	
+				<form action="<%=basePath %>loginSubmit.do" method="post" id="form">	
 					<ul><li>
 							<input type="text" placeholder="用户名/邮箱" class="textInput username" name="username" value="${username }" >
 							<span class="icon">用户名/邮箱</span>

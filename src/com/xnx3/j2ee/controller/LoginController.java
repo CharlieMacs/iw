@@ -1,28 +1,37 @@
 package com.xnx3.j2ee.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONObject;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.xnx3.j2ee.Global;
+import com.xnx3.j2ee.bean.PermissionTree;
 import com.xnx3.j2ee.entity.Log;
+import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.entity.UserRole;
@@ -30,6 +39,8 @@ import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.service.UserRoleService;
 import com.xnx3.j2ee.service.UserService;
+import com.xnx3.j2ee.shiro.ActiveUser;
+import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.ConfigManagerUtil;
@@ -196,27 +207,8 @@ public class LoginController extends BaseController {
 	 */
 	@RequestMapping("login")
 	public String login(User user,HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
-		//如果登陆失败从request中获取认证异常信息，shiroLoginFailure就是shiro异常类的全限定名
-		String exceptionClassName = (String) request.getAttribute("shiroLoginFailure");
-		//根据shiro返回的异常类路径判断，抛出指定异常信息
-		if(exceptionClassName!=null){
-			if (UnknownAccountException.class.getName().equals(exceptionClassName)) {
-				//最终会抛给异常处理器
-				model.addAttribute("error", "账号不存在!");
-			} else if (IncorrectCredentialsException.class.getName().equals(
-					exceptionClassName)) {
-				model.addAttribute("error", "用户名/密码错误!");
-			} else if("randomCodeError".equals(exceptionClassName)){
-				model.addAttribute("error", "验证码错误!");
-			}else {
-				model.addAttribute("error", "出现错误："+exceptionClassName);
-			}
-		}else{
-			Subject subject= SecurityUtils.getSubject();
-			if (subject.isAuthenticated()) {
-				//虽然没走这一步
-				return "redirect:/user/info.do";
-			}
+		if(getUser() != null){
+			return redirect("user/info.do");
 		}
 		
 		String username = request.getParameter("username");
@@ -235,6 +227,83 @@ public class LoginController extends BaseController {
 	}
 	
 
+	/**
+	 * 登陆请求验证
+	 * @param phone 登录的手机号
+	 * @param code 发送到手机的验证码
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("loginSubmit")
+	public String loginSubmit(
+			@RequestParam(value = "username", required = false,defaultValue="") String username,
+			@RequestParam(value = "password", required = false,defaultValue="") String password,
+			HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
+		if(username.length() == 0 ){
+			return error(model, "用户名/ID/邮箱不能为空");
+		}
+		if(password.length() == 0){
+			return error(model, "密码不能为空");
+		}
+		
+		List<User> l = userService.findByUsername(username);
+		if(l!=null){
+			User user = l.get(0);
+			
+			String md5Password = new Md5Hash(password, user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
+			if(md5Password.equals(user.getPassword())){
+				user.setLasttime(DateUtil.timeForUnix10());
+				userService.save(user);
+				
+				Log log = new Log();
+				log.setAddtime(new Date());
+				log.setType(Log.typeMap.get("USER_LOGIN_SUCCESS"));
+				log.setUserid(user.getId());
+				logService.save(log);
+				
+				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
+		        token.setRememberMe(true);
+				Subject currentUser = SecurityUtils.getSubject();  
+				
+				try {  
+					currentUser.login(token);  
+				} catch ( UnknownAccountException uae ) {
+				} catch ( IncorrectCredentialsException ice ) {
+				} catch ( LockedAccountException lae ) {
+				} catch ( ExcessiveAttemptsException eae ) {
+				} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+				}
+				
+				return success(model, "登陆成功","user/info.do");
+			}else{
+				return error(model, "密码错误！");
+			}
+			
+		}else{
+			return error(model, "用户不存在");
+		}
+	}
+
+	/**
+	 * 登陆请求验证
+	 * @param user user.getUsername() 包含用户名/邮箱
+	 * @param request
+	 * @param response
+	 * @throws Exception 
+	 */
+	@RequestMapping("phoneVerifyLogin")
+	public String phoneVerifyLogin(User user,HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
+		if(getUser() != null){
+			return redirect("user/info.do");
+		}
+		
+		return "login/phoneVerifyLogin";
+	}
+	
+	
 	/**
 	 * 登陆请求验证
 	 * @param phone 登录的手机号
@@ -324,18 +393,6 @@ public class LoginController extends BaseController {
     		baseVO.setBaseVO(BaseVO.FAILURE, "验证码不存在！");
     		return baseVO;
     	}
-	}
-	
-	/**
-	 * 登陆请求验证
-	 * @param user user.getUsername() 包含用户名/邮箱
-	 * @param request
-	 * @param response
-	 * @throws Exception 
-	 */
-	@RequestMapping("phoneVerifyLogin")
-	public String phoneVerifyLogin(User user,HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
-		return "login/phoneVerifyLogin";
 	}
 	
 	/**
