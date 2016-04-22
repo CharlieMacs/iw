@@ -1,37 +1,27 @@
 package com.xnx3.j2ee.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.bean.PermissionTree;
-import com.xnx3.j2ee.entity.Log;
-import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.entity.UserRole;
@@ -137,6 +127,20 @@ public class LoginController extends BaseController {
 			
 			userService.save(user);
 			if(user.getId()>0){
+				//已注册成功，自动登录成用户
+				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
+		        token.setRememberMe(true);
+				Subject currentUser = SecurityUtils.getSubject();  
+				
+				try {  
+					currentUser.login(token);  
+				} catch ( UnknownAccountException uae ) {
+				} catch ( IncorrectCredentialsException ice ) {
+				} catch ( LockedAccountException lae ) {
+				} catch ( ExcessiveAttemptsException eae ) {
+				} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+				}
+				
 				//赋予该用户系统设置的默认角色
 				UserRole userRole = new UserRole();
 				userRole.setRoleid(Lang.stringToInt(Global.system.get("USER_REG_ROLE"), 0));
@@ -169,6 +173,8 @@ public class LoginController extends BaseController {
 					}
 				}
 				
+				logService.insert("USER_REGISTER_SUCCESS");
+				
 				return "redirect:/login.do?username="+user.getUsername()+"&password="+password+"&rememberMe=true&autoLogin=true";
 			}else{
 				return error(model, "注册失败");
@@ -187,14 +193,7 @@ public class LoginController extends BaseController {
 		if(addCurrency>0){
 			user.setCurrency(user.getCurrency()+addCurrency);
 			userService.save(user);
-			
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setUserid(user.getId());
-			log.setValue(addCurrency+"");
-			log.setGoalid(regUser.getId());
-			log.setType(Log.typeMap.get("USER_INVITEREG_AWARD"));
-			logService.save(log);
+			logService.insert(regUser.getId(), "USER_INVITEREG_AWARD", addCurrency+"");
 		}
 	}
 	
@@ -258,12 +257,6 @@ public class LoginController extends BaseController {
 				user.setLasttime(DateUtil.timeForUnix10());
 				userService.save(user);
 				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("USER_LOGIN_SUCCESS"));
-				log.setUserid(user.getId());
-				logService.save(log);
-				
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
 		        token.setRememberMe(true);
 				Subject currentUser = SecurityUtils.getSubject();  
@@ -276,7 +269,7 @@ public class LoginController extends BaseController {
 				} catch ( ExcessiveAttemptsException eae ) {
 				} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
 				}
-				
+				logService.insert("USER_LOGIN_SUCCESS");
 				return success(model, "登陆成功","user/info.do");
 			}else{
 				return error(model, "密码错误！");
@@ -366,13 +359,6 @@ public class LoginController extends BaseController {
     		smsLog.setUserid(user.getId());
     		smsLog.setUsed(SmsLog.USED_TRUE);
     		smsLogService.save(smsLog);
-    		
-    		/*******记录登录日志******/
-    		Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("USER_LOGIN_SUCCESS"));
-			log.setUserid(user.getId());
-			logService.save(log);
 			
 			UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
 	        token.setRememberMe(true);
@@ -387,6 +373,7 @@ public class LoginController extends BaseController {
 			} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
 			}
 			
+			logService.insert("USER_LOGIN_SUCCESS");
 			baseVO.setBaseVO(BaseVO.SUCCESS, "登录成功");
 			return baseVO;
     	}else{

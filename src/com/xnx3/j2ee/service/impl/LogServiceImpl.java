@@ -1,12 +1,18 @@
 package com.xnx3.j2ee.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.MessageDataDAO;
 import com.xnx3.j2ee.entity.Log;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.LogService;
+import com.xnx3.j2ee.shiro.ShiroFunc;
 
 @Service("logService")
 public class LogServiceImpl implements LogService {
@@ -90,6 +96,50 @@ public class LogServiceImpl implements LogService {
 	public void attachClean(Log instance) {
 		// TODO Auto-generated method stub
 		logDAO.attachClean(instance);
+	}
+	
+	/**
+	 * 获取当前登录的用户id，若没有登录，返回0
+	 * @return
+	 */
+	private int getUserId(){
+		int userid = 0;
+		User user = ShiroFunc.getUser();
+		if(user != null){
+			userid = user.getId();
+		}
+		return userid;
+	}
+	
+	@Override
+	public void insert(int goalid, String type, String value) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setValue(value);
+		log.setGoalid(goalid);
+		log.setType(Log.typeMap.get(type));
+		logDAO.save(log);
+	}
+
+	@Override
+	public void insert(String type, String value) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setValue(value);
+		log.setType(Log.typeMap.get(type));
+		logDAO.save(log);
+	}
+
+	@Override
+	public void insert(String type) {
+		// TODO Auto-generated method stub
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setType(Log.typeMap.get(type));
+		logDAO.save(log);
 	}
 
 }

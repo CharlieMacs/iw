@@ -71,6 +71,10 @@ public class Log implements java.io.Serializable {
 		return value;
 	}
 	
+	/**
+	 * 自动截取前20个字符
+	 * @param value 值
+	 */
 	public void setValue(String value) {
 		if(value!=null){
 			if(value.length()>20){

@@ -2,7 +2,12 @@ package com.xnx3.j2ee.shiro;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
 import com.xnx3.j2ee.entity.Permission;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.bean.PermissionMark;
 import com.xnx3.j2ee.bean.PermissionTree;
 
@@ -60,5 +65,38 @@ public class ShiroFunc {
 		
 		return permissionTreeList;
 	}
+	
 
+	/**
+	 * Session中获取用户登录之后的用户相关信息
+	 * @return	<li>登陆了，则返回ActiveUser对象
+	 * 			<li>未登陆，返回null
+	 */
+	public static ActiveUser getCurrentActiveUser(){
+		//从shiro的session中取activeUser
+		Subject subject = SecurityUtils.getSubject();
+		//取身份信息
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		if(activeUser != null){
+			return activeUser;
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * Session中获取当前登录用户的信息
+	 * @return 	<li>登陆了，则返回User对象
+	 * 			<li>未登陆，返回null
+	 */
+	public static User getUser(){
+		ActiveUser activeUser = getCurrentActiveUser();
+		if(activeUser!=null){
+			return activeUser.getUser();
+		}else{
+			return null;
+		}
+	}
+
+	
 }
