@@ -134,10 +134,19 @@ public class LogServiceImpl implements LogService {
 
 	@Override
 	public void insert(String type) {
-		// TODO Auto-generated method stub
 		Log log = new Log();
 		log.setAddtime(new Date());
 		log.setUserid(getUserId());
+		log.setType(Log.typeMap.get(type));
+		logDAO.save(log);
+	}
+
+	@Override
+	public void insert(int goalid, String type) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setGoalid(goalid);
 		log.setType(Log.typeMap.get(type));
 		logDAO.save(log);
 	}

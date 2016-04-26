@@ -78,15 +78,7 @@ public class MessageAdminController extends BaseController {
 				MessageData md = messageDataService.findById(m.getId());
 				if(md!=null){
 					messageDataService.delete(md);
-					
-					Log log = new Log();
-					log.setAddtime(new Date());
-					log.setType(Log.typeMap.get("ADMIN_SYSTEM_MESSAGE_DELETE"));
-					log.setUserid(getUser().getId());
-					log.setGoalid(m.getId());
-					log.setValue(md.getContent());
-					logService.save(log);
-					
+					logService.insert(m.getId(), "ADMIN_SYSTEM_MESSAGE_DELETE", md.getContent());
 					return success(model, "删除成功","admin/message/list.do");
 				}
 			}

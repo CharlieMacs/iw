@@ -89,13 +89,7 @@ public class FriendController extends BaseController {
 				friend.setSelf(getUser().getId());
 				friendService.save(friend);
 				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("FRIEND_ADD"));
-				log.setGoalid(otherUser.getId());
-				log.setUserid(getUser().getId());
-				logService.save(log);
-				
+				logService.insert(otherUser.getId(), "FRIEND_ADD");
 				return success(model, "添加成功！");
 			}
 		}
@@ -122,13 +116,7 @@ public class FriendController extends BaseController {
 			Friend friend = list.get(0);
 			friendService.delete(friend);
 			
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("FRIEND_DELETE"));
-			log.setGoalid(id);
-			log.setUserid(getUser().getId());
-			logService.save(log);
-			
+			logService.insert(id, "FRIEND_DELETE");
 			return success(model, "删除成功");
 		}
 	}

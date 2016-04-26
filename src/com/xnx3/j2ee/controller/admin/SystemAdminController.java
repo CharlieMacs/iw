@@ -58,14 +58,8 @@ public class SystemAdminController extends BaseController {
 	public String generateAllCache(Model model){
 		new Bbs().postClass(postClassService.findAll());
 		new Message().state();
-//		new Log().type(); 
 		
-		com.xnx3.j2ee.entity.Log log = new com.xnx3.j2ee.entity.Log();
-		log.setAddtime(new Date());
-		log.setType(com.xnx3.j2ee.entity.Log.typeMap.get("ADMIN_SYSTEM_GENERATEALLCACHE"));
-		log.setUserid(getUser().getId());
-		logService.save(log);
-		
+		logService.insert("ADMIN_SYSTEM_GENERATEALLCACHE");
 		return success(model, "已生成所有缓存", "admin/system/index.do");
 	}
 	
@@ -92,12 +86,7 @@ public class SystemAdminController extends BaseController {
 			system.setValue(value);
 			systemService.save(system);
 			
-			com.xnx3.j2ee.entity.Log log = new com.xnx3.j2ee.entity.Log();
-			log.setAddtime(new Date());
-			log.setType(com.xnx3.j2ee.entity.Log.typeMap.get("ADMIN_SYSTEM_REG_ROLE"));
-			log.setUserid(getUser().getId());
-			logService.save(log);
-			
+			logService.insert("ADMIN_SYSTEM_REG_ROLE");
 			Global.system.put("USERREG_ROLE", value);
 			return success(model, "保存成功", "admin/system/index.do");
 		}else{
@@ -138,13 +127,7 @@ public class SystemAdminController extends BaseController {
 			systemService.save(system);
 			new InitServlet();	//重新初始化数据
 			
-			com.xnx3.j2ee.entity.Log log = new com.xnx3.j2ee.entity.Log();
-			log.setAddtime(new Date());
-			log.setType(com.xnx3.j2ee.entity.Log.typeMap.get("ADMIN_SYSTEM_EDITSYSTEM"));
-			log.setUserid(getUser().getId());
-			log.setValue(system.getName());
-			logService.save(log);
-			
+			logService.insert("ADMIN_SYSTEM_EDITSYSTEM", system.getName());
 			return success(model, "保存成功", "admin/system/index.do");
 		}else{
 			//编辑页面

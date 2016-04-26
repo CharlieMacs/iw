@@ -94,15 +94,7 @@ public class RoleAdminController extends BaseController {
 	@RequiresPermissions("adminRoleSaveRole")
 	public String saveRole(Role role,Model model){
 		roleService.save(role);
-		
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setType(Log.typeMap.get("ADMIN_SYSTEM_ROLE_SAVE"));
-		log.setUserid(getUser().getId());
-		log.setGoalid(role.getId());
-		log.setValue(role.getName());
-		logService.save(log);
-		
+		logService.insert(role.getId(), "ADMIN_SYSTEM_ROLE_SAVE", role.getName());
 		return success(model, "保存成功", "admin/role/roleList.do");
 	}
 	
@@ -118,15 +110,7 @@ public class RoleAdminController extends BaseController {
 			Role role = roleService.findById(id);
 			if(role!=null){
 				roleService.delete(role);
-				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("ADMIN_SYSTEM_ROLE_DELETE"));
-				log.setUserid(getUser().getId());
-				log.setGoalid(role.getId());
-				log.setValue(role.getName());
-				logService.save(log);
-				
+				logService.insert(role.getId(), "ADMIN_SYSTEM_ROLE_DELETE", role.getName());
 				return success(model, "删除成功", "admin/role/roleList.do");
 			}
 		}
@@ -209,15 +193,7 @@ public class RoleAdminController extends BaseController {
 	@RequiresPermissions("adminRoleSaveRole")
 	public String savePermission(Permission permission,Model model){
 		permissionService.save(permission);
-		
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setType(Log.typeMap.get("ADMIN_SYSTEM_PERMISSION_SAVE"));
-		log.setUserid(getUser().getId());
-		log.setGoalid(permission.getId());
-		log.setValue(permission.getName());
-		logService.save(log);
-		
+		logService.insert(permission.getId(), "ADMIN_SYSTEM_PERMISSION_SAVE", permission.getName());
 		return success(model, "保存成功", "admin/role/permissionList.do");
 	}
 	
@@ -232,15 +208,7 @@ public class RoleAdminController extends BaseController {
 			Permission permission = permissionService.findById(id);
 			if(permission!=null){
 				permissionService.delete(permission);
-				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("ADMIN_SYSTEM_PERMISSION_DELETE"));
-				log.setUserid(getUser().getId());
-				log.setGoalid(permission.getId());
-				log.setValue(permission.getName());
-				logService.save(log);
-				
+				logService.insert(permission.getId(), "ADMIN_SYSTEM_PERMISSION_DELETE", permission.getName());
 				return success(model, "删除成功", "admin/role/permissionList.do");
 			}
 		}
@@ -350,15 +318,7 @@ public class RoleAdminController extends BaseController {
 				rolePermissionService.delete(myrp);
 			}
 		}
-		
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setType(Log.typeMap.get("ADMIN_SYSTEM_ROLE_PERMISSION_SAVE"));
-		log.setUserid(getUser().getId());
-		log.setGoalid(roleId);
-		log.setValue(roleService.findById(roleId).getName());
-		logService.save(log);
-		
+		logService.insert(roleId, "ADMIN_SYSTEM_ROLE_PERMISSION_SAVE", roleService.findById(roleId).getName());
 		return success(model, "保存成功","admin/role/roleList.do");
 	}
 	
@@ -458,13 +418,7 @@ public class RoleAdminController extends BaseController {
 			}
 		}
 		
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setType(Log.typeMap.get("ADMIN_SYSTEM_USER_ROLE_SAVE"));
-		log.setUserid(getUser().getId());
-		log.setGoalid(userid);
-		logService.save(log);
-		
+		logService.insert(userid, "ADMIN_SYSTEM_USER_ROLE_SAVE");
 		return success(model, "保存成功", "admin/user/list.do");
 	}
 	

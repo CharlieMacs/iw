@@ -117,14 +117,7 @@ public class BbsController extends BaseController {
 			postData.setText(text);
 			postDataService.save(postData);
 			
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("BBS_POST_ADD"));
-			log.setGoalid(post.getId());
-			log.setUserid(getUser().getId());
-			log.setValue(post.getTitle());
-			logService.save(log);
-			
+			logService.insert(post.getId(), "BBS_POST_ADD", post.getTitle());
 			return success(model, "发布成功！", "bbs/list.do?classid="+post.getClassid());
 		}
 	}
@@ -169,13 +162,7 @@ public class BbsController extends BaseController {
 			post.setView(post.getView()+1);
 			postService.save(post);
 			
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("BBS_POST_VIEW"));
-			log.setGoalid(post.getId());
-			log.setUserid(getUser().getId());
-			log.setValue(post.getTitle());
-			logService.save(log);
+			logService.insert(post.getId(), "BBS_POST_VIEW", post.getTitle());
 			
 			PostData postData = postDataService.findById(post.getId());
 			String text = postData.getText();
@@ -222,14 +209,7 @@ public class BbsController extends BaseController {
 				postComment.setText(text);
 				postCommentService.save(postComment);
 				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("BBS_POST_COMMENT_ADD"));
-				log.setGoalid(postComment.getId());
-				log.setUserid(getUser().getId());
-				log.setValue(post.getTitle());
-				logService.save(log);
-				
+				logService.insert(postComment.getId(), "BBS_POST_COMMENT_ADD", post.getTitle());
 				return success(model, "回复成功！","bbs/view.do?id="+post.getId());
 			}else{
 				return error(model, "主帖不存在！");

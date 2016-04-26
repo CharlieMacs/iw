@@ -140,14 +140,7 @@ public class MessageController extends BaseController {
 				if(getUser().getId()==message.getOther()&&message.getState()==Message.MESSAGE_STATE_UNREAD){
 					message.setState(Message.MESSAGE_STATE_READ);
 					messageService.save(message);
-
-					Log log = new Log();
-					log.setAddtime(new Date());
-					log.setType(Log.typeMap.get("MESSAGE_READ"));
-					log.setGoalid(message.getId());
-					log.setUserid(getUser().getId());
-					log.setValue(messageData.getContent());
-					logService.save(log);
+					logService.insert(message.getId(), "MESSAGE_READ", messageData.getContent());
 				}
 				
 				model.addAttribute("result","1");

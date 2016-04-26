@@ -40,7 +40,7 @@ public interface LogService {
 	
 	/**
 	 * 写日志
-	 * @param goalid 操作目标的goalid
+	 * @param goalid 操作的目标id
 	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
 	 * @param value 描述的内容，自动截取前20个字符
 	 */
@@ -52,6 +52,13 @@ public interface LogService {
 	 * @param value 描述的内容，自动截取前20个字符
 	 */
 	public void insert(String type, String value);
+	
+	/**
+	 * 写日志
+	 * @param goalid 操作的目标id
+	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
+	 */
+	public void insert(int goalid, String type);
 	
 	/**
 	 * 写日志

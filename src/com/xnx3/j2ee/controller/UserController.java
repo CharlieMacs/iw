@@ -2,7 +2,6 @@ package com.xnx3.j2ee.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Resource;
@@ -18,9 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageService;
@@ -82,13 +81,7 @@ public class UserController extends BaseController {
 		        userService.save(user);
 		        
 		        setUserForSession(user);
-		        
-		        Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("USER_UPDATEHEAD"));
-				log.setUserid(getUser().getId());
-				logService.save(log);
-		        
+				logService.insert("USER_UPDATEHEAD");
 		        return success(model, "保存成功！", "user/info.do");
 	        }else{
 	        	return error(model, "当前格式为："+fileSuffix+"，请上传png、jpg格式的图片！");
@@ -119,13 +112,7 @@ public class UserController extends BaseController {
 			//更新Session
 			setUserForSession(uu);
 	        
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("USER_UPDATE_NICKNAME"));
-			log.setUserid(getUser().getId());
-			log.setValue(oldNickName);
-			logService.save(log);
-			
+			logService.insert("USER_UPDATE_NICKNAME", oldNickName);
 			return success(model, "修改成功！", "user/info.do");
 		}
 	}
@@ -134,9 +121,7 @@ public class UserController extends BaseController {
 	 * 修改密码
 	 * @param oldPassword 原密码
 	 * @param newPassword 新密码
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param model {@link Model}
 	 */
 	@RequiresPermissions("userUpdatePassword")
 	@RequestMapping("updatePassword")
@@ -152,11 +137,7 @@ public class UserController extends BaseController {
 				uu.setPassword(md5Password);
 				userService.save(uu);
 				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("USER_UPDATEPASSWORD"));
-				log.setUserid(getUser().getId());
-				logService.save(log);
+				logService.insert("USER_UPDATEPASSWORD");
 			}else{
 				baseVO.setResult(BaseVO.FAILURE);
 				baseVO.setInfo("原密码错误！");
@@ -167,9 +148,6 @@ public class UserController extends BaseController {
 
 	/**
 	 * 用户自己获取自己的邀请注册网址页面
-	 * @param response
-	 * @param model
-	 * @throws IOException
 	 */
 	@RequiresPermissions("userInvite")
 	@RequestMapping("invite")
@@ -179,12 +157,11 @@ public class UserController extends BaseController {
 	
 	/**
 	 * 通过邮件邀请用户注册
-	 * @param email	要发送的邮件地址
+	 * @param email 要发送的邮件地址
 	 * @param text	发送的邮件内容
 	 * @param request
 	 * @param response
 	 * @param model
-	 * @throws IOException
 	 */
 	@RequiresPermissions("userInviteEmail")
 	@RequestMapping("inviteEmail")
@@ -199,13 +176,7 @@ public class UserController extends BaseController {
 		if(matcher.matches()){
 			MailUtil.sendMail(email, "邀请", "内容");
 			
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("USER_EMAIL_INVITE"));
-			log.setUserid(getUser().getId());
-			log.setValue(email);
-			logService.save(log);
-			
+			logService.insert("USER_EMAIL_INVITE", email);
 			return success(model, "邀请邮件发送完毕", "user/info.do");
 		}else{
 			return error(model, "请填写合法邮箱");
@@ -213,25 +184,37 @@ public class UserController extends BaseController {
 	}
 	
 	/**
-	 * 用户退出
-	 * @param session
-	 * @return
-	 * @throws Exception
+	 * 用户退出，页面跳转提示。
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("userLogout")
 	@RequestMapping("logout")
 	public String logout(Model model){
 		Subject subject = SecurityUtils.getSubject();
 		if (subject.isAuthenticated()) {
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("USER_LOGOUT"));
-			log.setUserid(getUser().getId());
-			logService.save(log);
-			
+			logService.insert("USER_LOGOUT");
 			subject.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
 		}
 		return success(model, "注销登录成功", "login.do");
+	}
+	
+	/**
+	 * 用户退出,返回JSON格式数据
+	 * @return {@link BaseVO}
+	 */
+	@RequiresPermissions("userLogoutJson")
+	@RequestMapping("logoutJson")
+	@ResponseBody
+	public BaseVO logoutJSON(){
+		Subject subject = SecurityUtils.getSubject();
+		if (subject.isAuthenticated()) {
+			logService.insert("USER_LOGOUT");
+			subject.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
+		}
+		BaseVO baseVO = new BaseVO();
+		baseVO.setBaseVO(BaseVO.SUCCESS, "注销登录成功");
+		return baseVO;
 	}
 	
 }

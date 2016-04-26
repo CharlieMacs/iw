@@ -196,15 +196,7 @@ public class BbsAdminController extends BaseController {
 			Post p = postService.findById(id);
 			if(p!=null){
 				postService.delete(p);
-				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("ADMIN_SYSTEM_BBS_POST_DELETE"));
-				log.setUserid(getUser().getId());
-				log.setGoalid(p.getId());
-				log.setValue(p.getTitle());
-				logService.save(log);
-				
+				logService.insert(p.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", p.getTitle());
 				return success(model, "删除成功", "admin/bbs/postList.do");
 			}
 		}
@@ -236,15 +228,7 @@ public class BbsAdminController extends BaseController {
 		postClassService.save(postClass);
 		if(postClass.getId()>0){
 			new Bbs().postClass(postClassService.findAll());
-			
-			Log log = new Log();
-			log.setAddtime(new Date());
-			log.setType(Log.typeMap.get("ADMIN_SYSTEM_BBS_CLASS_SAVE"));
-			log.setUserid(getUser().getId());
-			log.setGoalid(postClass.getId());
-			log.setValue(postClass.getName());
-			logService.save(log);
-			
+			logService.insert(postClass.getId(), "ADMIN_SYSTEM_BBS_CLASS_SAVE", postClass.getName());
 			return success(model, "保存成功","admin/bbs/classList.do");
 		}else{
 			return error(model, "保存失败");
@@ -285,15 +269,7 @@ public class BbsAdminController extends BaseController {
 			PostClass pc = postClassService.findById(id);
 			if(pc!=null){
 				postClassService.delete(pc);
-				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("ADMIN_SYSTEM_BBS_CLASS_DELETE"));
-				log.setUserid(getUser().getId());
-				log.setGoalid(pc.getId());
-				log.setValue(pc.getName());
-				logService.save(log);
-				
+				logService.insert(pc.getId(), "ADMIN_SYSTEM_BBS_CLASS_DELETE", pc.getName());
 				return success(model, "删除成功", "admin/bbs/classList.do");
 			}
 		}
@@ -334,15 +310,7 @@ public class BbsAdminController extends BaseController {
 			PostComment pc = postCommentService.findById(id);
 			if(pc!=null){
 				postCommentService.delete(pc);
-				
-				Log log = new Log();
-				log.setAddtime(new Date());
-				log.setType(Log.typeMap.get("BBS_POST_DELETE_COMMENT"));
-				log.setUserid(getUser().getId());
-				log.setGoalid(pc.getPostid());
-				log.setValue(pc.getText());
-				logService.save(log);
-				
+				logService.insert(pc.getPostid(), "BBS_POST_DELETE_COMMENT", pc.getText());
 				return success(model, "删除成功");
 			}
 		}
