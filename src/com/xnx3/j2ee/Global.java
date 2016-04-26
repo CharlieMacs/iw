@@ -36,7 +36,7 @@ public class Global {
 	/********** 动态参数，会在项目启动时加载 ***********/
 	public static String projectPath=null;	//当前项目再硬盘的路径，绝对路径
 	
-	/***** system表的参数 ******/
+	/***** system表的参数,name-value ******/
 	public static Map<String, String> system = new HashMap<String, String>();
 
 	/**********固定参数**********/

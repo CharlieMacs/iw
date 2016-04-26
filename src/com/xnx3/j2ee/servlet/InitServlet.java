@@ -1,35 +1,38 @@
 package com.xnx3.j2ee.servlet;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.dao.HibernateSessionFactory;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.generateCache.Message;
+import com.xnx3.j2ee.service.PostClassService;
+import com.xnx3.j2ee.service.SystemService;
 
 /**
  * 初始化项目，将使用到的一些东东加入Global以方便后续使用
  * @author apple
  */
 public class InitServlet extends HttpServlet {
-	private Session session = null;
+	private PostClassService postClassService;
+	private SystemService systemService;
 	
-	public InitServlet() {
-		session=HibernateSessionFactory.getSession();
-		
+	@Override
+	public void init(ServletConfig servletContext) throws ServletException {
+		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext.getServletContext());
+		postClassService = ctx.getBean("postClassService", PostClassService.class);
+		systemService = ctx.getBean("systemService", SystemService.class);
+
 		String path = getClass().getResource("/").getPath();
 		Global.projectPath = path.replace("WEB-INF/classes/", "");
 		
@@ -77,17 +80,7 @@ public class InitServlet extends HttpServlet {
 	 * 生成缓存数据
 	 */
 	public void generateCache_postClass(){
-		Query query = session.createSQLQuery("SELECT id,name FROM post_class");
-		List<PostClass> list = new ArrayList<PostClass>();
-		List l=query.list();
-		Iterator it=l.iterator();
-		while(it.hasNext()){
-			Object obj[] = (Object[]) it.next();
-			PostClass postClass = new PostClass();
-			postClass.setId(Lang.stringToInt(obj[0].toString(), 0));
-			postClass.setName(obj[1].toString());
-			list.add(postClass);
-		}
+		List<PostClass> list = postClassService.findAll();
 		new Bbs().postClass(list);
 	}
 	
@@ -96,15 +89,12 @@ public class InitServlet extends HttpServlet {
 	 */
 	public void readSystemTable(){
 		Global.system.clear();
-	
-		Query q=session.createSQLQuery("select trim(name),trim(value) from System");
-		List list=q.list();
-		Iterator it=list.iterator();
-		while(it.hasNext()){
-			Object obj[] = (Object[]) it.next();
-			Global.system.put(obj[0].toString(), obj[1].toString());
+		
+		List<com.xnx3.j2ee.entity.System> list = systemService.findAll();
+		for (int i = 0; i < list.size(); i++) {
+			com.xnx3.j2ee.entity.System s = list.get(i);
+			Global.system.put(s.getName(), s.getValue());
 		}
-//		HibernateSessionFactory.closeSession();
 	}
 	
 }
