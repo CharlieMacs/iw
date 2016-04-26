@@ -41,26 +41,22 @@ public class FriendController extends BaseController {
 	
 	/**
 	 * 好友功能的首页
-	 * @param request
-	 * @param response
-	 * @return
+	 * @return View
 	 */
 	@RequiresPermissions("friendIndex")
 	@RequestMapping("/index")
-	public String index(HttpServletRequest request , HttpServletResponse response,Model model){
+	public String index(){
 		return "friend/index";
 	}
 
 	/**
 	 * 传入用户名/邮箱，根据此来添加好友
 	 * @param param 用户名/邮箱 
-	 * @param response
-	 * @param request
-	 * @throws IOException
+	 * @param View
 	 */
 	@RequiresPermissions("friendAdd")
 	@RequestMapping("/add")
-	public String add(String param ,HttpServletResponse response,HttpServletRequest request,Model model) throws IOException{
+	public String add(String param ,Model model){
 		List<User> findList=null;
 		//判断是用户名还是邮箱
 		if(param.indexOf("@")>0){
@@ -98,13 +94,12 @@ public class FriendController extends BaseController {
 	/**
 	 * 根据好友的userid删除好友
 	 * @param id 好友的userid
-	 * @param response
-	 * @param request
 	 * @throws IOException
+	 * @return View
 	 */
 	@RequiresPermissions("friendDelete")
 	@RequestMapping("/delete")
-	public String delete(int id ,HttpServletResponse response,HttpServletRequest request,Model model) throws IOException{
+	public String delete(int id ,Model model){
 		Friend friendFind=new Friend();
 		friendFind.setSelf(getUser().getId());
 		friendFind.setOther(id);
@@ -123,9 +118,7 @@ public class FriendController extends BaseController {
 	
 	/**
 	 * 返回当前的好友列表
-	 * @param response
-	 * @param request
-	 * @throws IOException
+	 * @return {@link FriendListVO}
 	 */
 	@RequiresPermissions("friendList")
 	@RequestMapping("/list")

@@ -1,19 +1,14 @@
 package com.xnx3.j2ee.controller.admin;
 
-import java.util.Date;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
@@ -62,8 +57,9 @@ public class BbsAdminController extends BaseController {
 
 	/**
 	 * 帖子列表
-	 * @param model
-	 * @return
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPostList")
 	@RequestMapping("postList")
@@ -82,9 +78,9 @@ public class BbsAdminController extends BaseController {
 	
 	/**
 	 * 新增、修改帖子
-	 * @param id
-	 * @param model
-	 * @return
+	 * @param id 帖子id，Post.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPost")
 	@RequestMapping("post")
@@ -104,8 +100,12 @@ public class BbsAdminController extends BaseController {
 	
 	/**
 	 * 添加、编辑时保存帖子
-	 * @param model
-	 * @return
+	 * @param id 帖子id，Post.id
+	 * @param classid 分类id
+	 * @param title 帖子标题
+	 * @param text 帖子内容
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPost")
 	@RequestMapping("savePost")
@@ -165,8 +165,9 @@ public class BbsAdminController extends BaseController {
 
 	/**
 	 * 板块列表
-	 * @param model
-	 * @return
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsClassList")
 	@RequestMapping("classList")
@@ -187,7 +188,9 @@ public class BbsAdminController extends BaseController {
 	
 	/**
 	 * 删除帖子
-	 * @return
+	 * @param id 帖子id，Post.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsDeletePost")
 	@RequestMapping("deletePost")
@@ -206,21 +209,20 @@ public class BbsAdminController extends BaseController {
 	
 	/**
 	 * 添加板块页面
-	 * @param model
-	 * @return
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsAddClass")
 	@RequestMapping("addClass")
-	public String addClass(Model model){
+	public String addClass(){
 		return "admin/bbs/class";
 	}
 	
 	
 	/**
 	 * 添加／修改板块提交页面
-	 * @param postClass
-	 * @param model
-	 * @return
+	 * @param postClass {@link PostClass}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsSaveClass")
 	@RequestMapping("saveClass")
@@ -237,9 +239,9 @@ public class BbsAdminController extends BaseController {
 
 	/**
 	 * 编辑板块
-	 * @param id
-	 * @param model
-	 * @return
+	 * @param id 板块id，PostClass.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsEditClass")
 	@RequestMapping("editClass")
@@ -260,7 +262,9 @@ public class BbsAdminController extends BaseController {
 
 	/**
 	 * 删除板块
-	 * @return
+	 * @param id 板块id，PostClass.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsDeleteClass")
 	@RequestMapping("deleteClass")
@@ -280,8 +284,9 @@ public class BbsAdminController extends BaseController {
 
 	/**
 	 * 评论列表
-	 * @param model
-	 * @return
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPostCommentList")
 	@RequestMapping("commentList")
@@ -301,7 +306,9 @@ public class BbsAdminController extends BaseController {
 
 	/**
 	 * 删除帖子评论
-	 * @return
+	 * @param id 帖子评论的id，PostComment.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminBbsDeletePostComment")
 	@RequestMapping("deleteComment")

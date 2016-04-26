@@ -1,7 +1,6 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.RolePermission;
@@ -56,20 +54,19 @@ public class RoleAdminController extends BaseController {
 	private LogService logService;
 	/**
 	 * 添加角色
-	 * @param model
-	 * @return
+	 * @return View
 	 */
 	@RequestMapping("addRole")
 	@RequiresPermissions("adminRoleAddRole")
-	public String addRole(Model model){
+	public String addRole(){
 		return "admin/role/role";
 	}
 	
 	/**
 	 * 编辑角色
-	 * @param id
-	 * @param model
-	 * @return
+	 * @param id 角色的id, Role.id
+	 * @param model {@link Model} 
+	 * @return View
 	 */
 	@RequestMapping("editRole")
 	@RequiresPermissions("adminRoleEditRole")
@@ -86,9 +83,9 @@ public class RoleAdminController extends BaseController {
 	
 	/**
 	 * 添加角色提交页
-	 * @param role
-	 * @param model
-	 * @return
+	 * @param role {@link Role}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("saveRole")
 	@RequiresPermissions("adminRoleSaveRole")
@@ -101,7 +98,9 @@ public class RoleAdminController extends BaseController {
 
 	/**
 	 * 删除角色
-	 * @return
+	 * @param id 角色id，Role.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("deleteRole")
 	@RequiresPermissions("adminRoleDeleteRole")
@@ -119,9 +118,9 @@ public class RoleAdminController extends BaseController {
 	
 	/**
 	 * 角色列表
-	 * @param role
-	 * @param model
-	 * @return
+	 * @param role {@link Role}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("roleList")
 	@RequiresPermissions("adminRoleRoleList")
@@ -135,8 +134,9 @@ public class RoleAdminController extends BaseController {
 
 	/**
 	 * 添加permission
-	 * @param model
-	 * @return
+	 * @param parentId 所添加的资源的所属上级资源。如果是顶级资源，则为0
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("addPermission")
 	@RequiresPermissions("adminRoleAddPermission")
@@ -158,10 +158,10 @@ public class RoleAdminController extends BaseController {
 	}
 	
 	/**
-	 * 编辑角色
-	 * @param id
-	 * @param model
-	 * @return
+	 * 编辑资源
+	 * @param id 资源的id，Permission.id 
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("editPermission")
 	@RequiresPermissions("adminRoleEditPermission")
@@ -184,10 +184,10 @@ public class RoleAdminController extends BaseController {
 	}
 	
 	/**
-	 * Permission提交页
-	 * @param role
-	 * @param model
-	 * @return
+	 * Permission提交保存
+	 * @param permission {@link Permission}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("savePermission")
 	@RequiresPermissions("adminRoleSaveRole")
@@ -198,8 +198,10 @@ public class RoleAdminController extends BaseController {
 	}
 	
 	/**
-	 * 删除Permission
-	 * @return
+	 * 删除资源Permission
+	 * @param id 资源的id，Permission.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("deletePermission")
 	@RequiresPermissions("adminRoleDeletePermission")
@@ -218,10 +220,11 @@ public class RoleAdminController extends BaseController {
 	
 	
 	/**
-	 * Permission列表
-	 * @param role
-	 * @param model
-	 * @return
+	 * 资源Permission列表
+	 * @param permission {@link Permission}
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminRolePermissionList")
 	@RequestMapping("permissionList")
@@ -241,8 +244,9 @@ public class RoleAdminController extends BaseController {
 	
 	/**
 	 * 编辑权限－资源关系
-	 * @param id rold.id
-	 * @param model
+	 * @param id 角色id，Rold.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditRolePermission")
 	@RequestMapping("editRolePermission")
@@ -264,7 +268,10 @@ public class RoleAdminController extends BaseController {
 
 	/**
 	 * 保存角色－资源设置
-	 * @param model
+	 * @param roleId 角色id，Role.id
+	 * @param permission 多选框的资源列表，如 1,2,3,4
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditRolePermission")
 	@RequestMapping("saveRolePermission")
@@ -325,8 +332,9 @@ public class RoleAdminController extends BaseController {
 
 	/**
 	 * 编辑用户－权限关系
-	 * @param id rold.id
-	 * @param model
+	 * @param userid 用户id，User.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditUserRole")
 	@RequestMapping("editUserRole")
@@ -363,7 +371,10 @@ public class RoleAdminController extends BaseController {
 
 	/**
 	 * 保存用户－角色设置
-	 * @param model
+	 * @param userid 用户id,User.id
+	 * @param role 权限多选框提交列表，如 1,2,3,4,5
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditUserRole")
 	@RequestMapping("saveUserRole")

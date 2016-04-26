@@ -1,6 +1,5 @@
 package com.xnx3.j2ee.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -12,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
@@ -61,13 +59,15 @@ public class BbsController extends BaseController {
 	
 	/**
 	 * 发帖
-	 * @return
+	 * @param classid 要发表到哪个分类
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPost")
 	public String addPost(
 			@RequestParam(value = "classid", required = false) String classid,
-			HttpServletRequest request,Model model){
+			Model model){
 		if(classid==null||classid.equals("")||classid.equals("null")){
 			classid=Global.DEFAULT_BBS_CREATEPOST_CLASSID+"";
 		}
@@ -81,18 +81,17 @@ public class BbsController extends BaseController {
 	
 	/**
 	 * 发帖提交页面
-	 * @param post
+	 * @param post {@link Post}
 	 * @param text 帖子内容
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPostSubmit")
 	public String addPostSubmit(
 			Post post, 
 			@RequestParam(value = "text", required = true) String text,
-			HttpServletRequest request , HttpServletResponse response,Model model){
+			Model model){
 		if(post.getTitle()==null||post.getTitle().length()<4||post.getTitle().length()>30){
 			return error(model, "标题必须是2到15个汉字或者4到30个字母");
 		}else if(text==null||text.length()<4){
@@ -124,14 +123,18 @@ public class BbsController extends BaseController {
 	
 	/**
 	 * 帖子列表
-	 * @param post classid:0 所有；其余数字就是搜索的classid
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param post {@link Post}，其中classid: 
+	 * 				<ul>
+	 * 					<li>0:所有
+	 * 					<li>其余数字就是搜索的classid
+	 * 				</ul>
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("bbsList")
 	@RequestMapping("/list")
-	public String list(Post post,HttpServletRequest request , HttpServletResponse response,Model model){
+	public String list(Post post,HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"classid=","title","view>","info","addtime","userid="};
 		String where = sql.generateWhere(request, column, "post.state = "+Post.STATE_NORMAL);
@@ -146,14 +149,13 @@ public class BbsController extends BaseController {
 	
 	/**
 	 * 查看帖子详情
-	 * @param post
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param post {@link Post}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("bbsView")
 	@RequestMapping("/view")
-	public String view(Post post,HttpServletRequest request , HttpServletResponse response,Model model){
+	public String view(Post post,Model model){
 		if(post.getId()==null||post.getId()==0){
 			return error(model, "帖子id未传入");
 		}else{
@@ -187,15 +189,14 @@ public class BbsController extends BaseController {
 	
 	/**
 	 * 回帖处理
-	 * @param post
+	 * @param post {@link Post}
 	 * @param text 回帖内容
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("bbsAddComment")
 	@RequestMapping("/addCommentSubmit.do")
-	public String commentSubmit(Post post,String text,HttpServletRequest request , HttpServletResponse response,Model model){
+	public String commentSubmit(Post post,String text,Model model){
 		if(text==null||text.length()<2){
 			return error(model, "评论最少输入1个汉字或者两个字符");
 		}else{

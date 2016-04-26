@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.Log;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.controller.BaseController;
@@ -32,6 +30,12 @@ public class LogAdminController extends BaseController{
 	@Resource
 	private GlobalService globalService;
 	
+	/**
+	 * 日志列表
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
+	 */
 	@RequiresPermissions("adminLogList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){

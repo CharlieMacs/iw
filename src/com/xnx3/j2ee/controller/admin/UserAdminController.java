@@ -17,7 +17,7 @@ import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 
 /**
- * 用户User
+ * 用户管理
  * @author 管雷鸣
  */
 @Controller
@@ -32,11 +32,12 @@ public class UserAdminController extends BaseController {
 	
 	/**
 	 * 删除用户
-	 * @return
+	 * @param id 用户id，User.id
+	 * @return View
 	 */
 	@RequiresPermissions("adminUserDelete")
 	@RequestMapping("deleteUser")
-	public String deletePost(@RequestParam(value = "id", required = true) int id, Model model){
+	public String deletePost(@RequestParam(value = "id", required = true) int id){
 		if(id>0){
 			User u = userService.findById(id);
 			if(u!=null){
@@ -49,8 +50,9 @@ public class UserAdminController extends BaseController {
 	
 	/**
 	 * 用户列表
-	 * @param model
-	 * @return
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminUserList")
 	@RequestMapping("list")

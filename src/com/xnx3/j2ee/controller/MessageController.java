@@ -1,19 +1,15 @@
 package com.xnx3.j2ee.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
 import com.xnx3.j2ee.entity.User;
@@ -52,33 +48,28 @@ public class MessageController extends BaseController {
 	
 	/**
 	 * 填写信息页面
-	 * @param request
-	 * @param response
-	 * @return
+	 * @return View
 	 */
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/add")
-	public String add(HttpServletRequest request ,  HttpServletResponse response,Model model){
+	public String add(){
 		return "message/add";
 	}
 	
 	/**
 	 * 发送信息提交后，逻辑处理
-	 * @param other
-	 * @param content
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param other 发送给的用户id
+	 * @param content 发送信息的内容
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/send")
 	public String send(
-			@RequestParam(value = "id", defaultValue = "0") String other, 
+			@RequestParam(value = "otherid", defaultValue = "0") String otherid, 
 			@RequestParam(value = "content", defaultValue = "") String content, 
-			HttpServletRequest request ,  
-			HttpServletResponse response,
 			Model model){
-		int otherId = Integer.parseInt(other);
+		int otherId = Integer.parseInt(otherid);
 		if(otherId<1){
 			return error(model, "信息发送给谁呢？");
 		}
@@ -111,14 +102,12 @@ public class MessageController extends BaseController {
 
 	/**
 	 * 阅读信息
-	 * @param id
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param id 信息的id，message.id
+	 * @return View
 	 */
 	@RequiresPermissions("messageView")
 	@RequestMapping("/view")
-	public String view(@RequestParam(value = "id", defaultValue = "0") String id, HttpServletRequest request ,  HttpServletResponse response,Model model){
+	public String view(@RequestParam(value = "id", defaultValue = "0") String id,Model model){
 		int messageId = Integer.parseInt(id);
 		if(messageId<1){
 			return error(model, "传入的信息有误！");
@@ -157,21 +146,25 @@ public class MessageController extends BaseController {
 	
 	/**
 	 * 信息列表
-	 * @param type String <li>already：已读信息
+	 * @param type 	<ul> 
+	 * 						<li>already：已读信息
 	 * 						<li>unread：未读信息
 	 * 						<li>all：全部信息
-	 * @param box 是发件箱还是收件箱
+	 * 					</ul>
+	 * @param box 是发件箱还是收件箱:
+	 * 					<ul>
 	 * 						<li>outbox:发件箱
 	 * 						<li>inbox:收件箱
-	 * @param request
-	 * @param response
-	 * @return
+	 * 					</ul>
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("messageList")
 	@RequestMapping("/list")
 	public String list(@RequestParam(value = "type", defaultValue = "inboxAll") String type, 
 			@RequestParam(value = "box", defaultValue = "inbox") String box, 
-			HttpSession session, HttpServletRequest request ,  HttpServletResponse response,Model model){
+			HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"id","state="};
 		String boxWhere = box.equals("inbox")? "other="+getUser().getId():"self="+getUser().getId();

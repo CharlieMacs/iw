@@ -46,9 +46,7 @@ public class UserController extends BaseController {
 	
 	/**
 	 * 用户个人中心
-	 * @param request
-	 * @param response
-	 * @return
+	 * @return View
 	 */
 	@RequiresPermissions("userInfo")
 	@RequestMapping("/info")
@@ -58,10 +56,11 @@ public class UserController extends BaseController {
 	
 	/**
 	 * 更改用户当前头像
-	 * @param file
-	 * @param request
-	 * @param response
+	 * @param file {@link MultipartFile}上传的文件
+	 * @param request {@link HttpServletRequest}
+	 * @param response {@link HttpServletResponse}
 	 * @throws IOException
+	 * @return View
 	 */
 	@RequiresPermissions("userUploadHead")
 	@RequestMapping("/uploadHead")
@@ -93,10 +92,9 @@ public class UserController extends BaseController {
 	
 	/**
 	 * 修改姓名,传入nickname
-	 * @param user
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param user {@link User}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("userUpdateNickName")
 	@RequestMapping("updateNickName")
@@ -122,6 +120,7 @@ public class UserController extends BaseController {
 	 * @param oldPassword 原密码
 	 * @param newPassword 新密码
 	 * @param model {@link Model}
+	 * @return {@link BaseVO}
 	 */
 	@RequiresPermissions("userUpdatePassword")
 	@RequestMapping("updatePassword")
@@ -148,6 +147,7 @@ public class UserController extends BaseController {
 
 	/**
 	 * 用户自己获取自己的邀请注册网址页面
+	 * @return View
 	 */
 	@RequiresPermissions("userInvite")
 	@RequestMapping("invite")
@@ -159,16 +159,14 @@ public class UserController extends BaseController {
 	 * 通过邮件邀请用户注册
 	 * @param email 要发送的邮件地址
 	 * @param text	发送的邮件内容
-	 * @param request
-	 * @param response
-	 * @param model
+	 * @param model {@link Model}
 	 */
 	@RequiresPermissions("userInviteEmail")
 	@RequestMapping("inviteEmail")
 	public String inviteEmail(
 			@RequestParam(value = "email", required = true) String email,
 			@RequestParam(value = "text", required = true) String text,
-			Model model) throws IOException{
+			Model model){
 		
 		//验证邮箱
 		Pattern pattern = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");

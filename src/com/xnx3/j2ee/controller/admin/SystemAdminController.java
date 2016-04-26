@@ -1,6 +1,5 @@
 package com.xnx3.j2ee.controller.admin;
 
-import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -41,6 +40,11 @@ public class SystemAdminController extends BaseController {
 	@Resource
 	private LogService logService;
 	
+	/**
+	 * 首页
+	 * @param model {@link Model}
+	 * @return View
+	 */
 	@RequiresPermissions("adminSystemIndex")
 	@RequestMapping("index")
 	public String index(Model model){
@@ -51,7 +55,8 @@ public class SystemAdminController extends BaseController {
 	
 	/**
 	 * 生成所有缓存
-	 * @return
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminSystemGenerateAllCache")
 	@RequestMapping("generateAllCache")
@@ -65,6 +70,9 @@ public class SystemAdminController extends BaseController {
 	
 	/**
 	 * 用户注册后自动拥有的一个权限
+	 * @param value 值
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminSystemUserRegRole")
 	@RequestMapping("userRegRole")
@@ -101,6 +109,10 @@ public class SystemAdminController extends BaseController {
 
 	/**
 	 * 修改system表的单个项目
+	 * @param name 名字
+	 * @param value 值
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminSystemEditSystem")
 	@RequestMapping("editSystem")

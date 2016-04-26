@@ -1,12 +1,9 @@
 package com.xnx3.j2ee.controller;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -29,8 +26,6 @@ import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.service.UserRoleService;
 import com.xnx3.j2ee.service.UserService;
-import com.xnx3.j2ee.shiro.ActiveUser;
-import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.ConfigManagerUtil;
@@ -67,6 +62,8 @@ public class LoginController extends BaseController {
 	
 	/**
 	 * 注册页面
+	 * @param request {@link HttpServletRequest}
+	 * @return View
 	 */
 	@RequestMapping("/reg")
 	public String reg(HttpServletRequest request){
@@ -85,12 +82,13 @@ public class LoginController extends BaseController {
 	
 	/**
 	 * 注册相应请求地址
-	 * @param user
-	 * @param response
-	 * @throws IOException
+	 * @param user {@link User}
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("/regSubmit")
-	public String regSubmit(User user ,HttpServletResponse response,HttpServletRequest request,Model model) throws IOException{
+	public String regSubmit(User user ,HttpServletRequest request,Model model){
 		String password = new String(user.getPassword());
 		user.setRegip(request.getRemoteAddr());
 		user.setRegtime(DateUtil.timeForUnix10());
@@ -199,13 +197,13 @@ public class LoginController extends BaseController {
 	
 	/**
 	 * 登陆请求验证
-	 * @param user user.getUsername() 包含用户名/邮箱
-	 * @param request
-	 * @param response
-	 * @throws Exception 
+	 * @param user user.getUsername() 包含用户名/邮箱/id
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("login")
-	public String login(User user,HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
+	public String login(User user,HttpServletRequest request,Model model){
 		if(getUser() != null){
 			return redirect("user/info.do");
 		}
@@ -228,27 +226,29 @@ public class LoginController extends BaseController {
 
 	/**
 	 * 登陆请求验证
-	 * @param phone 登录的手机号
-	 * @param code 发送到手机的验证码
-	 * @param request
-	 * @param response
-	 * @param model
-	 * @return
-	 * @throws Exception
+	 * @param username 用户名/邮箱
+	 * @param password 密码
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequestMapping("loginSubmit")
 	public String loginSubmit(
 			@RequestParam(value = "username", required = false,defaultValue="") String username,
 			@RequestParam(value = "password", required = false,defaultValue="") String password,
-			HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
+			Model model){
 		if(username.length() == 0 ){
-			return error(model, "用户名/ID/邮箱不能为空");
+			return error(model, "用户名/邮箱不能为空");
 		}
 		if(password.length() == 0){
 			return error(model, "密码不能为空");
 		}
 		
-		List<User> l = userService.findByUsername(username);
+		List<User> l = null;
+		if(username.indexOf("@")>-1){		//判断是用户名还是邮箱登陆的
+			l = userService.findByEmail(username);
+		}else{
+			l = userService.findByUsername(username);
+		}
 		if(l!=null){
 			User user = l.get(0);
 			
@@ -281,14 +281,10 @@ public class LoginController extends BaseController {
 	}
 
 	/**
-	 * 登陆请求验证
-	 * @param user user.getUsername() 包含用户名/邮箱
-	 * @param request
-	 * @param response
-	 * @throws Exception 
+	 * 手机号－验证码方式登陆
 	 */
 	@RequestMapping("phoneVerifyLogin")
-	public String phoneVerifyLogin(User user,HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
+	public String phoneVerifyLogin(){
 		if(getUser() != null){
 			return redirect("user/info.do");
 		}
@@ -301,18 +297,16 @@ public class LoginController extends BaseController {
 	 * 登陆请求验证
 	 * @param phone 登录的手机号
 	 * @param code 发送到手机的验证码
-	 * @param request
-	 * @param response
-	 * @param model
-	 * @return
-	 * @throws Exception
+	 * @param response {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return {@link BaseVO}
 	 */
 	@RequestMapping("phoneVerifyLoginSubmit")
 	@ResponseBody
 	public BaseVO phoneVerifyLoginSubmit(
 			@RequestParam(value = "phone", required = false,defaultValue="") String phone,
 			@RequestParam(value = "code", required = false,defaultValue="") String code,
-			HttpServletRequest request , HttpServletResponse response,Model model) throws Exception{
+			HttpServletRequest request ,Model model){
 		BaseVO baseVO = new BaseVO();
 	
 		if(phone.length() != 11){
@@ -347,7 +341,7 @@ public class LoginController extends BaseController {
     			user.setEmail(phone+"@139.com");
     			user.setPassword(password);
     			user.setPhone(phone);
-    			String regSubmit = regSubmit(user, response, request, model);
+    			String regSubmit = regSubmit(user, request, model);
     		}
     		user = userService.findByPhone(phone);
     		if(user == null){
@@ -385,6 +379,7 @@ public class LoginController extends BaseController {
 	/**
 	 * 点击按钮发送验证码，就会触发此方法
 	 * @param phone 限制11位
+	 * @param request {@link HttpServletRequest}
 	 * @return {@link BaseVO}
 	 */
 	@RequestMapping("sendLoginVerify")

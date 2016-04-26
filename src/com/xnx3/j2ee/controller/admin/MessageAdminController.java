@@ -1,6 +1,5 @@
 package com.xnx3.j2ee.controller.admin;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
 import com.xnx3.j2ee.service.GlobalService;
@@ -45,8 +43,9 @@ public class MessageAdminController extends BaseController {
 	
 	/**
 	 * 信息列表
-	 * @param model
-	 * @return
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminMessageList")
 	@RequestMapping("list")
@@ -66,7 +65,9 @@ public class MessageAdminController extends BaseController {
 	
 	/**
 	 * 删除信息
-	 * @return
+	 * @param id 信息的id，Message.id
+	 * @param model {@link Model}
+	 * @return View
 	 */
 	@RequiresPermissions("adminMessageDelete")
 	@RequestMapping("delete")

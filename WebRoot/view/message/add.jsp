@@ -17,7 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:include page="../common/top.jsp"></jsp:include>
 	<section id="main">
 		<form method="post" action="send.do">
-			对方id：<input type="text" name="id" value="" />（待优化）
+			对方id：<input type="text" name="otherid" value="" />（待优化）
 			<br/>
 			信息内容：<textarea name="content" rows="" cols=""></textarea>
 			<br/>
