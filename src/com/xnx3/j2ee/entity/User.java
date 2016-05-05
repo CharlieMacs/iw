@@ -28,6 +28,7 @@ public class User implements java.io.Serializable {
 	private Integer regtime;	//注册时间,时间戳
 	private Integer lasttime;	//最后登录时间,时间戳
 	private String regip;		//注册ip
+	private String lastip;		//最后一次登陆的ip
 	private String salt;		//shiro加密使用
 	private String phone;		//手机号
 	private Integer currency;	//资金，可以是积分、金币、等等
@@ -40,37 +41,6 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
-	/** minimal constructor */
-	public User(String username, String email, String password,
-			String nickname, String authority, Integer regtime,
-			Integer lasttime, String regip, String lastip) {
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.nickname = nickname;
-		this.authority = authority;
-		this.regtime = regtime;
-		this.lasttime = lasttime;
-		this.regip = regip;
-	}
-
-	/** full constructor */
-	public User(String username, String email, String password, String head,
-			String nickname, String authority, Integer regtime,
-			Integer lasttime, String regip) {
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.head = head;
-		this.nickname = nickname;
-		this.authority = authority;
-		this.regtime = regtime;
-		this.lasttime = lasttime;
-		this.regip = regip;
-	}
-
-	
-	
 	public String getPhone() {
 		return phone;
 	}
@@ -100,7 +70,6 @@ public class User implements java.io.Serializable {
 		this.username = username;
 	}
 
-	@Column(name = "email", unique = true, nullable = false, length = 40)
 	public String getEmail() {
 		return this.email;
 	}
@@ -217,6 +186,14 @@ public class User implements java.io.Serializable {
 
 	public void setFreezecurrency(Integer freezecurrency) {
 		this.freezecurrency = freezecurrency;
+	}
+	
+	public String getLastip() {
+		return lastip;
+	}
+
+	public void setLastip(String lastip) {
+		this.lastip = lastip;
 	}
 
 	@Override

@@ -98,57 +98,24 @@ public class LogServiceImpl implements LogService {
 		logDAO.attachClean(instance);
 	}
 	
-	/**
-	 * 获取当前登录的用户id，若没有登录，返回0
-	 * @return
-	 */
-	private int getUserId(){
-		int userid = 0;
-		User user = ShiroFunc.getUser();
-		if(user != null){
-			userid = user.getId();
-		}
-		return userid;
-	}
-	
 	@Override
 	public void insert(int goalid, String type, String value) {
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setUserid(getUserId());
-		log.setValue(value);
-		log.setGoalid(goalid);
-		log.setType(Log.typeMap.get(type));
-		logDAO.save(log);
+		logDAO.insert(goalid, type, value);
 	}
 
 	@Override
 	public void insert(String type, String value) {
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setUserid(getUserId());
-		log.setValue(value);
-		log.setType(Log.typeMap.get(type));
-		logDAO.save(log);
+		logDAO.insert(type, value);
 	}
 
 	@Override
 	public void insert(String type) {
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setUserid(getUserId());
-		log.setType(Log.typeMap.get(type));
-		logDAO.save(log);
+		logDAO.insert(type);
 	}
 
 	@Override
 	public void insert(int goalid, String type) {
-		Log log = new Log();
-		log.setAddtime(new Date());
-		log.setUserid(getUserId());
-		log.setGoalid(goalid);
-		log.setType(Log.typeMap.get(type));
-		logDAO.save(log);
+		logDAO.insert(goalid, type);
 	}
 
 }
