@@ -9,10 +9,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
-import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,19 +96,11 @@ public class UserController extends BaseController {
 	 */
 	@RequiresPermissions("userUpdateNickName")
 	@RequestMapping("updateNickName")
-	public String updateNickName(User user,Model model){
-		if(user.getNickname()==null){
-			return error(model, "请输入姓名！");
+	public String updateNickName(HttpServletRequest request,Model model){
+		BaseVO baseVO = userService.updateNickName(request);
+		if(baseVO.getResult() == BaseVO.FAILURE){
+			return error(model, baseVO.getInfo());
 		}else{
-			User uu=userService.findById(getUser().getId());
-			String oldNickName = uu.getNickname();
-			uu.setNickname(user.getNickname());
-			userService.save(uu);
-			
-			//更新Session
-			setUserForSession(uu);
-	        
-			logService.insert("USER_UPDATE_NICKNAME", oldNickName);
 			return success(model, "修改成功！", "user/info.do");
 		}
 	}
@@ -189,30 +179,8 @@ public class UserController extends BaseController {
 	@RequiresPermissions("userLogout")
 	@RequestMapping("logout")
 	public String logout(Model model){
-		Subject subject = SecurityUtils.getSubject();
-		if (subject.isAuthenticated()) {
-			logService.insert("USER_LOGOUT");
-			subject.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
-		}
+		userService.logout();
 		return success(model, "注销登录成功", "login.do");
-	}
-	
-	/**
-	 * 用户退出,返回JSON格式数据
-	 * @return {@link BaseVO}
-	 */
-	@RequiresPermissions("userLogoutJson")
-	@RequestMapping("logoutJson")
-	@ResponseBody
-	public BaseVO logoutJSON(){
-		Subject subject = SecurityUtils.getSubject();
-		if (subject.isAuthenticated()) {
-			logService.insert("USER_LOGOUT");
-			subject.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
-		}
-		BaseVO baseVO = new BaseVO();
-		baseVO.setBaseVO(BaseVO.SUCCESS, "注销登录成功");
-		return baseVO;
 	}
 	
 }
