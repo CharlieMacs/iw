@@ -1,16 +1,23 @@
 package com.xnx3.j2ee.dao;
 
+import java.util.Date;
 import java.util.List;
+
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
 import static org.hibernate.criterion.Example.create;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.xnx3.j2ee.entity.Log;
+import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.shiro.ShiroFunc;
 
 /**
  * A data access object (DAO) providing persistence and search support for Paint
@@ -175,6 +182,77 @@ public class LogDAO {
 			throw re;
 		}
 	}
+	
+	/**
+	 * 写日志
+	 * @param goalid 操作的目标id
+	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
+	 * @param value 描述的内容，自动截取前20个字符
+	 */
+	public void insert(int goalid, String type, String value) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setValue(value);
+		log.setGoalid(goalid);
+		log.setType(Log.typeMap.get(type));
+		save(log);
+	}
+	
+	/**
+	 * 获取当前登录的用户id，若没有登录，返回0
+	 * @return
+	 */
+	private int getUserId(){
+		int userid = 0;
+		User user = ShiroFunc.getUser();
+		if(user != null){
+			userid = user.getId();
+		}
+		return userid;
+	}
+	
+	/**
+	 * 写日志
+	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
+	 * @param value 描述的内容，自动截取前20个字符
+	 */
+	public void insert(String type, String value) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setValue(value);
+		log.setType(Log.typeMap.get(type));
+		save(log);
+	}
+	
+	/**
+	 * 写日志
+	 * @param goalid 操作的目标id
+	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
+	 */
+	public void insert(int goalid, String type) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setGoalid(goalid);
+		log.setType(Log.typeMap.get(type));
+		save(log);
+	}
+	
+	/**
+	 * 写日志
+	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
+	 */
+	public void insert(String type) {
+		Log log = new Log();
+		log.setAddtime(new Date());
+		log.setUserid(getUserId());
+		log.setType(Log.typeMap.get(type));
+		save(log);
+	}
+	
+	
 
 	public static LogDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (LogDAO) ctx.getBean("LogDAO");
