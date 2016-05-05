@@ -2,7 +2,12 @@ package com.xnx3.j2ee.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.entity.SmsLog;
+import com.xnx3.j2ee.vo.BaseVO;
 
 public interface SmsLogService {
 
@@ -60,4 +65,12 @@ public interface SmsLogService {
 	 * @return
 	 */
 	public List findByPhoneAddtimeUsedType(String phone,int addtime,Short used,Short type,String code);
+	
+	/**
+	 * 发送手机号登录的验证码
+	 * @param request {@link HttpServletRequest}
+	 * 			<br/>form表单需提交参数：phone(发送到的手机号)
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO sendPhoneLoginCode(HttpServletRequest request);
 }

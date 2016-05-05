@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.xnx3.ConfigManagerUtil;
+import com.xnx3.Lang;
+
 /**
  * SmsLog entity. @author MyEclipse Persistence Tools
  */
@@ -37,6 +40,28 @@ public class SmsLog implements java.io.Serializable {
 	 */
 	public final static short USED_FALSE = 0;
 	
+	/**
+	 * 验证码发出去后，使用的有效期，多长时间之内使用有效。单位：秒，0为不限制时间，只要验证码未用过就可以使用
+	 * (在systemConfig.xml的sms节点配置)
+	 */
+	public static int codeValidity = 0;
+	
+	/**
+	 * 短信同一手机号，某个功能每天发送的条数限制，超过这个条数，这个功能便无法再次发送短信了。
+	 * (在systemConfig.xml的sms节点配置)
+	 */
+	public static int everyDayPhoneNum = 0;
+	/**
+	 * 同上，只不过这个是针对ip。介于一个wifi有很多终端，都是同一个ip，这个数值可能比较大
+	 * (在systemConfig.xml的sms节点配置)
+	 */
+	public static int everyDayIpNum = 0;	
+	
+	static{
+		everyDayPhoneNum = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("sms.everyDayPhoneNum"), 0);
+		everyDayIpNum = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("sms.everyDayIpNum"), 0);
+		codeValidity = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("sms.codeValidity"), 0);
+	}
 	
 	// Fields
 
