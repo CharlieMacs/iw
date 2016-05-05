@@ -2,13 +2,16 @@ package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
@@ -19,6 +22,7 @@ import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
+import com.xnx3.j2ee.vo.BaseVO;
 
 /**
  * 信息管理
@@ -52,7 +56,7 @@ public class MessageAdminController extends BaseController {
 	public String list(HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"id=","self=","other="};
-		String where = sql.generateWhere(request, column, null);
+		String where = sql.generateWhere(request, column, "isdelete = "+Message.ISDELETE_NORMAL);
 		int count = globalService.count("message", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		where = sql.generateWhere(request, column, "message.id=message_data.id","message");
@@ -72,19 +76,11 @@ public class MessageAdminController extends BaseController {
 	@RequiresPermissions("adminMessageDelete")
 	@RequestMapping("delete")
 	public String delete(@RequestParam(value = "id", required = true) int id, Model model){
-		if(id>0){
-			Message m = messageService.findById(id);
-			if(m!=null){
-				messageService.delete(m);
-				MessageData md = messageDataService.findById(m.getId());
-				if(md!=null){
-					messageDataService.delete(md);
-					logService.insert(m.getId(), "ADMIN_SYSTEM_MESSAGE_DELETE", md.getContent());
-					return success(model, "删除成功","admin/message/list.do");
-				}
-			}
+		BaseVO baseVO = messageService.delete(id);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "删除成功！");
+		}else{
+			return error(model, baseVO.getInfo());
 		}
-		
-		return error(model, "删除失败！");
 	}
 }

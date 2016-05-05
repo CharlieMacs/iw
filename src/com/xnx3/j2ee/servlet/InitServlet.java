@@ -39,6 +39,7 @@ public class InitServlet extends HttpServlet {
 		initCacheFolder();
 		generateCache_postClass();
 		new Message().state();
+		new Message().isdelete();
 		loadLogType();
 		
 		readSystemTable();

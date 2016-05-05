@@ -2,13 +2,16 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
@@ -21,6 +24,7 @@ import com.xnx3.j2ee.service.UserService;
 import com.xnx3.DateUtil;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
+import com.xnx3.j2ee.vo.BaseVO;
 
 /**
  * 站内信
@@ -65,37 +69,12 @@ public class MessageController extends BaseController {
 	 */
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/send")
-	public String send(
-			@RequestParam(value = "otherid", defaultValue = "0") String otherid, 
-			@RequestParam(value = "content", defaultValue = "") String content, 
-			Model model){
-		int otherId = Integer.parseInt(otherid);
-		if(otherId<1){
-			return error(model, "信息发送给谁呢？");
-		}
-		
-		if(content.length()>Global.MESSAGE_CONTENT_MINLENGTH&&content.length()<Global.MESSAGE_CONTENT_MAXLENGTH){
-			//正常
-		}else{
-			return error(model, "信息内容必须在"+Global.MESSAGE_CONTENT_MINLENGTH+"～"+Global.MESSAGE_CONTENT_MAXLENGTH+"之间");
-		}
-		
-		Message message = new Message();
-		message.setSelf(getUser().getId());
-		message.setOther(otherId);
-		message.setTime(DateUtil.timeForUnix10());
-		message.setState(Message.MESSAGE_STATE_UNREAD);
-		messageService.save(message);
-		
-		MessageData messageData = new MessageData();
-		messageData.setId(message.getId());
-		messageData.setContent(content);
-		messageDataService.save(messageData);
-		
-		if(messageData.getId()>0){
+	public String send(HttpServletRequest request,Model model){
+		BaseVO baseVO = messageService.sendMessage(request);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
 			return success(model, "信息发送成功！","message/list.do");
 		}else{
-			return error(model, "信息发送失败！");
+			return error(model, baseVO.getInfo());
 		}
 	}
 	
@@ -169,7 +148,7 @@ public class MessageController extends BaseController {
 		String[] column = {"id","state="};
 		String boxWhere = box.equals("inbox")? "other="+getUser().getId():"self="+getUser().getId();
 		
-		String where = sql.generateWhere(request, column, boxWhere);
+		String where = sql.generateWhere(request, column, boxWhere+" AND isdelete = "+Message.ISDELETE_NORMAL);
 		int count = globalService.count("message", where);
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
 		where = sql.generateWhere(request, column, "message.id=message_data.id AND message."+boxWhere,"message");

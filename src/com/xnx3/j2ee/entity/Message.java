@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "message")
-public class Message implements java.io.Serializable {
+public class Message extends BaseEntity implements java.io.Serializable {
 	/**
 	 * 已读
 	 */
@@ -31,7 +31,8 @@ public class Message implements java.io.Serializable {
 	private Integer other;
 	private Integer time;
 	private Short state;
-
+	private Short isdelete;
+	
 	// Constructors
 
 	/** default constructor */
@@ -92,6 +93,14 @@ public class Message implements java.io.Serializable {
 
 	public void setState(Short state) {
 		this.state = state;
+	}
+
+	public Short getIsdelete() {
+		return isdelete;
+	}
+
+	public void setIsdelete(Short isdelete) {
+		this.isdelete = isdelete;
 	}
 
 	@Override
