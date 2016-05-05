@@ -2,14 +2,17 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
@@ -25,6 +28,7 @@ import com.xnx3.j2ee.service.PostService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
+import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.DateUtil;
 
 /**
@@ -79,6 +83,7 @@ public class BbsController extends BaseController {
 		return "bbs/addPost";
 	}
 	
+	
 	/**
 	 * 发帖提交页面
 	 * @param post {@link Post}
@@ -88,36 +93,12 @@ public class BbsController extends BaseController {
 	 */
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPostSubmit")
-	public String addPostSubmit(
-			Post post, 
-			@RequestParam(value = "text", required = true) String text,
-			Model model){
-		if(post.getTitle()==null||post.getTitle().length()<4||post.getTitle().length()>30){
-			return error(model, "标题必须是2到15个汉字或者4到30个字母");
-		}else if(text==null||text.length()<4){
-			return error(model, "帖子内容必须是大于2个汉字或者4个字母");
+	public String addPostSubmit(HttpServletRequest request, Model model){
+		BaseVO baseVO = postService.addPost(request);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "操作成功！", "bbs/view.do?id="+baseVO.getInfo());
 		}else{
-			String info="";	//截取简介文字,30字
-			if(text.length()<60){
-				info=text;
-			}else{
-				info=text.substring(0,60);
-			}
-			
-			post.setAddtime(DateUtil.timeForUnix10());
-			post.setInfo(info);
-			post.setUserid(getUser().getId());
-			post.setView(0);
-			post.setState(Post.STATE_NORMAL);
-			postService.save(post);
-			
-			PostData postData = new PostData();
-			postData.setPostid(post.getId());
-			postData.setText(text);
-			postDataService.save(postData);
-			
-			logService.insert(post.getId(), "BBS_POST_ADD", post.getTitle());
-			return success(model, "发布成功！", "bbs/list.do?classid="+post.getClassid());
+			return error(model, baseVO.getInfo());
 		}
 	}
 	

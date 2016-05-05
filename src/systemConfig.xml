@@ -18,9 +18,11 @@
 		<type>BBS_POST_COMMENT_ADD#22#发表帖子评论</type>
 		<type>BBS_POST_VIEW#23#查看帖子</type>
 		<type>BBS_POST_DELETE_COMMENT#24#删除回帖</type>
+		<type>BBS_POST_UPDATE#25#修改帖子</type>
 		<type>FRIEND_ADD#31#添加好友</type>
 		<type>FRIEND_DELETE#32#删除好友</type>
 		<type>MESSAGE_READ#41#查看未读信息</type>
+		<type>MESSAGE_DELETE#42#删除信息</type>
 		<type>ADMIN_SYSTEM_GENERATEALLCACHE#71#刷新所有缓存数据（系统设置）</type>
 		<type>ADMIN_SYSTEM_REG_ROLE#72#修改用户注册后的权限</type>
 		<type>ADMIN_SYSTEM_EDITSYSTEM#73#修改系统参数设置</type>
@@ -56,4 +58,13 @@
 		<!-- 验证码发出去后，使用的有效期，多长时间之内使用有效。单位：秒，0为不限制时间，只要验证码未用过就可以使用 -->
 		<codeValidity>600</codeValidity>
 	</sms>
+	
+	<bbs>
+		<!-- 发帖标题允许的最小长度（英文长度） -->
+		<titleMinLength>4</<titleMinLength>
+		<!-- 同上，发帖标题允许的最大长度（英文长度），最大值同时取决于数据库字段的最大值限制 -->
+		<titleMaxLength>30</<titleMaxLength>
+		<!-- 内容所允许的最小长度（英文长度) -->
+		<textMinLength>4</textMinLength>
+	</bbs>
 </configuration>

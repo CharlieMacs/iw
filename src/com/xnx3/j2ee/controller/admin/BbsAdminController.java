@@ -1,13 +1,16 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
@@ -24,6 +27,7 @@ import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
+import com.xnx3.j2ee.vo.BaseVO;
 
 /**
  * 论坛，帖子
@@ -109,58 +113,13 @@ public class BbsAdminController extends BaseController {
 	 */
 	@RequiresPermissions("adminBbsPost")
 	@RequestMapping("savePost")
-	public String savePost(
-			@RequestParam(value = "id", defaultValue = "0", required = false) int id,
-			@RequestParam(value = "classid", defaultValue = "0", required = true) int classid,
-			@RequestParam(value = "title", defaultValue = "", required = false) String title,
-			@RequestParam(value = "text", defaultValue = "", required = false) String text,
-			Model model){
-		if(classid == 0){
-			return error(model, "请选择发布的板块");
-		}
-		if(title.equals("")){
-			return error(model, "标题不能为空");
-		}
-		if(text.equals("")){
-			return error(model, "内容不能为空");
-		}
-		
-		Post post = new com.xnx3.j2ee.entity.Post();
-		PostData postData = new PostData();
-		if(id != 0){
-			post = postService.findById(id);
-			if(post == null){
-				return error(model, "帖子不存在！");
-			}else{
-				post.setId(id);
-				postData = postDataService.findById(post.getId());
-			}
+	public String savePost(HttpServletRequest request,Model model){
+		BaseVO baseVO = postService.addPost(request);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "操作成功！", "admin/bbs/postList.do?classid="+request.getParameter("classid"));
 		}else{
-			post.setAddtime(com.xnx3.DateUtil.timeForUnix10());
-			post.setState(Post.STATE_NORMAL);
-			post.setUserid(getUser().getId());
-			post.setView(0);
+			return error(model, baseVO.getInfo());
 		}
-		
-		String info="";	//截取简介文字,30字
-		if(text.length()<60){
-			info=text;
-		}else{
-			info=text.substring(0,60);
-		}
-		
-		post.setTitle(title);
-		post.setClassid(classid);
-		post.setInfo(info);
-		postService.save(post);
-		
-		if(postData.getPostid()==null){
-			postData.setPostid(post.getId());
-		}
-		postData.setText(text);
-		postDataService.save(postData);
-		
-		return success(model, "保存成功", "admin/bbs/postList.do?classid="+post.getClassid());
 	}
 
 	/**

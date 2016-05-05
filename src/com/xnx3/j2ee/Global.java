@@ -3,6 +3,9 @@ package com.xnx3.j2ee;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.xnx3.ConfigManagerUtil;
+import com.xnx3.Lang;
+
 /**
  * 基础配置、集中管理
  * @author 管雷鸣
@@ -16,10 +19,6 @@ public class Global {
 	 * english:英语
 	 */
 	public final static String language="chineseSimple";
-	
-	/***邮件发送系统***/
-	public final static String MAIL_LOGIN_USERNAME="xnx3_cs@163.com";	//邮箱登陆账号
-	public final static String MAIL_LOGIN_PASSWORD="cccccc";				//邮箱登陆密码
 	
 	public final static int MESSAGE_CONTENT_MINLENGTH = 2;		//发送站内信时短信内容允许的最小字符	
 	public final static int MESSAGE_CONTENT_MAXLENGTH = 100;	//发送站内信时短信内容允许的最大字符
@@ -46,6 +45,15 @@ public class Global {
 	public final static int PAGE_DEFAULT_EVERYNUMBER=20;	//用户前台分页，默认每页20行记录
 	public final static int PAGE_ADMIN_DEFAULT_EVERYNUMBER=10;	//后台分业，每页10条纪录
 	
+	public static int bbs_titleMinLength;	//发帖标题允许的最小长度（英文长度）
+	public static int bbs_titleMaxLength;	//发帖标题允许的最大长度（英文长度），最大值同时取决于数据库字段的最大值限制
+	public static int bbs_textMinLength;	//内容所允许的最小长度（英文长度)
+	
+	static{
+		bbs_titleMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.bbs_titleMinLength"), 0);
+		bbs_titleMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.bbs_titleMaxLength"), 0);
+		bbs_textMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.bbs_textMinLength"), 0);
+	}
 	
 	/**
 	 * 返回 system 表的值

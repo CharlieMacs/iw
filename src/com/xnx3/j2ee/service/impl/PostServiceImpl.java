@@ -3,18 +3,30 @@ package com.xnx3.j2ee.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
+import com.xnx3.Lang;
+import com.xnx3.j2ee.Global;
+import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.PostDAO;
+import com.xnx3.j2ee.dao.PostDataDAO;
 import com.xnx3.j2ee.entity.Post;
+import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.service.PostService;
+import com.xnx3.j2ee.shiro.ShiroFunc;
+import com.xnx3.j2ee.vo.BaseVO;
 
 @Service("postService")
 public class PostServiceImpl implements PostService {
 	
 	@Resource
 	private PostDAO postDAO;
+	@Resource
+	private PostDataDAO postDataDAO;
+	@Resource
+	private LogDAO logDAO;
 	
 	@Override
 	public void save(Post transientInstance) {
@@ -108,6 +120,73 @@ public class PostServiceImpl implements PostService {
 	public void attachClean(Post instance) {
 		// TODO Auto-generated method stub
 		postDAO.attachClean(instance);
+	}
+
+	@Override
+	public BaseVO addPost(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		int id = Lang.stringToInt(request.getParameter("id"), 0);
+		int classid = Lang.stringToInt(request.getParameter("classid"), 0);
+		String title = request.getParameter("title");
+		String text = request.getParameter("text");
+		
+		if(classid == 0){
+			baseVO.setBaseVO(BaseVO.FAILURE, "请选择发布的板块");
+			return baseVO;
+		}
+		if(title==null || title.length()<Global.bbs_titleMinLength || title.length()>Global.bbs_titleMaxLength){
+			baseVO.setBaseVO(BaseVO.FAILURE, "标题必须是"+Global.bbs_titleMinLength+"到"+Global.bbs_titleMaxLength+"个字母或汉字");
+			return baseVO;
+		}
+		if(text==null || text.length()<Global.bbs_textMinLength){
+			baseVO.setBaseVO(BaseVO.FAILURE, "内容不能少于"+Global.bbs_textMinLength+"个字母或汉字");
+			return baseVO;
+		}
+		
+		Post post = new com.xnx3.j2ee.entity.Post();
+		PostData postData = new PostData();
+		if(id != 0){
+			post = findById(id);
+			if(post == null){
+				baseVO.setBaseVO(BaseVO.FAILURE, "要修改的帖子不存在！");
+				return baseVO;
+			}else{
+				post.setId(id);
+				postData = postDataDAO.findById(post.getId());
+			}
+		}else{
+			post.setAddtime(com.xnx3.DateUtil.timeForUnix10());
+			post.setState(Post.STATE_NORMAL);
+			post.setUserid(ShiroFunc.getUser().getId());
+			post.setView(0);
+		}
+		
+		String info="";	//截取简介文字,30字
+		if(text.length()<60){
+			info=text;
+		}else{
+			info=text.substring(0,60);
+		}
+		
+		post.setTitle(title);
+		post.setClassid(classid);
+		post.setInfo(info);
+		save(post);
+		
+		if(postData.getPostid()==null){
+			postData.setPostid(post.getId());
+		}
+		postData.setText(text);
+		postDataDAO.save(postData);
+		
+		baseVO.setBaseVO(BaseVO.SUCCESS, post.getId()+"");
+		if(id == 0){
+			logDAO.insert(post.getId(), "BBS_POST_ADD", post.getTitle());
+		}else{
+			logDAO.insert(post.getId(), "BBS_POST_UPDATE", post.getTitle());
+		}
+		
+		return baseVO;
 	}
 
 }
