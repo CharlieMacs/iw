@@ -2,23 +2,16 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
-import com.xnx3.j2ee.entity.PostComment;
-import com.xnx3.j2ee.entity.PostData;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
@@ -29,7 +22,7 @@ import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
-import com.xnx3.DateUtil;
+import com.xnx3.j2ee.vo.PostVO;
 
 /**
  * 论坛，帖子处理
@@ -94,7 +87,7 @@ public class BbsController extends BaseController {
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPostSubmit")
 	public String addPostSubmit(HttpServletRequest request, Model model){
-		BaseVO baseVO = postService.addPost(request);
+		BaseVO baseVO = postService.savePost(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
 			return success(model, "操作成功！", "bbs/view.do?id="+baseVO.getInfo());
 		}else{
@@ -118,7 +111,7 @@ public class BbsController extends BaseController {
 	public String list(Post post,HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"classid=","title","view>","info","addtime","userid="};
-		String where = sql.generateWhere(request, column, "post.state = "+Post.STATE_NORMAL);
+		String where = sql.generateWhere(request, column, "post.state = "+Post.STATE_NORMAL+" AND isdelete = "+Post.ISDELETE_NORMAL);
 		int count = globalService.count("post", where);
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
 		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid "+where+" ORDER BY post.id DESC",page);
@@ -136,36 +129,17 @@ public class BbsController extends BaseController {
 	 */
 	@RequiresPermissions("bbsView")
 	@RequestMapping("/view")
-	public String view(Post post,Model model){
-		if(post.getId()==null||post.getId()==0){
-			return error(model, "帖子id未传入");
-		}else{
-			//查询帖子详情
-			post=postService.findById(post.getId());
-			post.setView(post.getView()+1);
-			postService.save(post);
-			
-			logService.insert(post.getId(), "BBS_POST_VIEW", post.getTitle());
-			
-			PostData postData = postDataService.findById(post.getId());
-			String text = postData.getText();
-			
-			User postUser = userService.findById(post.getUserid());
-			
+	public String view(@RequestParam(value = "id", required = true) int id,Model model){
+		PostVO postVO = postService.findPostVOById(id);
+		if(postVO.getResult() == PostVO.SUCCESS){
 			//查询回帖
-			List list = postCommentService.commentAndUser(post.getId());
-			//查看栏目相关信息
-			PostClass postClass = postClassService.findById(post.getClassid());
-			
-			model.addAttribute("postUser", postUser);	//发帖用户的用户信息
-			model.addAttribute("post",post);
-			model.addAttribute("text",text);
-			model.addAttribute("list",list);	//回帖列表
-			model.addAttribute("postClass",postClass);
+			List commentList = postCommentService.commentAndUser(postVO.getPost().getId(),10);
+			model.addAttribute("postVO", postVO);
+			model.addAttribute("commentList", commentList);
+			return "bbs/view";
+		}else{
+			return error(model, postVO.getInfo());
 		}
-		
-		model.addAttribute("unreadMessage","");
-		return "bbs/view";
 	}
 	
 	/**
@@ -177,26 +151,12 @@ public class BbsController extends BaseController {
 	 */
 	@RequiresPermissions("bbsAddComment")
 	@RequestMapping("/addCommentSubmit.do")
-	public String commentSubmit(Post post,String text,Model model){
-		if(text==null||text.length()<2){
-			return error(model, "评论最少输入1个汉字或者两个字符");
+	public String commentSubmit(HttpServletRequest request,Model model){
+		BaseVO baseVO = postCommentService.addComment(request);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "回复成功！","bbs/view.do?id="+request.getParameter("postid"));
 		}else{
-			//先查询是不是有这个主贴
-			Post p=postService.findById(post.getId());
-			if(p!=null){
-				PostComment postComment=new PostComment();
-				postComment.setPostid(post.getId());
-				postComment.setUserid(getUser().getId());
-				postComment.setAddtime(DateUtil.timeForUnix10());
-				postComment.setText(text);
-				postCommentService.save(postComment);
-				
-				logService.insert(postComment.getId(), "BBS_POST_COMMENT_ADD", post.getTitle());
-				return success(model, "回复成功！","bbs/view.do?id="+post.getId());
-			}else{
-				return error(model, "主帖不存在！");
-			}
+			return error(model, baseVO.getInfo());
 		}
 	}
-	
 }

@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.Post;
+import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.PostVO;
 /**
  * 论坛帖子
  * @author 管雷鸣
@@ -57,5 +60,20 @@ public interface PostService {
 	 * 			</ul>
 	 * @return {@link BaseVO} 若成功，info传回帖子的id
 	 */
-	public BaseVO addPost(HttpServletRequest request);
+	public BaseVO savePost(HttpServletRequest request);
+	
+	/**
+	 * 删除帖子，逻辑删除，改状态isdelete=1
+	 * @param id 要删除的帖子的id，post.id
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO deletePost(int id);
+	
+	/**
+	 * 通过 {@link Post}.id获取此条帖子的具体信息，包含 {@link Post}、 {@link PostData}
+	 * @param id {@link Post}.id
+	 * @return {@link PostVO}
+	 * 			<br/>首先判断getResult()是否是 {@link BaseVO#SUCCESS}，若是，才可以调取其他的值。若不是，可通过getInfo()获取错误信息
+	 */
+	public PostVO findPostVOById(int id);
 }

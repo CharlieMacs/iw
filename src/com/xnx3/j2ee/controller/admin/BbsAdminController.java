@@ -1,22 +1,19 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
+import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
-import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
@@ -70,7 +67,7 @@ public class BbsAdminController extends BaseController {
 	public String postList(HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"};
-		String where = sql.generateWhere(request, column, null);
+		String where = sql.generateWhere(request, column, " isdelete = "+BaseEntity.ISDELETE_NORMAL);
 		int count = globalService.count("post", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post", where+" ORDER BY id DESC", page,Post.class);
@@ -114,7 +111,7 @@ public class BbsAdminController extends BaseController {
 	@RequiresPermissions("adminBbsPost")
 	@RequestMapping("savePost")
 	public String savePost(HttpServletRequest request,Model model){
-		BaseVO baseVO = postService.addPost(request);
+		BaseVO baseVO = postService.savePost(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
 			return success(model, "操作成功！", "admin/bbs/postList.do?classid="+request.getParameter("classid"));
 		}else{
@@ -154,16 +151,12 @@ public class BbsAdminController extends BaseController {
 	@RequiresPermissions("adminBbsDeletePost")
 	@RequestMapping("deletePost")
 	public String deletePost(@RequestParam(value = "id", required = true) int id, Model model){
-		if(id>0){
-			Post p = postService.findById(id);
-			if(p!=null){
-				postService.delete(p);
-				logService.insert(p.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", p.getTitle());
-				return success(model, "删除成功", "admin/bbs/postList.do");
-			}
+		BaseVO baseVO = postService.deletePost(id);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "删除成功");
+		}else{
+			return error(model, baseVO.getInfo());
 		}
-		
-		return error(model, "删除失败");
 	}
 	
 	/**
@@ -185,14 +178,12 @@ public class BbsAdminController extends BaseController {
 	 */
 	@RequiresPermissions("adminBbsSaveClass")
 	@RequestMapping("saveClass")
-	public String saveClass(PostClass postClass, Model model){
-		postClassService.save(postClass);
-		if(postClass.getId()>0){
-			new Bbs().postClass(postClassService.findAll());
-			logService.insert(postClass.getId(), "ADMIN_SYSTEM_BBS_CLASS_SAVE", postClass.getName());
-			return success(model, "保存成功","admin/bbs/classList.do");
+	public String saveClass(HttpServletRequest request, Model model){
+		BaseVO baseVO = postClassService.savePostClass(request);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "操作成功","admin/bbs/classList.do");
 		}else{
-			return error(model, "保存失败");
+			return error(model, baseVO.getInfo());
 		}
 	}
 
@@ -228,16 +219,12 @@ public class BbsAdminController extends BaseController {
 	@RequiresPermissions("adminBbsDeleteClass")
 	@RequestMapping("deleteClass")
 	public String deleteClass(@RequestParam(value = "id", required = true) int id, Model model){
-		if(id>0){
-			PostClass pc = postClassService.findById(id);
-			if(pc!=null){
-				postClassService.delete(pc);
-				logService.insert(pc.getId(), "ADMIN_SYSTEM_BBS_CLASS_DELETE", pc.getName());
-				return success(model, "删除成功", "admin/bbs/classList.do");
-			}
+		BaseVO baseVO = postClassService.deletePostClass(id);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return error(model, "删除成功");
+		}else{
+			return error(model, baseVO.getInfo());
 		}
-		
-		return error(model, "删除失败");
 	}
 	
 
@@ -272,16 +259,12 @@ public class BbsAdminController extends BaseController {
 	@RequiresPermissions("adminBbsDeletePostComment")
 	@RequestMapping("deleteComment")
 	public String deleteComment(@RequestParam(value = "id", required = true) int id, Model model){
-		if(id>0){
-			PostComment pc = postCommentService.findById(id);
-			if(pc!=null){
-				postCommentService.delete(pc);
-				logService.insert(pc.getPostid(), "BBS_POST_DELETE_COMMENT", pc.getText());
-				return success(model, "删除成功");
-			}
+		BaseVO baseVO = postCommentService.deleteComment(id);
+		if(baseVO.getResult() == BaseVO.SUCCESS){
+			return success(model, "删除成功");
+		}else{
+			return error(model, baseVO.getInfo());
 		}
-		
-		return error(model, "删除失败");
 	}
 	
 }

@@ -3,7 +3,9 @@ package com.xnx3.j2ee.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "post_comment")
-public class PostComment implements java.io.Serializable {
+public class PostComment extends BaseEntity{
 
 	// Fields
 
@@ -28,15 +30,15 @@ public class PostComment implements java.io.Serializable {
 	public PostComment() {
 	}
 
-	/** full constructor */
-	public PostComment(Integer postid, Integer addtime, Integer userid,
-			String text) {
-		this.postid = postid;
-		this.addtime = addtime;
-		this.userid = userid;
-		this.text = text;
+	@Column(name = "isdelete")
+	public Short getIsdelete() {
+		return isdelete;
 	}
 
+	public void setIsdelete(Short isdelete) {
+		this.isdelete = isdelete;
+	}
+	
 	// Property accessors
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

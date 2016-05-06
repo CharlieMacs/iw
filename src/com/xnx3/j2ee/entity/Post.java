@@ -3,7 +3,9 @@ package com.xnx3.j2ee.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,11 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "post")
-public class Post implements java.io.Serializable {
-	/**
-	 * 已删除
-	 */
-	public final static Short STATE_DELETE=0;
+public class Post extends BaseEntity {
 	/**
 	 * 状态：正常
 	 */
@@ -45,6 +43,14 @@ public class Post implements java.io.Serializable {
 	private Integer userid;
 	private Short state;
 
+	@Column(name = "isdelete")
+	public Short getIsdelete() {
+		return isdelete;
+	}
+
+	public void setIsdelete(Short isdelete) {
+		this.isdelete = isdelete;
+	}
 	// Constructors
 
 	/** default constructor */
@@ -57,17 +63,6 @@ public class Post implements java.io.Serializable {
 		this.classid = classid;
 		this.title = title;
 		this.view = view;
-		this.addtime = addtime;
-		this.userid = userid;
-	}
-
-	/** full constructor */
-	public Post(Integer classid, String title, Integer view, String info,
-			Integer addtime, Integer userid) {
-		this.classid = classid;
-		this.title = title;
-		this.view = view;
-		this.info = info;
 		this.addtime = addtime;
 		this.userid = userid;
 	}
@@ -144,6 +139,16 @@ public class Post implements java.io.Serializable {
 
 	public void setState(Short state) {
 		this.state = state;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [getIsdelete()=" + getIsdelete() + ", getId()=" + getId()
+				+ ", getClassid()=" + getClassid() + ", getTitle()="
+				+ getTitle() + ", getView()=" + getView() + ", getInfo()="
+				+ getInfo() + ", getAddtime()=" + getAddtime()
+				+ ", getUserid()=" + getUserid() + ", getState()=" + getState()
+				+ "]";
 	}
 	
 }

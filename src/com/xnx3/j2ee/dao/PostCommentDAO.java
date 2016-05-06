@@ -1,16 +1,21 @@
 package com.xnx3.j2ee.dao;
 
+import java.math.BigInteger;
 import java.util.List;
+
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
+
 import static org.hibernate.criterion.Example.create;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.xnx3.j2ee.entity.PostComment;
 
 /**
@@ -182,18 +187,50 @@ public class PostCommentDAO {
 	}
 	
 	/**
-	 * 根据帖子id查回帖
+	 * 根据帖子id查所有回帖，排序为 id DESC
 	 * @param postid 帖子id
-	 * @return
+	 * @return List<comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id>
 	 */
 	public List commentAndUser(int postid){
+		return commentAndUser(postid, 0);
+	}
+	
+	/**
+	 * 根据帖子id查回帖，排序为 id DESC
+	 * @param postid 帖子id
+	 * @param limit 条数，若为0则显示所有
+	 * @return List<comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id>
+	 */
+	public List commentAndUser(int postid,int limit){
+		String limitString="";
+		if(limit > 0){
+			limitString = " LIMIT 0,"+limit;
+		}
 		try {
-			String queryString = "SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname FROM post_comment comment,user user WHERE comment.userid=user.id AND comment.postid= ? ORDER BY comment.id DESC ";
+			String queryString = "SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id FROM post_comment comment,user WHERE comment.userid=user.id AND comment.postid= ? ORDER BY comment.id DESC "+limitString;
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);;
 			queryObject.setParameter(0, postid);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
+			throw re;
+		}
+	}
+	
+	/**
+	 * 根据帖子id查回帖的数量
+	 * @param postid 帖子id
+	 * @return 回帖数量
+	 */
+	public int count(int postid){
+		try {
+			String queryString = "SELECT count(id) FROM post_comment WHERE postid= ? ";
+			Query queryObject = getCurrentSession().createSQLQuery(queryString);
+			queryObject.setParameter(0, postid);
+			BigInteger b = (BigInteger) queryObject.uniqueResult();
+			return b.intValue(); 
+		} catch (RuntimeException re) {
+			log.error("find by count name failed", re);
 			throw re;
 		}
 	}

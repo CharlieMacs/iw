@@ -6,12 +6,15 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
+import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.entity.Log;
@@ -37,6 +40,7 @@ public class InitServlet extends HttpServlet {
 		Global.projectPath = path.replace("WEB-INF/classes/", "");
 		
 		initCacheFolder();
+		new Bbs().state();
 		generateCache_postClass();
 		new Message().state();
 		new Message().isdelete();
@@ -81,7 +85,8 @@ public class InitServlet extends HttpServlet {
 	 * 生成缓存数据
 	 */
 	public void generateCache_postClass(){
-		List<PostClass> list = postClassService.findAll();
+		List<PostClass> list = postClassService.findByIsdelete(BaseEntity.ISDELETE_NORMAL);
+//		List<PostClass> list = postClassService.findAll();
 		new Bbs().postClass(list);
 	}
 	

@@ -28,6 +28,7 @@ public class PostClassDAO {
 			.getLogger(PostClassDAO.class);
 	// property constants
 	public static final String NAME = "name";
+	public static final String ISDELETE = "isdelete";
 
 	private SessionFactory sessionFactory;
 
@@ -110,7 +111,7 @@ public class PostClassDAO {
 	public List<PostClass> findByName(Object name) {
 		return findByProperty(NAME, name);
 	}
-
+	
 	public List findAll() {
 		log.debug("finding all PostClass instances");
 		try {
@@ -123,6 +124,18 @@ public class PostClassDAO {
 		}
 	}
 
+	public List findByIsdelete(Short isdelete) {
+		log.debug("finding all PostClass instances");
+		try {
+			String queryString = "from PostClass where isdelete = "+isdelete;
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}
+	}
+	
 	public PostClass merge(PostClass detachedInstance) {
 		log.debug("merging PostClass instance");
 		try {

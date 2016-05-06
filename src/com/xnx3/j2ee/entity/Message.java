@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "message")
-public class Message extends BaseEntity implements java.io.Serializable {
+public class Message extends BaseEntity{
 	/**
 	 * 已读
 	 */
@@ -27,24 +27,24 @@ public class Message extends BaseEntity implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private Integer self;
-	private Integer other;
+	private Integer senderid;
+	private Integer recipientid;
 	private Integer time;
 	private Short state;
-	private Short isdelete;
+
+	@Column(name = "isdelete")
+	public Short getIsdelete() {
+		return isdelete;
+	}
+
+	public void setIsdelete(Short isdelete) {
+		this.isdelete = isdelete;
+	}
 	
 	// Constructors
 
 	/** default constructor */
 	public Message() {
-	}
-
-	/** full constructor */
-	public Message(Integer self, Integer other, Integer time, Short state) {
-		this.self = self;
-		this.other = other;
-		this.time = time;
-		this.state = state;
 	}
 
 	// Property accessors
@@ -57,24 +57,6 @@ public class Message extends BaseEntity implements java.io.Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	@Column(name = "self", nullable = false)
-	public Integer getSelf() {
-		return this.self;
-	}
-
-	public void setSelf(Integer self) {
-		this.self = self;
-	}
-
-	@Column(name = "other", nullable = false)
-	public Integer getOther() {
-		return this.other;
-	}
-
-	public void setOther(Integer other) {
-		this.other = other;
 	}
 
 	@Column(name = "time", nullable = false)
@@ -95,19 +77,21 @@ public class Message extends BaseEntity implements java.io.Serializable {
 		this.state = state;
 	}
 
-	public Short getIsdelete() {
-		return isdelete;
+	public Integer getSenderid() {
+		return senderid;
 	}
 
-	public void setIsdelete(Short isdelete) {
-		this.isdelete = isdelete;
+	public void setSenderid(Integer senderid) {
+		this.senderid = senderid;
 	}
 
-	@Override
-	public String toString() {
-		return "Message [id=" + id + ", self=" + self + ", other=" + other
-				+ ", time=" + time + ", state=" + state + "]";
+	public Integer getRecipientid() {
+		return recipientid;
 	}
-	
+
+	public void setRecipientid(Integer recipientid) {
+		this.recipientid = recipientid;
+	}
+
 
 }

@@ -50,7 +50,7 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 			
 			if(useMessage){
 				Message messageWhere=new Message();
-				messageWhere.setOther(user.getId());
+				messageWhere.setRecipientid(user.getId());
 				messageWhere.setState(Message.MESSAGE_STATE_UNREAD);
 				List<Message> list = messageService.findByExample(messageWhere);
 				

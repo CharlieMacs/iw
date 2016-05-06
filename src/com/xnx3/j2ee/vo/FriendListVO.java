@@ -1,7 +1,6 @@
 package com.xnx3.j2ee.vo;
 
 import java.util.List;
-
 import com.xnx3.j2ee.entity.Friend;
 
 /**

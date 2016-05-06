@@ -48,11 +48,17 @@ public class Global {
 	public static int bbs_titleMinLength;	//发帖标题允许的最小长度（英文长度）
 	public static int bbs_titleMaxLength;	//发帖标题允许的最大长度（英文长度），最大值同时取决于数据库字段的最大值限制
 	public static int bbs_textMinLength;	//内容所允许的最小长度（英文长度)
+	public static boolean bbs_readPost_addLog;	//是否将阅读帖子写日志进行记录
+	public static int bbs_commentTextMinLength;	//回帖，内容所允许的最小长度（英文长度)
+	public static int bbs_commentTextMaxLength;	//回帖，内容所允许的最大长度（英文长度)
 	
 	static{
-		bbs_titleMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.bbs_titleMinLength"), 0);
-		bbs_titleMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.bbs_titleMaxLength"), 0);
-		bbs_textMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.bbs_textMinLength"), 0);
+		bbs_titleMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.titleMinLength"), 0);
+		bbs_titleMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.titleMaxLength"), 0);
+		bbs_textMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.textMinLength"), 0);
+		bbs_readPost_addLog = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.readPost_addLog").equals("true");
+		bbs_commentTextMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.commentTextMinLength"), 0);
+		bbs_commentTextMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.commentTextMaxLength"), 0);
 	}
 	
 	/**

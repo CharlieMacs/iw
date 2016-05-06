@@ -12,11 +12,14 @@ import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.MessageDAO;
 import com.xnx3.j2ee.dao.MessageDataDAO;
+import com.xnx3.j2ee.dao.UserDAO;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.MessageData;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.MessageVO;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -27,6 +30,8 @@ public class MessageServiceImpl implements MessageService {
 	private MessageDataDAO messageDataDao;
 	@Resource
 	private LogDAO logDao;
+	@Resource
+	private UserDAO userDao;
 	
 	@Override
 	public void save(Message transientInstance) {
@@ -113,14 +118,14 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public BaseVO sendMessage(HttpServletRequest request) {
 		BaseVO baseVO = new BaseVO();
-		String otheridString = request.getParameter("otherid");
+		String recipientidString = request.getParameter("recipientid");
 		String content = request.getParameter("content");
-		if(otheridString == null || otheridString.length()==0){
+		if(recipientidString == null || recipientidString.length()==0){
 			baseVO.setBaseVO(BaseVO.FAILURE, "信息发送给谁呢？");
 			return baseVO;
 		}
-		int otherId = Integer.parseInt(otheridString);
-		if(otherId<1){
+		int recipientid = Integer.parseInt(recipientidString);
+		if(recipientid<1){
 			baseVO.setBaseVO(BaseVO.FAILURE, "信息发送给谁呢？");
 			return baseVO;
 		}
@@ -130,8 +135,8 @@ public class MessageServiceImpl implements MessageService {
 		}else if(content.length()>Global.MESSAGE_CONTENT_MINLENGTH&&content.length()<Global.MESSAGE_CONTENT_MAXLENGTH) {
 			//正常
 			Message message = new Message();
-			message.setSelf(ShiroFunc.getUser().getId());
-			message.setOther(otherId);
+			message.setSenderid(ShiroFunc.getUser().getId());
+			message.setRecipientid(recipientid);
 			message.setTime(DateUtil.timeForUnix10());
 			message.setState(Message.MESSAGE_STATE_UNREAD);
 			message.setIsdelete(Message.ISDELETE_NORMAL);
@@ -144,11 +149,60 @@ public class MessageServiceImpl implements MessageService {
 			
 			if(messageData.getId()==0){
 				baseVO.setBaseVO(BaseVO.FAILURE,"信息发送失败");
+			}else{
+				logDao.insert(message.getId(), "MESSAGE_SEND",content);
 			}
 		}else{
 			baseVO.setBaseVO(BaseVO.FAILURE, "信息内容必须在"+Global.MESSAGE_CONTENT_MINLENGTH+"～"+Global.MESSAGE_CONTENT_MAXLENGTH+"之间");
 		}
 		
 		return baseVO;
+	}
+
+	@Override
+	public MessageVO findMessageVOById(int id) {
+		MessageVO messageVO = new MessageVO();
+		if(id>0){
+			Message message = findById(id);
+			if(message!=null){
+				int userId = ShiroFunc.getUser().getId();
+				//查看此信息是此人发的，或者是发送给此人的，此人有权限查看
+				if(userId==message.getRecipientid()||userId==message.getSenderid()){
+					//检测此信息是否已被删除
+					if(message.getIsdelete() == Message.ISDELETE_DELETE){
+						messageVO.setBaseVO(MessageVO.FAILURE, "此信息已被删除！");
+					}else{
+						messageVO.setMessage(message);
+						
+						//拿到收件人信息
+						User recipientUser = userDao.findById(message.getRecipientid());
+						messageVO.setRecipientUser(recipientUser);
+						
+						//拿到发件人信息
+						User senderUser = userDao.findById(message.getSenderid());
+						messageVO.setSenderUser(senderUser);
+						
+						//拿到信息的内容
+						MessageData messageData = messageDataDao.findById(id);
+						messageVO.setContent(messageData.getContent());
+						
+						//如果阅读的人是收信人，且之前没有阅读过，则标注此信息为已阅读
+						if(userId==message.getRecipientid()&&message.getState()==Message.MESSAGE_STATE_UNREAD){
+							message.setState(Message.MESSAGE_STATE_READ);
+							save(message);
+							logDao.insert(message.getId(), "MESSAGE_READ", messageData.getContent());
+						}
+					}
+				}else{
+					messageVO.setBaseVO(MessageVO.FAILURE, "您无权查看此信息！");
+				}
+			}else{
+				messageVO.setBaseVO(BaseVO.FAILURE, "要查看的信息不存在！");
+			}
+		}else{
+			messageVO.setBaseVO(BaseVO.FAILURE, "请传入要查看的信息id");
+		}
+		
+		return messageVO;
 	}
 }

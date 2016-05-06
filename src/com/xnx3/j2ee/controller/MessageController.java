@@ -21,10 +21,10 @@ import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageDataService;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.service.UserService;
-import com.xnx3.DateUtil;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.MessageVO;
 
 /**
  * 站内信
@@ -61,7 +61,7 @@ public class MessageController extends BaseController {
 	}
 	
 	/**
-	 * 发送信息提交后，逻辑处理
+	 * 发送信息提交
 	 * @param other 发送给的用户id
 	 * @param content 发送信息的内容
 	 * @param model {@link Model}
@@ -86,41 +86,14 @@ public class MessageController extends BaseController {
 	 */
 	@RequiresPermissions("messageView")
 	@RequestMapping("/view")
-	public String view(@RequestParam(value = "id", defaultValue = "0") String id,Model model){
-		int messageId = Integer.parseInt(id);
-		if(messageId<1){
-			return error(model, "传入的信息有误！");
+	public String view(@RequestParam(value = "id", defaultValue = "0") int id,Model model){
+		MessageVO messageVO = messageService.findMessageVOById(id);
+		if(messageVO.getResult() == MessageVO.SUCCESS){
+			model.addAttribute("messageVO", messageVO);
+			return "message/view";
+		}else{
+			return error(model, messageVO.getInfo());
 		}
-		
-		Message message = messageService.findById(messageId);
-		if(message!=null){
-			int userId = getUser().getId();
-			//查看此信息是此人发的，或者是发送给此人的，此人有权限查看
-			if(userId==message.getOther()||userId==message.getSelf()){
-				//拿到发信人信息
-				User user = userService.findById(message.getOther());
-				model.addAttribute("sendUser",user);
-				
-				//拿到信息的内容
-				MessageData messageData = messageDataService.findById(messageId);
-				
-				//如果阅读的人是收信人，且之前没有阅读过，则标注此信息为已阅读
-				if(getUser().getId()==message.getOther()&&message.getState()==Message.MESSAGE_STATE_UNREAD){
-					message.setState(Message.MESSAGE_STATE_READ);
-					messageService.save(message);
-					logService.insert(message.getId(), "MESSAGE_READ", messageData.getContent());
-				}
-				
-				model.addAttribute("result","1");
-				model.addAttribute("info", "成功！");
-				model.addAttribute("message",message);
-				model.addAttribute("content",messageData.getContent());
-			}else{
-				return error(model, "您无权查看此信息！");
-			}
-		}
-		
-		return "message/view";
 	}
 	
 	/**
@@ -146,13 +119,13 @@ public class MessageController extends BaseController {
 			HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"id","state="};
-		String boxWhere = box.equals("inbox")? "other="+getUser().getId():"self="+getUser().getId();
+		String boxWhere = box.equals("inbox")? "recipientid="+getUser().getId():"senderid="+getUser().getId();
 		
 		String where = sql.generateWhere(request, column, boxWhere+" AND isdelete = "+Message.ISDELETE_NORMAL);
 		int count = globalService.count("message", where);
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
 		where = sql.generateWhere(request, column, "message.id=message_data.id AND message."+boxWhere,"message");
-		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.other) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.self) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
+		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

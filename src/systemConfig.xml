@@ -23,6 +23,7 @@
 		<type>FRIEND_DELETE#32#删除好友</type>
 		<type>MESSAGE_READ#41#查看未读信息</type>
 		<type>MESSAGE_DELETE#42#删除信息</type>
+		<type>MESSAGE_SEND#43#发送信息</type>
 		<type>ADMIN_SYSTEM_GENERATEALLCACHE#71#刷新所有缓存数据（系统设置）</type>
 		<type>ADMIN_SYSTEM_REG_ROLE#72#修改用户注册后的权限</type>
 		<type>ADMIN_SYSTEM_EDITSYSTEM#73#修改系统参数设置</type>
@@ -34,8 +35,9 @@
 		<type>ADMIN_SYSTEM_USER_ROLE_SAVE#111#编辑角色所属的资源permission</type>
 		<type>ADMIN_SYSTEM_MESSAGE_DELETE#121#后台删除站内信息</type>
 		<type>ADMIN_SYSTEM_BBS_POST_DELETE#131#后台删除帖子</type>
-		<type>ADMIN_SYSTEM_BBS_CLASS_SAVE#141#添加或修改板块</type>
-		<type>ADMIN_SYSTEM_BBS_CLASS_DELETE#142#删除板块</type>
+		<type>ADMIN_SYSTEM_BBS_CLASS_SAVE#141#修改论坛板块</type>
+		<type>ADMIN_SYSTEM_BBS_CLASS_DELETE#142#删除论坛板块</type>
+		<type>ADMIN_SYSTEM_BBS_CLASS_ADD#143#添加论坛板块</type>
 		
 		<!-- 	
 		<type>PAINT_ADD#51#创建图表</type>
@@ -60,11 +62,17 @@
 	</sms>
 	
 	<bbs>
-		<!-- 发帖标题允许的最小长度（英文长度） -->
-		<titleMinLength>4</<titleMinLength>
-		<!-- 同上，发帖标题允许的最大长度（英文长度），最大值同时取决于数据库字段的最大值限制 -->
-		<titleMaxLength>30</<titleMaxLength>
-		<!-- 内容所允许的最小长度（英文长度) -->
+		<!-- 发帖,标题允许的最小长度（英文长度） -->
+		<titleMinLength>4</titleMinLength>
+		<!-- 发帖,标题允许的最大长度（英文长度），最大值同时取决于数据库字段的最大值限制 -->
+		<titleMaxLength>30</titleMaxLength>
+		<!-- 发帖,内容所允许的最小长度（英文长度) -->
 		<textMinLength>4</textMinLength>
+		<!-- 回帖，内容所允许的最小长度（英文长度) -->
+		<commentTextMinLength>2</commentTextMinLength>
+		<!-- 回帖，内容所允许的最大长度（英文长度) -->
+		<commentTextMaxLength>100</commentTextMaxLength>
+		<!-- 是否将阅读帖子写日志进行记录-->
+		<readPost_addLog>true</readPost_addLog>
 	</bbs>
 </configuration>

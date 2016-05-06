@@ -2,19 +2,15 @@ package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
-import com.xnx3.j2ee.entity.MessageData;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageDataService;
@@ -55,7 +51,7 @@ public class MessageAdminController extends BaseController {
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
 		Sql sql = new Sql();
-		String[] column = {"id=","self=","other="};
+		String[] column = {"id=","senderid=","recipientid="};
 		String where = sql.generateWhere(request, column, "isdelete = "+Message.ISDELETE_NORMAL);
 		int count = globalService.count("message", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);

@@ -26,12 +26,6 @@ public class Friend implements java.io.Serializable {
 	public Friend() {
 	}
 
-	/** full constructor */
-	public Friend(Integer self, Integer other) {
-		this.self = self;
-		this.other = other;
-	}
-
 	// Property accessors
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

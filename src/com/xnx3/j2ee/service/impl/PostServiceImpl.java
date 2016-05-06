@@ -8,15 +8,23 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 import com.xnx3.Lang;
+import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.LogDAO;
+import com.xnx3.j2ee.dao.PostClassDAO;
+import com.xnx3.j2ee.dao.PostCommentDAO;
 import com.xnx3.j2ee.dao.PostDAO;
 import com.xnx3.j2ee.dao.PostDataDAO;
+import com.xnx3.j2ee.dao.UserDAO;
+import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.Post;
+import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostData;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.PostService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.PostVO;
 
 @Service("postService")
 public class PostServiceImpl implements PostService {
@@ -27,6 +35,12 @@ public class PostServiceImpl implements PostService {
 	private PostDataDAO postDataDAO;
 	@Resource
 	private LogDAO logDAO;
+	@Resource
+	private UserDAO userDAO;
+	@Resource
+	private PostClassDAO postClassDAO;
+	@Resource
+	private PostCommentDAO postCommentDAO;
 	
 	@Override
 	public void save(Post transientInstance) {
@@ -123,7 +137,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public BaseVO addPost(HttpServletRequest request) {
+	public BaseVO savePost(HttpServletRequest request) {
 		BaseVO baseVO = new BaseVO();
 		int id = Lang.stringToInt(request.getParameter("id"), 0);
 		int classid = Lang.stringToInt(request.getParameter("classid"), 0);
@@ -159,13 +173,15 @@ public class PostServiceImpl implements PostService {
 			post.setState(Post.STATE_NORMAL);
 			post.setUserid(ShiroFunc.getUser().getId());
 			post.setView(0);
+			post.setIsdelete(Post.ISDELETE_NORMAL);
 		}
 		
 		String info="";	//截取简介文字,30字
-		if(text.length()<60){
-			info=text;
+		String filterText = StringUtil.filterHtmlTag(text);
+		if(filterText.length()<60){
+			info=filterText;
 		}else{
-			info=text.substring(0,60);
+			info=filterText.substring(0,60);
 		}
 		
 		post.setTitle(title);
@@ -187,6 +203,64 @@ public class PostServiceImpl implements PostService {
 		}
 		
 		return baseVO;
+	}
+
+	@Override
+	public BaseVO deletePost(int id) {
+		BaseVO baseVO = new BaseVO();
+		if(id>0){
+			Post p = findById(id);
+			if(p!=null){
+				p.setIsdelete(BaseEntity.ISDELETE_DELETE);
+				save(p);
+				logDAO.insert(p.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", p.getTitle());
+			}else{
+				baseVO.setBaseVO(BaseVO.FAILURE, "要删除的帖子不存在！");
+			}
+		}else{
+			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要删除的帖子编号");
+		}
+		return baseVO;
+	}
+
+	@Override
+	public PostVO findPostVOById(int id) {
+		PostVO postVO = new PostVO();
+		
+		if(id>0){
+			//查询帖子详情
+			Post post=findById(id);
+			if(post == null){
+				postVO.setBaseVO(PostVO.FAILURE, "您所查看的帖子不存在");
+				return postVO;
+			}
+			//查所属板块
+			PostClass postClass = postClassDAO.findById(post.getClassid());
+			if(postClass == null || postClass.getIsdelete() == BaseEntity.ISDELETE_DELETE){
+				postVO.setBaseVO(PostVO.FAILURE, "您所查看的帖子所属板块不存在或已被删除！");
+			}else{
+				postVO.setPostClass(postClass);
+				postVO.setPost(post);
+				post.setView(post.getView()+1);
+				save(post);
+				
+				PostData postData = postDataDAO.findById(post.getId());
+				postVO.setText(postData.getText());
+				
+				User user = userDAO.findById(post.getUserid());
+				postVO.setUser(user);
+				
+				postVO.setCommentCount(postCommentDAO.count(post.getId()));
+				
+				if(Global.bbs_readPost_addLog){
+					logDAO.insert(post.getId(), "BBS_POST_VIEW", post.getTitle());
+				}
+			}
+		}else{
+			postVO.setBaseVO(PostVO.FAILURE, "请传入帖子id");
+		}
+		
+		return postVO;
 	}
 
 }
