@@ -73,7 +73,7 @@ public class BbsController extends BaseController {
 		
 		model.addAttribute("postClassList", postClassList);
 		model.addAttribute("classid", classid);
-		return "bbs/addPost";
+		return "iw/bbs/addPost";
 	}
 	
 	
@@ -118,7 +118,7 @@ public class BbsController extends BaseController {
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
-		return "bbs/list";
+		return "iw/bbs/list";
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class BbsController extends BaseController {
 			List commentList = postCommentService.commentAndUser(postVO.getPost().getId(),10);
 			model.addAttribute("postVO", postVO);
 			model.addAttribute("commentList", commentList);
-			return "bbs/view";
+			return "iw/bbs/view";
 		}else{
 			return error(model, postVO.getInfo());
 		}

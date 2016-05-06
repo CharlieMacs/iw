@@ -1,20 +1,14 @@
 package com.xnx3.j2ee.controller;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.xnx3.j2ee.entity.Friend;
-import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.FriendService;
 import com.xnx3.j2ee.service.LogService;
@@ -46,7 +40,7 @@ public class FriendController extends BaseController {
 	@RequiresPermissions("friendIndex")
 	@RequestMapping("/index")
 	public String index(){
-		return "friend/index";
+		return "iw/friend/index";
 	}
 
 	/**

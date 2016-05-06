@@ -48,7 +48,7 @@ public class LogAdminController extends BaseController{
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
-		return "/admin/log/list";
+		return "/iw/admin/log/list";
 	}
 	
 }

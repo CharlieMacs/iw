@@ -59,7 +59,7 @@ public class RoleAdminController extends BaseController {
 	@RequestMapping("addRole")
 	@RequiresPermissions("adminRoleAddRole")
 	public String addRole(){
-		return "admin/role/role";
+		return "iw/admin/role/role";
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class RoleAdminController extends BaseController {
 			Role role = roleService.findById(id);
 			if(role!=null){
 				model.addAttribute("role", role);
-				return "admin/role/role";
+				return "iw/admin/role/role";
 			}
 		}
 		return "redirect:/admin/role/roleList.do";
@@ -128,7 +128,7 @@ public class RoleAdminController extends BaseController {
 		List<Role> list = roleService.findAll(); 
 		
 		model.addAttribute("list", list);
-		return "admin/role/roleList";
+		return "iw/admin/role/roleList";
 	}
 	
 
@@ -154,7 +154,7 @@ public class RoleAdminController extends BaseController {
 		
 		model.addAttribute("permission", permission);
 		model.addAttribute("parentPermissionDescription", parentPermissionDescription);
-		return "admin/role/permission";
+		return "iw/admin/role/permission";
 	}
 	
 	/**
@@ -239,7 +239,7 @@ public class RoleAdminController extends BaseController {
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", permissionTreeList);
-		return "admin/role/permissionList";
+		return "iw/admin/role/permissionList";
 	}
 	
 	/**
@@ -261,7 +261,7 @@ public class RoleAdminController extends BaseController {
 			
 			model.addAttribute("role", role);
 			model.addAttribute("list", list);
-			return "admin/role/rolePermission";
+			return "iw/admin/role/rolePermission";
 		}
 		return null;
 	}
@@ -363,7 +363,7 @@ public class RoleAdminController extends BaseController {
 			
 			model.addAttribute("currentUser", user);
 			model.addAttribute("list", roleMarkList);
-			return "admin/role/userRole";
+			return "iw/admin/role/userRole";
 		}
 		return null;
 	}

@@ -1,3 +1,4 @@
+<%@page import="com.xnx3.j2ee.Global"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <%@ taglib uri="http://www.xnx3.com/java_xnx3/xnx3_tld" prefix="x" %>
@@ -9,15 +10,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html lang="en">
 <head>
 	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="用户列表"/>
+    	<jsp:param name="title" value="信息列表"/>
     </jsp:include>
+    <script src="<%=basePath+Global.CACHE_FILE %>Message_state.js"></script>
     
     <script type="text/javascript">
     	
-    	//根据帖子id删除帖子
-    	function deleteUser(userId){
+    	//根据站内信id删除站内信
+    	function deleteMessage(userId){
     		//要用ajax
-    		window.location="<%=basePath %>/admin/user/deleteUser.do?id="+userId;
+    		window.location="<%=basePath %>/admin/message/delete.do?id="+userId;
     	}
 
     </script>
@@ -48,7 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <header class="panel-heading tab-bg-dark-navy-blue">
                         <ul class="nav nav-tabs">
                             <li class="active">
-                                <a data-toggle="tab" href="">会员管理</a>
+                                <a data-toggle="tab" href="">站内信管理</a>
                             </li>
                         </ul>
                     </header>
@@ -65,39 +67,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <li><a href="all">全部</a></li>
                             </ul>
                         </div> -->
-	                    <form method="get">
-	                        <span style="float:left;line-height:34px;margin-left:10px;">会员名称：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
-	                            <input type="text" name="username" class="form-control" value="<%=request.getParameter("username")==null? "":request.getParameter("username")  %>">
-	                        </div>
-	                        <span style="float:left;line-height:34px;margin-left:10px;">昵称：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
-	                            <input type="text" name="nickname" class="form-control" value="<%=request.getParameter("nickname")==null? "":request.getParameter("nickname")  %>">
-	                        </div>
-	                        <span style="float:left;line-height:34px;margin-left:10px;">注册邮箱：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
-	                            <input type="text" name="email" class="form-control" value="<%=request.getParameter("email")==null? "":request.getParameter("email")  %>">
-	                        </div>
-	                        
-	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
-	                            <span class="input-group-btn">
-	                            <input class="btn btn-success" type="submit" value="搜索">
-	                            <i class="fa fa-search"></i>
-	                            </button>
-	                            </span>
-	                        </div>
-                        </form>     
-                        <!-- 
-                        <span style="float:left;line-height:34px;margin-left:10px;">手机号码：</span>
+                        <!-- <span style="float:left;line-height:34px;margin-left:10px;">会员名称：</span>
                         <div class="input-group m-bot15 " style="width: 20%;float: left;">
-                            <input type="text" name="phone" class="form-control" value="请输入手机号码" onfocus="javascript:if(this.value=='请输入手机号码')this.value='';" onblur="if(!value) {value='请输入手机号码'; this.type='text';}">
+                            <input type="text" name="querytext" class="form-control" value="请输入会员名称" onfocus="javascript:if(this.value=='请输入会员名称')this.value='';" onblur="if(!value) {value='请输入会员名称'; this.type='text';}">
                             <span class="input-group-btn">
                             <button class="btn btn-success" type="submit">
                             <i class="fa fa-search"></i>
                             </button>
                             </span>
                         </div>
-                        
+                        <span style="float:left;line-height:34px;margin-left:10px;">注册邮箱：</span>
+                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
+                            <input type="text" name="querytext" class="form-control" value="请输入注册邮箱" onfocus="javascript:if(this.value=='请输入注册邮箱')this.value='';" onblur="if(!value) {value='请输入注册邮箱'; this.type='text';}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">
+                            <i class="fa fa-search"></i>
+                            </button>
+                            </span>
+                        </div> -->
+                        <!-- <span style="float:left;line-height:34px;margin-left:10px;">手机号码：</span>
+                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
+                            <input type="text" name="querytext" class="form-control" value="请输入手机号码" onfocus="javascript:if(this.value=='请输入手机号码')this.value='';" onblur="if(!value) {value='请输入手机号码'; this.type='text';}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">
+                            <i class="fa fa-search"></i>
+                            </button>
+                            </span>
+                        </div>
                         <div style="float: right">
                             <div class="btn-group" style="float: left;margin-right:10px;">
                                 <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="submit">全部<span class="caret"></span></button>
@@ -111,43 +107,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <a type="button" class="btn btn-primary" style="float: left;margin-right: 10px" href="#">
                                 <i class="fa fa-plus"></i>
                             </a>
-                        </div>
-                         -->
+                        </div> -->
                     </div>
                         <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>用户名</th>
-                                    <th class="numeric">昵称</th>
-                                    <th class="numeric">注册邮箱</th>
-                                    <th class="numeric">注册时间</th>
-                                    <th class="numeric">注册IP</th>
-                                    <th class="numeric">最后登陆时间</th>
-                                    <!-- 
-                                    	<th class="numeric">状态</th>
-                                    	<th class="numeric">状态</th> 
-                                    -->
+                                    <th>编号</th>
+                                    <th>发信用户</th>
+                                    <th class="numeric">收信用户</th>
+                                    <th class="numeric">信息内容</th>
+                                    <th class="numeric">发信时间</th>
+                                    <th class="numeric">信息状态</th>
                                     <th class="numeric">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 
-                                <c:forEach items="${list}" var="user">
+                                <c:forEach items="${list}" var="message">
                                 	<tr>
-	                                    <td>${user.id }</td>
-	                                    <td>${user.username }</td>
-	                                    <td>${user.nickname }</td>
-	                                    <td class="numeric">${user.email }</td>
-	                                    <td class="numeric"><x:time linuxTime="${user.regtime }"></x:time></td>
-	                                    <td class="numeric">${user.regip }</td>
-	                                    <td class="numeric"><x:time linuxTime="${user.lasttime }"></x:time></td>
+	                                    <td>${message['id'] }</td>
+	                                    <td><a href="?self=${message['sender'] }">${message['self_nickname'] }(ID:${message['sender'] })</a></td>
+	                                    <td><a href="?other=${message['recipientid'] }">${message['other_nickname'] }(ID:${message['recipientid'] })</a></td>
+	                                    <td class="numeric">${message['content'] }</td>
+	                                    <td class="numeric"><x:time linuxTime="${message['time'] }"></x:time></td>
 	                                    <td class="numeric">
-	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" href="<%=basePath %>/admin/role/editUserRole.do?userid=${user.id }">
-	                                    		编辑权限
-	                                    	</a>
-	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deleteUser(${user.id });">
+	                                    	<script type="text/javascript">document.write(state['${message['state'] }']);</script>
+	                                    </td>
+	                                    <td class="numeric">
+	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deleteMessage(${message['id'] });">
 	                                    		<i class="fa fa-trash-o"></i>
 	                                    	</button>
 	                                    </td>

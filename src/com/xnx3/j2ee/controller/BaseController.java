@@ -135,7 +135,7 @@ public class BaseController {
 
 		model.addAttribute("redirectUrl", redirectUrl);
 		
-		return "/prompt";
+		return "/iw/prompt";
 	}
 	
 	/**

@@ -50,7 +50,7 @@ public class SystemAdminController extends BaseController {
 	public String index(Model model){
 		List<com.xnx3.j2ee.entity.System> systemList = systemService.findByListshow(com.xnx3.j2ee.entity.System.LISTSHOW_SHOW);
 		model.addAttribute("systemList", systemList);
-		return "/admin/system/index";
+		return "/iw/admin/system/index";
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class SystemAdminController extends BaseController {
 			
 			model.addAttribute("system", system);
 			model.addAttribute("roleList", roleList);
-			return "/admin/system/userRegRole";
+			return "/iw/admin/system/userRegRole";
 		}
 	}
 
@@ -144,7 +144,7 @@ public class SystemAdminController extends BaseController {
 		}else{
 			//编辑页面
 			model.addAttribute("system", system);
-			return "/admin/system/system";
+			return "/iw/admin/system/system";
 		}
 	}
 	

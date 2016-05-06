@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.SmsLogService;
@@ -33,7 +32,7 @@ public class LoginController extends BaseController {
 	@RequestMapping("/reg")
 	public String reg(HttpServletRequest request){
 		userService.regInit(request);
-		return "login/reg";
+		return "iw/login/reg";
 	}
 	/**
 	 * 注册相应请求地址
@@ -64,7 +63,7 @@ public class LoginController extends BaseController {
 		if(getUser() != null){
 			return redirect("user/info.do");
 		}
-		return "login/login";
+		return "iw/login/login";
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class LoginController extends BaseController {
 			return redirect("user/info.do");
 		}
 		
-		return "login/phoneVerifyLogin";
+		return "iw/login/phoneVerifyLogin";
 	}
 	
 	/**

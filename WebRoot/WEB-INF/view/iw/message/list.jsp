@@ -12,7 +12,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:include page="../common/head.jsp">
     	<jsp:param name="title" value="站内信列表"/>
     </jsp:include>
-<script src="<%=basePath+Global.CACHE_FILE %>Message_stateField.js"></script>
+<script src="<%=basePath+Global.CACHE_FILE %>Message_state.js"></script>
 </head>
 <body>
 <article id="container">
@@ -39,12 +39,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            <c:forEach items="${list}" var="message">
 	            	<tr onclick="window.location.href='view.do?id=${message.id }';" style="cursor: pointer;">
 		                 <td>${message['id'] }</td>
-		                 <td>${message['self_nickname'] }(ID:${message['self'] })</td>
-		                 <td>${message['other_nickname'] }(ID:${message['other'] })</td>
+		                 <td>${message['self_nickname'] }(ID:${message['sender'] })</td>
+		                 <td>${message['other_nickname'] }(ID:${message['recipientid'] })</td>
 		                 <td class="numeric">${message['content'] }</td>
 		                 <td class="numeric"><x:time linuxTime="${message['time'] }"></x:time></td>
 		                 <td class="numeric">
-		                 	<script type="text/javascript">document.write(stateField['${message['state'] }']);</script>
+		                 	<script type="text/javascript">document.write(state['${message['state'] }']);</script>
 		                 </td>
 		             </tr>
 	            </c:forEach>

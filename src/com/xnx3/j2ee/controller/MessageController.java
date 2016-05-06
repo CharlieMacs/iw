@@ -2,20 +2,15 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
-import com.xnx3.j2ee.entity.MessageData;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageDataService;
@@ -57,7 +52,7 @@ public class MessageController extends BaseController {
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/add")
 	public String add(){
-		return "message/add";
+		return "iw/message/add";
 	}
 	
 	/**
@@ -90,7 +85,7 @@ public class MessageController extends BaseController {
 		MessageVO messageVO = messageService.findMessageVOById(id);
 		if(messageVO.getResult() == MessageVO.SUCCESS){
 			model.addAttribute("messageVO", messageVO);
-			return "message/view";
+			return "iw/message/view";
 		}else{
 			return error(model, messageVO.getInfo());
 		}
@@ -129,7 +124,7 @@ public class MessageController extends BaseController {
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
-		return "message/list";
+		return "iw/message/list";
 	}
 	
 }

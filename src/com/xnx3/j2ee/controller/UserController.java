@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
@@ -49,7 +48,7 @@ public class UserController extends BaseController {
 	@RequiresPermissions("userInfo")
 	@RequestMapping("/info")
 	public String userInfo(){
-		return "user/info";
+		return "iw/user/info";
 	}
 	
 	/**
@@ -142,7 +141,7 @@ public class UserController extends BaseController {
 	@RequiresPermissions("userInvite")
 	@RequestMapping("invite")
 	public String invite(){
-		return "user/invite";
+		return "iw/user/invite";
 	}
 	
 	/**

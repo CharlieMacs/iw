@@ -17,11 +17,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:include page="../common/top.jsp"></jsp:include>
 	<section id="main">
 		<hr/>
-		发信者：${sendUser.username }
+		发信者：${messageVO.senderUser.nickname }
 		<br/>
-		信息发送时间：${message.time }
+		收信者：${messageVO.recipientUser.nickname }
 		<br/>
-		信息内容：${content}
+		信息发送时间：${messageVO.message.time }
+		<br/>
+		信息内容：${messageVO.content}
 		<br/>
 		<br/>
 	</section>

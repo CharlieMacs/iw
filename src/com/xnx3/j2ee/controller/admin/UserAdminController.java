@@ -66,7 +66,7 @@ public class UserAdminController extends BaseController {
 
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
-		return "/admin/user/list";
+		return "/iw/admin/user/list";
 	}
 	
 }

@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="阅读站内信"/>
+    	<jsp:param name="title" value="发信"/>
     </jsp:include>
 <link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
 </head>
@@ -16,15 +16,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <article id="container">
 	<jsp:include page="../common/top.jsp"></jsp:include>
 	<section id="main">
-		<hr/>
-		发信者：${sendUser.username }
-		<br/>
-		信息发送时间：${message.time }
-		<br/>
-		信息内容：${content}
-		<br/>
-		<br/>
+		<form method="post" action="send.do">
+			对方id：<input type="text" name="recipientid" value="" />（待优化）
+			<br/>
+			信息内容：<textarea name="content" rows="" cols=""></textarea>
+			<br/>
+			<input type="submit" value="发送" />(待优化)
+		</form>
 	</section>
+	<jsp:include page="../common/menu.jsp"></jsp:include>
 	<footer id="footer"></footer>
 </article>
 </body>

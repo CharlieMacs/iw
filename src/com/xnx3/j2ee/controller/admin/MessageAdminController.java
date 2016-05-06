@@ -60,7 +60,7 @@ public class MessageAdminController extends BaseController {
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
-		return "/admin/message/list";
+		return "/iw/admin/message/list";
 	}
 	
 	/**

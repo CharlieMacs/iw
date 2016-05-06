@@ -74,7 +74,7 @@ public class BbsAdminController extends BaseController {
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
-		return "/admin/bbs/postList";
+		return "/iw/admin/bbs/postList";
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class BbsAdminController extends BaseController {
 				return error(model, "帖子不存在！");
 			}
 		}
-		return "admin/bbs/post";
+		return "iw/admin/bbs/post";
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class BbsAdminController extends BaseController {
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
-		return "/admin/bbs/classList";
+		return "/iw/admin/bbs/classList";
 	}
 	
 	
@@ -166,7 +166,7 @@ public class BbsAdminController extends BaseController {
 	@RequiresPermissions("adminBbsAddClass")
 	@RequestMapping("addClass")
 	public String addClass(){
-		return "admin/bbs/class";
+		return "iw/admin/bbs/class";
 	}
 	
 	
@@ -200,7 +200,7 @@ public class BbsAdminController extends BaseController {
 			PostClass postClass = postClassService.findById(id);
 			if(postClass!=null){
 				model.addAttribute("postClass", postClass);
-				return "admin/bbs/class";
+				return "iw/admin/bbs/class";
 			}else{
 				return "板块不存在";
 			}
@@ -246,7 +246,7 @@ public class BbsAdminController extends BaseController {
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
-		return "/admin/bbs/commentList";
+		return "/iw/admin/bbs/commentList";
 	}
 	
 
