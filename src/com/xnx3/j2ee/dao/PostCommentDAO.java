@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xnx3.j2ee.entity.PostComment;
+import com.xnx3.j2ee.entity.User;
 
 /**
  * A data access object (DAO) providing persistence and search support for
@@ -207,7 +208,7 @@ public class PostCommentDAO {
 			limitString = " LIMIT 0,"+limit;
 		}
 		try {
-			String queryString = "SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id FROM post_comment comment,user WHERE comment.userid=user.id AND comment.postid= ? ORDER BY comment.id DESC "+limitString;
+			String queryString = "SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id FROM post_comment comment,user WHERE comment.userid=user.id AND comment.postid= ? AND user.isfreeze="+User.ISFREEZE_NORMAL+" ORDER BY comment.id DESC "+limitString;
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);;
 			queryObject.setParameter(0, postid);
 			return queryObject.list();
