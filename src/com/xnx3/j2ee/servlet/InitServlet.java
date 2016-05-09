@@ -17,9 +17,12 @@ import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
+import com.xnx3.j2ee.generateCache.Role;
+import com.xnx3.j2ee.generateCache.User;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.generateCache.Message;
 import com.xnx3.j2ee.service.PostClassService;
+import com.xnx3.j2ee.service.RoleService;
 import com.xnx3.j2ee.service.SystemService;
 
 /**
@@ -29,12 +32,14 @@ import com.xnx3.j2ee.service.SystemService;
 public class InitServlet extends HttpServlet {
 	private PostClassService postClassService;
 	private SystemService systemService;
+	private RoleService roleService;
 	
 	@Override
 	public void init(ServletConfig servletContext) throws ServletException {
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext.getServletContext());
 		postClassService = ctx.getBean("postClassService", PostClassService.class);
 		systemService = ctx.getBean("systemService", SystemService.class);
+		roleService = ctx.getBean("roleService",RoleService.class);
 
 		String path = getClass().getResource("/").getPath();
 		Global.projectPath = path.replace("WEB-INF/classes/", "");
@@ -44,6 +49,8 @@ public class InitServlet extends HttpServlet {
 		generateCache_postClass();
 		new Message().state();
 		new Message().isdelete();
+		new Role().role(roleService.findAll());
+		new User().isfreeze();
 		loadLogType();
 		
 		readSystemTable();
@@ -86,9 +93,9 @@ public class InitServlet extends HttpServlet {
 	 */
 	public void generateCache_postClass(){
 		List<PostClass> list = postClassService.findByIsdelete(BaseEntity.ISDELETE_NORMAL);
-//		List<PostClass> list = postClassService.findAll();
 		new Bbs().postClass(list);
 	}
+	
 	
 	/**
 	 * 读system表数据
