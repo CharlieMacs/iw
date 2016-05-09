@@ -11,6 +11,13 @@ public class BaseEntity implements java.io.Serializable {
 	 */
 	public final static Short ISDELETE_DELETE=1;
 	
-	public Short isdelete;
-
+	/**
+	 * 信息状态，是否已冻结，未冻结，正常
+	 */
+	public final static Short ISFREEZE_NORMAL = 0;
+	
+	/**
+	 * 信息状态，是否已冻结，已冻结
+	 */
+	public final static Short ISFREEZE_FREEZE = 1;
 }

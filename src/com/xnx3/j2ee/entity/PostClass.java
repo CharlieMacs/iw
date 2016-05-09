@@ -18,6 +18,7 @@ public class PostClass extends BaseEntity {
 
 	private Integer id;
 	private String name;
+	public Short isdelete;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

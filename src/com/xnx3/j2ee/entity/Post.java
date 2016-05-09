@@ -42,6 +42,7 @@ public class Post extends BaseEntity {
 	private Integer addtime;
 	private Integer userid;
 	private Short state;
+	public Short isdelete;
 
 	@Column(name = "isdelete")
 	public Short getIsdelete() {

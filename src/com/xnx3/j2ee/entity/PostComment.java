@@ -23,6 +23,7 @@ public class PostComment extends BaseEntity{
 	private Integer addtime;
 	private Integer userid;
 	private String text;
+	public Short isdelete;
 
 	// Constructors
 

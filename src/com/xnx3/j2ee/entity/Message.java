@@ -31,6 +31,7 @@ public class Message extends BaseEntity{
 	private Integer recipientid;
 	private Integer time;
 	private Short state;
+	public Short isdelete;
 
 	@Column(name = "isdelete")
 	public Short getIsdelete() {
