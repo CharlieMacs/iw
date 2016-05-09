@@ -38,12 +38,12 @@ public class GlobalDAO {
 	
 	/**
 	 * 获取查询的信息条数
-	 * @param tableName 表名
+	 * @param tableName 表名,多个表中间用,分割，如: "user,message,log"。同样如果是多个表，where参数需要增加关联条件
 	 * @param where 查询条件，直接使用 {@link Sql#getWhere(javax.servlet.http.HttpServletRequest, String[], String)} 来组合
 	 * @return
 	 */
 	public int count(String tableName,String where){
-		String queryString = "SELECT count(id) FROM "+tableName+where;
+		String queryString = "SELECT count(*) FROM "+tableName+where;
 		BigInteger count = (BigInteger)getCurrentSession().createSQLQuery(queryString).uniqueResult();
 		return count.intValue();
 	}

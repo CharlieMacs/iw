@@ -17,9 +17,7 @@ public interface GlobalService {
 
 	/**
 	 * 获取查询的信息条数
-	 * @param tableName 表名
-	 * @param request {@link Sql#getWhere(HttpServletRequest, String[], String)}
-	 * @param column {@link Sql#getWhere(HttpServletRequest, String[], String)}
+	 * @param tableName 表名,多个表名中间用,分割，如: "user,message,log"。同样如果是多个表，where参数需要增加关联条件
 	 * @param appendWhere {@link Sql#getWhere(HttpServletRequest, String[], String)}
 	 * @return
 	 */
