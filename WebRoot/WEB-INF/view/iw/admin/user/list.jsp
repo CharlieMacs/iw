@@ -1,3 +1,4 @@
+<%@page import="com.xnx3.j2ee.Global"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <%@ taglib uri="http://www.xnx3.com/java_xnx3/xnx3_tld" prefix="x" %>
@@ -11,7 +12,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:include page="../common/head.jsp">
     	<jsp:param name="title" value="用户列表"/>
     </jsp:include>
-    
+    <script src="<%=basePath+Global.CACHE_FILE %>Role_role.js"></script>
     <script type="text/javascript">
     	
     	//根据帖子id删除帖子
@@ -121,10 +122,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <th>ID</th>
                                     <th>用户名</th>
                                     <th class="numeric">昵称</th>
-                                    <th class="numeric">注册邮箱</th>
-                                    <th class="numeric">注册时间</th>
-                                    <th class="numeric">注册IP</th>
-                                    <th class="numeric">最后登陆时间</th>
+                                    <th class="numeric">邮箱</th>
+                                    <th class="numeric">手机号</th>
+                                    <th class="numeric">最后上线时间</th>
+                                    <th class="numeric">权限</th>
                                     <!-- 
                                     	<th class="numeric">状态</th>
                                     	<th class="numeric">状态</th> 
@@ -135,21 +136,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tbody>
                                 
                                 <c:forEach items="${list}" var="user">
-                                	<tr>
+                                	<tr onclick="window.location.href='view.do?id=${user.id}';" style="cursor: pointer;">
 	                                    <td>${user.id }</td>
 	                                    <td>${user.username }</td>
 	                                    <td>${user.nickname }</td>
 	                                    <td class="numeric">${user.email }</td>
-	                                    <td class="numeric"><x:time linuxTime="${user.regtime }"></x:time></td>
-	                                    <td class="numeric">${user.regip }</td>
+	                                    <td class="numeric">${user.phone }</td>
 	                                    <td class="numeric"><x:time linuxTime="${user.lasttime }"></x:time></td>
+	                                    <td class="numeric"><script type="text/javascript">writeName('${user.authority }');</script></td>
 	                                    <td class="numeric">
 	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" href="<%=basePath %>/admin/role/editUserRole.do?userid=${user.id }">
 	                                    		编辑权限
 	                                    	</a>
-	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deleteUser(${user.id });">
+	                                    	<a type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="javascript:deleteUser(${user.id });">
 	                                    		<i class="fa fa-trash-o"></i>
-	                                    	</button>
+	                                    	</a>
 	                                    </td>
 	                                </tr>
                                 </c:forEach>
