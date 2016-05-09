@@ -70,10 +70,10 @@ public interface PostService {
 	public BaseVO deletePost(int id);
 	
 	/**
-	 * 通过 {@link Post}.id获取此条帖子的具体信息，包含 {@link Post}、 {@link PostData}
+	 * 查看，阅读帖子，通过 {@link Post}.id获取此条帖子的具体信息，包含 {@link Post}、 {@link PostData}
 	 * @param id {@link Post}.id
 	 * @return {@link PostVO}
 	 * 			<br/>首先判断getResult()是否是 {@link BaseVO#SUCCESS}，若是，才可以调取其他的值。若不是，可通过getInfo()获取错误信息
 	 */
-	public PostVO findPostVOById(int id);
+	public PostVO read(int id);
 }

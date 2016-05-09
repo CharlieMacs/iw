@@ -51,10 +51,14 @@ public interface MessageService {
 	public BaseVO sendMessage(HttpServletRequest request);
 	
 	/**
-	 * 通过 {@link Message}.id获取此条站内信的具体信息，包含 {@link Message}、 {@link MessageData}
+	 * 阅读信息，通过 {@link Message}.id获取此条站内信的具体信息，包含 {@link Message}、 {@link MessageData}
+	 * 		<ul>
+	 * 			<li>若收信者阅读，并且此信息的状态还是未阅读状态时，则将信息标记为已阅读状态</li>
+	 * 			<li>若发信者自己阅读，不做任何处理，单纯只是阅读</li>
+	 * 		</ul>
 	 * @param id {@link Message}.id
 	 * @return {@link MessageVO}
 	 * 		<br/>首先判断getResult()是否是 {@link BaseVO#SUCCESS}，若是，才可以调取其他的值。若不是，可通过getInfo()获取错误信息
 	 */
-	public MessageVO findMessageVOById(int id);
+	public MessageVO read(int id);
 }
