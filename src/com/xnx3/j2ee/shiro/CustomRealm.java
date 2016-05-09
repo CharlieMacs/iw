@@ -69,10 +69,10 @@ public class CustomRealm extends AuthorizingRealm {
 			//转换为树状集合
 			List<PermissionTree> permissionTreeList = new ShiroFunc().PermissionToTree(new ArrayList<Permission>(), permissions);	
     		activeUser.setPermissionTreeList(permissionTreeList);
-			
-    		String md5Password = new Md5Hash(user.getUsername(), user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
     		
+    		String md5Password = new Md5Hash(user.getUsername(), user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
     		//将activeUser设置simpleAuthenticationInfo
+    		
     		SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
     				activeUser, md5Password,ByteSource.Util.bytes(user.getSalt()), this.getName());
     		
@@ -86,7 +86,6 @@ public class CustomRealm extends AuthorizingRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
-		System.out.println("doGetAuthorizationInfo");
 		ActiveUser activeUser =  (ActiveUser) principals.getPrimaryPrincipal();
 		List<Permission> permissionList = null;
 		try {

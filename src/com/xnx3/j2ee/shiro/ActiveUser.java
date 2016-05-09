@@ -50,5 +50,10 @@ public class ActiveUser {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	@Override
+	public String toString() {
+		return "ActiveUser [user=" + user + ", permissions=" + permissions
+				+ ", permissionTreeList=" + permissionTreeList + "]";
+	}
 	
 }
