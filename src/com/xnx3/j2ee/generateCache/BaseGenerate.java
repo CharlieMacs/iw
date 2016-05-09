@@ -47,5 +47,12 @@ public class BaseGenerate {
 	void addCommonJsFunction(){
 		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectId){ var content = \"\"; if(selectId==''){ content = content + '<option value=\"\" selected=\"selected\">所有</option>'; }else{ content = content + '<option value=\"\">所有</option>'; } for(var p in "+this.objName+"){ if(p == selectId){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write(content); }";
 	}
+	
+	/**
+	 * 向写出的js文件里增加内容
+	 */
+	void appendContent(String content){
+		this.content = this.content+" "+content;
+	}
 }
 

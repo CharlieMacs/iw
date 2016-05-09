@@ -12,7 +12,7 @@ public class Log extends BaseGenerate {
 	/**
 	 * log.type 值－描述 缓存
 	 */
-	public synchronized void type(List<String> list){
+	public void type(List<String> list){
 		createCacheObject("type");
 		
 		for (int i = 0; i < list.size(); i++) {
