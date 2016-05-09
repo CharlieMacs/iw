@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user")
-public class User implements java.io.Serializable {
+public class User extends BaseEntity {
 
 	// Fields
 
@@ -31,9 +31,11 @@ public class User implements java.io.Serializable {
 	private String lastip;		//最后一次登陆的ip
 	private String salt;		//shiro加密使用
 	private String phone;		//手机号
-	private Integer currency;	//资金，可以是积分、金币、等等
+	private Integer currency;	//资金，可以是积分、金币、等等,站内货币
 	private Integer referrerid;	//推荐人的用户id。若没有推荐人则默认为0
-	private Integer freezecurrency;	//冻结资金，可以是积分、金币、等等
+	private float money;		//账户可用余额，金钱,RMB，单位：元
+	private float freezemoney;	//账户冻结余额，金钱,RMB，单位：元
+	private Short isfreeze;	//是否已冻结，1已冻结（拉入黑名单），0正常
 
 	// Constructors
 
@@ -180,14 +182,6 @@ public class User implements java.io.Serializable {
 		this.referrerid = referrerid;
 	}
 
-	public Integer getFreezecurrency() {
-		return freezecurrency;
-	}
-
-	public void setFreezecurrency(Integer freezecurrency) {
-		this.freezecurrency = freezecurrency;
-	}
-	
 	public String getLastip() {
 		return lastip;
 	}
@@ -196,16 +190,40 @@ public class User implements java.io.Serializable {
 		this.lastip = lastip;
 	}
 
+	public float getMoney() {
+		return money;
+	}
+
+	public void setMoney(float money) {
+		this.money = money;
+	}
+
+	public float getFreezemoney() {
+		return freezemoney;
+	}
+
+	public void setFreezemoney(float freezemoney) {
+		this.freezemoney = freezemoney;
+	}
+
+	public Short getIsfreeze() {
+		return isfreeze;
+	}
+
+	public void setIsfreeze(Short isfreeze) {
+		this.isfreeze = isfreeze;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", email=" + email
 				+ ", password=" + password + ", head=" + head + ", nickname="
 				+ nickname + ", authority=" + authority + ", regtime="
 				+ regtime + ", lasttime=" + lasttime + ", regip=" + regip
-				+ ", salt=" + salt + ", phone=" + phone + ", currency="
-				+ currency + ", referrerid=" + referrerid + ", freezecurrency="
-				+ freezecurrency + "]";
+				+ ", lastip=" + lastip + ", salt=" + salt + ", phone=" + phone
+				+ ", currency=" + currency + ", referrerid=" + referrerid
+				+ ", money=" + money + ", freezemoney=" + freezemoney
+				+ ", isfreeze=" + isfreeze + "]";
 	}
-
-
+	
 }

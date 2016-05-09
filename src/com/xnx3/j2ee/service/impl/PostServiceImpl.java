@@ -224,7 +224,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostVO findPostVOById(int id) {
+	public PostVO read(int id) {
 		PostVO postVO = new PostVO();
 		
 		if(id>0){
@@ -234,6 +234,16 @@ public class PostServiceImpl implements PostService {
 				postVO.setBaseVO(PostVO.FAILURE, "您所查看的帖子不存在");
 				return postVO;
 			}
+			
+			//查看帖子所属用户
+			User user = userDAO.findById(post.getUserid());
+			//检验此用户状态是否正常，是否被冻结
+			if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
+				postVO.setBaseVO(BaseVO.FAILURE, "发帖者账号已被冻结！无法查看帖子");
+				return postVO;
+			}
+			postVO.setUser(user);
+			
 			//查所属板块
 			PostClass postClass = postClassDAO.findById(post.getClassid());
 			if(postClass == null || postClass.getIsdelete() == BaseEntity.ISDELETE_DELETE){
@@ -246,9 +256,6 @@ public class PostServiceImpl implements PostService {
 				
 				PostData postData = postDataDAO.findById(post.getId());
 				postVO.setText(postData.getText());
-				
-				User user = userDAO.findById(post.getUserid());
-				postVO.setUser(user);
 				
 				postVO.setCommentCount(postCommentDAO.count(post.getId()));
 				

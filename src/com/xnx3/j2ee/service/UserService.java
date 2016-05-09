@@ -106,4 +106,19 @@ public interface UserService {
 	 * @return {@link BaseVO}
 	 */
 	public BaseVO updateNickName(HttpServletRequest request);
+	
+	/**
+	 * 冻结用户
+	 * @param id 用户id，user.id
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO freezeUser(int id);
+	
+	/**
+	 * 解除冻结用户
+	 * @param id 用户id，user.id
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO unfreezeUser(int id);
+	
 }

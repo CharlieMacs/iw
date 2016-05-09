@@ -186,9 +186,11 @@ public class UserServiceImpl implements UserService{
 		String password = request.getParameter("password");
 		if(username==null || username.length() == 0 ){
 			baseVO.setBaseVO(BaseVO.FAILURE, "用户名/邮箱不能为空");
+			return baseVO;
 		}
 		if(password==null || password.length() == 0){
 			baseVO.setBaseVO(BaseVO.FAILURE, "密码不能为空");
+			return baseVO;
 		}
 		
 		List<User> l = null;
@@ -201,22 +203,34 @@ public class UserServiceImpl implements UserService{
 			User user = l.get(0);
 			
 			String md5Password = new Md5Hash(password, user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
+			//检验密码是否正确
 			if(md5Password.equals(user.getPassword())){
+				//检验此用户状态是否正常，是否被冻结
+				if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
+					baseVO.setBaseVO(BaseVO.FAILURE, "您的账号已被冻结！无法登陆");
+					return baseVO;
+				}
+				
 				user.setLasttime(DateUtil.timeForUnix10());
 				user.setLastip(IpUtil.getIpAddress(request));
 				save(user);
 				
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
-		        token.setRememberMe(true);
+		        token.setRememberMe(false);
 				Subject currentUser = SecurityUtils.getSubject();  
 				
 				try {  
 					currentUser.login(token);  
 				} catch ( UnknownAccountException uae ) {
+					java.lang.System.out.println("UnknownAccountException:"+uae.getMessage());
 				} catch ( IncorrectCredentialsException ice ) {
+					java.lang.System.out.println("IncorrectCredentialsException:"+ice.getMessage());
 				} catch ( LockedAccountException lae ) {
+					java.lang.System.out.println("LockedAccountException:"+lae.getMessage());
 				} catch ( ExcessiveAttemptsException eae ) {
+					java.lang.System.out.println("ExcessiveAttemptsException:"+eae.getMessage());
 				} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+					java.lang.System.out.println("AuthenticationException:"+ae.getMessage());
 				}
 				logDao.insert("USER_LOGIN_SUCCESS");
 				baseVO.setBaseVO(BaseVO.SUCCESS, "登陆成功");
@@ -248,7 +262,9 @@ public class UserServiceImpl implements UserService{
 		user.setAuthority(Global.system.get("USER_REG_ROLE"));
 		user.setCurrency(0);
 		user.setReferrerid(0);
-		user.setFreezecurrency(0);
+		user.setFreezemoney(0F);
+		user.setMoney(0F);
+		user.setIsfreeze(User.ISFREEZE_NORMAL);
 		user.setHead("default.png");
 		
 		String inviteid = null;
@@ -277,7 +293,7 @@ public class UserServiceImpl implements UserService{
 			if(user.getId()>0){
 				//已注册成功，自动登录成用户
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
-		        token.setRememberMe(true);
+		        token.setRememberMe(false);
 				Subject currentUser = SecurityUtils.getSubject();  
 				
 				try {  
@@ -417,13 +433,19 @@ public class UserServiceImpl implements UserService{
     			return baseVO;
     		}
     		
+    		//检验此用户状态是否正常，是否被冻结
+			if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
+				baseVO.setBaseVO(BaseVO.FAILURE, "您的账号已被冻结！无法登陆");
+				return baseVO;
+			}
+    		
     		/****更改SmsLog状态*****/
     		smsLog.setUserid(user.getId());
     		smsLog.setUsed(SmsLog.USED_TRUE);
     		smsLogDAO.save(smsLog);
 			
 			UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
-	        token.setRememberMe(true);
+	        token.setRememberMe(false);
 			Subject currentUser = SecurityUtils.getSubject();  
 			
 			try {  
@@ -475,6 +497,41 @@ public class UserServiceImpl implements UserService{
 			ShiroFunc.getCurrentActiveUser().setUser(uu);
 	        
 			logDao.insert("USER_UPDATE_NICKNAME", oldNickName);
+		}
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO freezeUser(int id) {
+		BaseVO baseVO = new BaseVO();
+		if(id > 0){
+			User user = findById(id);
+			if(user == null){
+				baseVO.setBaseVO(BaseVO.FAILURE, "要冻结的用户不存在");
+			}else{
+				user.setIsfreeze(User.ISFREEZE_FREEZE);
+				save(user);
+			}
+		}else{
+			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要冻结的用户id");
+		}
+		
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO unfreezeUser(int id) {
+		BaseVO baseVO = new BaseVO();
+		if(id > 0){
+			User user = findById(id);
+			if(user == null){
+				baseVO.setBaseVO(BaseVO.FAILURE, "要解除冻结的用户不存在");
+			}else{
+				user.setIsfreeze(User.ISFREEZE_NORMAL);
+				save(user);
+			}
+		}else{
+			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要解除冻结的用户id");
 		}
 		return baseVO;
 	}

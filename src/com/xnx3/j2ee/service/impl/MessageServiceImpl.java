@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 import com.xnx3.DateUtil;
+import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.MessageDAO;
@@ -118,13 +119,8 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public BaseVO sendMessage(HttpServletRequest request) {
 		BaseVO baseVO = new BaseVO();
-		String recipientidString = request.getParameter("recipientid");
+		int recipientid = Lang.stringToInt(request.getParameter("recipientid"), 0);
 		String content = request.getParameter("content");
-		if(recipientidString == null || recipientidString.length()==0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "信息发送给谁呢？");
-			return baseVO;
-		}
-		int recipientid = Integer.parseInt(recipientidString);
 		if(recipientid<1){
 			baseVO.setBaseVO(BaseVO.FAILURE, "信息发送给谁呢？");
 			return baseVO;
@@ -134,6 +130,19 @@ public class MessageServiceImpl implements MessageService {
 			baseVO.setBaseVO(BaseVO.FAILURE, "请输入要发送的信息内容");
 		}else if(content.length()>Global.MESSAGE_CONTENT_MINLENGTH&&content.length()<Global.MESSAGE_CONTENT_MAXLENGTH) {
 			//正常
+			
+			//拿到收信人信息
+			User recipiendUser = userDao.findById(recipientid);
+			if(recipiendUser == null){
+				baseVO.setBaseVO(BaseVO.FAILURE, "发送的目标用户不存在！");
+				return baseVO;
+			}
+			//检验目标用户状态是否正常，是否被冻结
+			if(recipiendUser.getIsfreeze() == User.ISFREEZE_FREEZE){
+				baseVO.setBaseVO(BaseVO.FAILURE, "您发送信息的目标用户账号已被冻结！信息无法发送");
+				return baseVO;
+			}
+			
 			Message message = new Message();
 			message.setSenderid(ShiroFunc.getUser().getId());
 			message.setRecipientid(recipientid);
@@ -160,7 +169,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public MessageVO findMessageVOById(int id) {
+	public MessageVO read(int id) {
 		MessageVO messageVO = new MessageVO();
 		if(id>0){
 			Message message = findById(id);
@@ -172,16 +181,6 @@ public class MessageServiceImpl implements MessageService {
 					if(message.getIsdelete() == Message.ISDELETE_DELETE){
 						messageVO.setBaseVO(MessageVO.FAILURE, "此信息已被删除！");
 					}else{
-						messageVO.setMessage(message);
-						
-						//拿到收件人信息
-						User recipientUser = userDao.findById(message.getRecipientid());
-						messageVO.setRecipientUser(recipientUser);
-						
-						//拿到发件人信息
-						User senderUser = userDao.findById(message.getSenderid());
-						messageVO.setSenderUser(senderUser);
-						
 						//拿到信息的内容
 						MessageData messageData = messageDataDao.findById(id);
 						messageVO.setContent(messageData.getContent());
@@ -192,6 +191,21 @@ public class MessageServiceImpl implements MessageService {
 							save(message);
 							logDao.insert(message.getId(), "MESSAGE_READ", messageData.getContent());
 						}
+						messageVO.setMessage(message);
+						
+						//拿到发件人信息
+						User senderUser = userDao.findById(message.getSenderid());
+						
+						//检验目标用户状态是否正常，是否被冻结
+						if(senderUser.getIsfreeze() == User.ISFREEZE_FREEZE){
+							messageVO.setBaseVO(BaseVO.FAILURE, "发件人用户账号已被冻结！信息无法查看");
+							return messageVO;
+						}
+						messageVO.setSenderUser(senderUser);
+						
+						//拿到收件人信息
+						User recipientUser = userDao.findById(message.getRecipientid());
+						messageVO.setRecipientUser(recipientUser);
 					}
 				}else{
 					messageVO.setBaseVO(MessageVO.FAILURE, "您无权查看此信息！");
