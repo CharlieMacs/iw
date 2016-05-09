@@ -6,9 +6,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    	<jsp:include page="common/head.jsp">
-    		<jsp:param name="title" value="无权访问"/>
-    	</jsp:include>  
+  	<title>无权访问</title>
   </head>
   
   <body>
