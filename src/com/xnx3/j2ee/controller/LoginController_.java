@@ -17,7 +17,7 @@ import com.xnx3.j2ee.vo.BaseVO;
  */
 @Controller
 @RequestMapping("/")
-public class LoginController extends BaseController {
+public class LoginController_ extends BaseController {
 
 	@Resource
 	private UserService userService;
@@ -121,4 +121,13 @@ public class LoginController extends BaseController {
 		return smsLogService.sendPhoneLoginCode(request);
 	}
 	
+	@RequestMapping("404")
+	public String error404(){
+		return "/publicPage/404";
+	}
+	
+	@RequestMapping("500")
+	public String error500(){
+		return "/publicPage/500";
+	}
 }

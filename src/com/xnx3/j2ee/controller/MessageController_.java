@@ -2,15 +2,19 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageDataService;
@@ -28,7 +32,7 @@ import com.xnx3.j2ee.vo.MessageVO;
  */
 @Controller
 @RequestMapping("/message")
-public class MessageController extends BaseController {
+public class MessageController_ extends BaseController {
 	
 	@Resource
 	private MessageService messageService;
@@ -82,7 +86,7 @@ public class MessageController extends BaseController {
 	@RequiresPermissions("messageView")
 	@RequestMapping("/view")
 	public String view(@RequestParam(value = "id", defaultValue = "0") int id,Model model){
-		MessageVO messageVO = messageService.findMessageVOById(id);
+		MessageVO messageVO = messageService.read(id);
 		if(messageVO.getResult() == MessageVO.SUCCESS){
 			model.addAttribute("messageVO", messageVO);
 			return "iw/message/view";
@@ -114,12 +118,12 @@ public class MessageController extends BaseController {
 			HttpServletRequest request,Model model){
 		Sql sql = new Sql();
 		String[] column = {"id","state="};
-		String boxWhere = box.equals("inbox")? "recipientid="+getUser().getId():"senderid="+getUser().getId();
+		String boxWhere = box.equals("inbox")? "message.recipientid="+getUser().getId():"message.senderid="+getUser().getId();
 		
-		String where = sql.generateWhere(request, column, boxWhere+" AND isdelete = "+Message.ISDELETE_NORMAL);
-		int count = globalService.count("message", where);
+		String where = sql.generateWhere(request, column, boxWhere+" AND message.senderid=user.id AND message.isdelete = "+Message.ISDELETE_NORMAL+" AND user.isfreeze="+User.ISFREEZE_NORMAL);
+		int count = globalService.count("message,user", where);
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
-		where = sql.generateWhere(request, column, "message.id=message_data.id AND message."+boxWhere,"message");
+		where = sql.generateWhere(request, column, "message.senderid=user.id AND message.id=message_data.id AND user.isfreeze="+User.ISFREEZE_NORMAL+" AND "+boxWhere,"message");
 		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
 		
 		model.addAttribute("list", list);

@@ -36,7 +36,7 @@ import com.xnx3.j2ee.util.Sql;
  */
 @Controller
 @RequestMapping("/admin/role")
-public class RoleAdminController extends BaseController {
+public class RoleAdminController_ extends BaseController {
 
 	@Resource
 	private RoleService roleService;
@@ -177,7 +177,7 @@ public class RoleAdminController extends BaseController {
 				
 				model.addAttribute("permission", permission);
 				model.addAttribute("parentPermissionDescription", parentPermissionDescription);
-				return "admin/role/permission";
+				return "iw/admin/role/permission";
 			}
 		}
 		return "redirect:/admin/role/permissionList.do";
@@ -384,7 +384,11 @@ public class RoleAdminController extends BaseController {
 			Model model){
 		
 		if(userid==0){
-			return error(model, "传入的编号不正确");
+			return error(model, "传入的用户id不正确");
+		}
+		User user = userService.findById(userid);
+		if(user == null){
+			return error(model, "用户不存在！");
 		}
 		List<UserRole> myUserRoleList = userRoleService.findByUserId(userid);	//此用户原先的权限
 		
@@ -429,6 +433,8 @@ public class RoleAdminController extends BaseController {
 			}
 		}
 		
+		user.setAuthority(role);
+		userService.save(user);
 		logService.insert(userid, "ADMIN_SYSTEM_USER_ROLE_SAVE");
 		return success(model, "保存成功", "admin/user/list.do");
 	}

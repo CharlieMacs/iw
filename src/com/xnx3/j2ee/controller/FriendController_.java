@@ -22,7 +22,7 @@ import com.xnx3.j2ee.vo.FriendListVO;
  */
 @Controller
 @RequestMapping("/friend")
-public class FriendController extends BaseController {
+public class FriendController_ extends BaseController {
 	
 	@Resource
 	private FriendService friendService;

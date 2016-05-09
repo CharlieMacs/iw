@@ -27,7 +27,7 @@ import com.xnx3.j2ee.vo.BaseVO;
  */
 @Controller
 @RequestMapping("/admin/message")
-public class MessageAdminController extends BaseController {
+public class MessageAdminController_ extends BaseController {
 
 	@Resource
 	private MessageService messageService;
@@ -56,7 +56,7 @@ public class MessageAdminController extends BaseController {
 		int count = globalService.count("message", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		where = sql.generateWhere(request, column, "message.id=message_data.id","message");
-		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.other) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.self) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
+		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

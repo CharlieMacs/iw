@@ -33,7 +33,7 @@ import com.xnx3.j2ee.vo.BaseVO;
  */
 @Controller
 @RequestMapping("/admin/bbs")
-public class BbsAdminController extends BaseController {
+public class BbsAdminController_ extends BaseController {
 	
 	@Resource
 	private PostService postService;

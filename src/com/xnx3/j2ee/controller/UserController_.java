@@ -30,7 +30,7 @@ import com.xnx3.net.MailUtil;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController extends BaseController {
+public class UserController_ extends BaseController {
 	
 	@Resource
 	private MessageService messageService;

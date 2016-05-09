@@ -26,7 +26,7 @@ import com.xnx3.j2ee.controller.BaseController;
  */
 @Controller
 @RequestMapping("/admin/system")
-public class SystemAdminController extends BaseController {
+public class SystemAdminController_ extends BaseController {
 
 	@Resource
 	private PostClassService postClassService;
