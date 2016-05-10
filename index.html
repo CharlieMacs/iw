@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>iw by xnx3</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">iw</h1>
+        <p class="header">web 快速开发，基础功能集成</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/xnx3/iw/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/xnx3/iw/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/xnx3/iw">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/xnx3">xnx3</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="iw-web-快速开发基础功能集成底层" class="anchor" href="#iw-web-%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E5%8A%9F%E8%83%BD%E9%9B%86%E6%88%90%E5%BA%95%E5%B1%82" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>iw  web 快速开发，基础功能集成底层</h1>
+
+<p><br>
+整合权限分配管理、论坛、会员、日志、消息、系统缓存管理等功能
+<br>加入了<a href="http://github.com/xnx3/xnx3">xnx3.jar</a>，快速开发列表、搜索页面、分布式附件上传等常用工具
+<br>
+使用框架：<br>
+hibernate 4.2<br>
+spring 4.2<br>
+spring mvc 4.2<br>
+shiro 1.2.3<br>
+urlrewritefilter 4.0.3<br>
+xnx3 2.0<br>
+fastdfs<br></p>
+
+<p>Web project<br>
+/src                                java源代码<br>
+/src/com/xnx3/j2ee/bean         相关bean类<br>
+/src/com/xnx3/j2ee/controller       springmvc控制器<br>
+/src/com/xnx3/j2ee/controller/admin管理后台<br>
+/src/com/xnx3/j2ee/dao          数据库相关操作<br>
+/src/com/xnx3/j2ee/entity           数据库关联的实体类<br>
+/src/com/xnx3/j2ee/generateCache    程序数据的缓存文件生成<br>
+/src/com/xnx3/j2ee/interceptor      springmvc拦截器<br>
+/src/com/xnx3/j2ee/service          service层<br>
+/src/com/xnx3/j2ee/service/impl     service层的实现<br>
+/src/com/xnx3/j2ee/servlet          servlet<br>
+/src/com/xnx3/j2ee/shiro            shiro权限<br>
+/src/com/xnx3/j2ee/tld              自定义标签<br>
+/src/com/xnx3/j2ee/util         工具类<br>
+/src/com/xnx3/j2ee/vo               json返回使用<br></p>
+
+<p>/<em>.do 、 /</em>.jsp 、 /*.html  根目录下的do/html/jsp页面可以直接访问，无需登陆<br>
+com.xnx3.j2ee.Global                        基础配置、集中管理。全局控制，全局的参数、常亮，都是在这里<br>
+com.xnx3.j2ee.Global.get("systemName"); 直接调用system表配置的值<br>
+src/systemConfig.xml                        系统某些实用功能的配置文件所在<br>
+<br><br></p>
+
+<h2>
+<a id="jsp页面全局参数获取" class="anchor" href="#jsp%E9%A1%B5%E9%9D%A2%E5%85%A8%E5%B1%80%E5%8F%82%E6%95%B0%E8%8E%B7%E5%8F%96" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JSP页面全局参数获取</h2>
+
+<pre>
+    用户信息参数：${user}，如调用user表的id为${user.id}<br>
+    未读信息条数：${unreadMessage}
+</pre>
+
+<p><br>
+<br>
+前端开发：杨建伟<br>
+架构设计：管雷鸣<br>
+联系QQ：921153866<br></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
