@@ -1,5 +1,7 @@
 package com.xnx3.j2ee.generateCache;
 
+import java.io.IOException;
+
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
 
@@ -37,7 +39,12 @@ public class BaseGenerate {
 	 */
 	void generateCacheFile(){
 		addCommonJsFunction();
-		FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content);
+		try {
+			FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content,FileUtil.UTF8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//		FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content);
 		this.content=null;
 	}
 	
