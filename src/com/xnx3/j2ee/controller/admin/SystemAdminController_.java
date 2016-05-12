@@ -137,7 +137,14 @@ public class SystemAdminController_ extends BaseController {
 			//保存页面
 			system.setValue(value);
 			systemService.save(system);
-			new InitServlet();	//重新初始化数据
+			
+			/***更新内存数据****/
+			Global.system.clear();
+			List<com.xnx3.j2ee.entity.System> list = systemService.findAll();
+			for (int i = 0; i < list.size(); i++) {
+				com.xnx3.j2ee.entity.System s = list.get(i);
+				Global.system.put(s.getName(), s.getValue());
+			}
 			
 			logService.insert("ADMIN_SYSTEM_EDITSYSTEM", system.getName());
 			return success(model, "保存成功", "admin/system/index.do");
