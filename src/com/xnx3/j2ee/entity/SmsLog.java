@@ -12,7 +12,7 @@ import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 
 /**
- * SmsLog entity. @author MyEclipse Persistence Tools
+ * 使用此需配置src下的systemConfig.xml文件下的sms节点
  */
 @Entity
 @Table(name = "sms_log")
@@ -66,13 +66,13 @@ public class SmsLog implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private String code;
-	private Integer userid;
-	private Short used;
-	private Short type;
-	private Integer addtime;
-	private String phone;
-	private String ip;
+	private String code;		//发送的验证码，6位数字
+	private Integer userid;	//哪个用户使用了此验证码
+	private Short used;		//是否被使用了
+	private Short type;		//验证码所属功能类型，  1:登录  ； 2:找回密码
+	private Integer addtime;	//发送时间
+	private String phone;		//发送到的手机号
+	private String ip;		//触发发送操作的客户ip地址
 
 	// Constructors
 
@@ -107,64 +107,115 @@ public class SmsLog implements java.io.Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	/**
+	 * 发送的验证码，6位数字
+	 * @return
+	 */
 	@Column(name = "code", length = 6)
 	public String getCode() {
 		return this.code;
 	}
-
+	/**
+	 * 发送的验证码，6位数字
+	 * @param code
+	 */
 	public void setCode(String code) {
 		this.code = code;
 	}
-
+	/**
+	 * 哪个用户使用了此验证码
+	 * @return
+	 */
 	@Column(name = "userid")
 	public Integer getUserid() {
 		return this.userid;
 	}
-
+	/**
+	 * 哪个用户使用了此验证码
+	 * @param userid
+	 */
 	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
-
+	
+	/**
+	 * 是否被使用了
+	 * 		<ul>
+	 * 			<li> {@link SmsLog#USED_TRUE}：已经使用了 </li>
+	 * 			<li> {@link SmsLog#USED_FALSE}：未使用 </li>
+	 * 		</ul>
+	 * @return
+	 */
 	@Column(name = "used")
 	public Short getUsed() {
 		return this.used;
 	}
-
+	/**
+	 * 是否被使用了
+	 * 		<ul>
+	 * 			<li> {@link SmsLog#USED_TRUE}：已经使用了 </li>
+	 * 			<li> {@link SmsLog#USED_FALSE}：未使用 </li>
+	 * 		</ul>
+	 * @param used
+	 */
 	public void setUsed(Short used) {
 		this.used = used;
 	}
-
+	/**
+	 * 验证码所属功能类型，  1:登录  ； 2:找回密码
+	 * @return
+	 */
 	@Column(name = "type")
 	public Short getType() {
 		return this.type;
 	}
-
+	/**
+	 * 验证码所属功能类型，  1:登录  ； 2:找回密码
+	 * @param type
+	 */
 	public void setType(Short type) {
 		this.type = type;
 	}
-
+	/**
+	 * 添加时间
+	 * @return
+	 */
 	@Column(name = "addtime")
 	public Integer getAddtime() {
 		return this.addtime;
 	}
-
+	/**
+	 * 添加时间
+	 * @param addtime
+	 */
 	public void setAddtime(Integer addtime) {
 		this.addtime = addtime;
 	}
-
+	/**
+	 * 发送到的手机号
+	 * @return
+	 */
 	public String getPhone() {
 		return phone;
 	}
-
+	/**
+	 * 发送到的手机号
+	 * @param phone
+	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
+	/**
+	 * 触发发送操作的客户ip地址
+	 * @return
+	 */
 	public String getIp() {
 		return ip;
 	}
-
+	/**
+	 * 触发发送操作的客户ip地址
+	 * @param ip
+	 */
 	public void setIp(String ip) {
 		this.ip = ip;
 	}

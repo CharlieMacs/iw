@@ -42,6 +42,15 @@ public class BaseVO {
 		this.info = info;
 	}
 	
+	/**
+	 * 将另一个 BaseVO 的信息赋值到这个上。克隆
+	 * @param baseVO {@link BaseVO}
+	 */
+	public void setBaseVO(BaseVO baseVO) {
+		this.result = baseVO.getResult();
+		this.info = baseVO.getInfo();
+	}
+	
 	public int getResult() {
 		return result;
 	}
