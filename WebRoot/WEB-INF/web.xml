@@ -84,7 +84,7 @@
 	<jsp-config>
 		<taglib>
 			<taglib-uri>http://www.xnx3.com/java_xnx3/xnx3_tld</taglib-uri>
-			<taglib-location>/WEB-INF/classes/com/xnx3/j2ee/tld/xnx3.tld</taglib-location>
+			<taglib-location>/WEB-INF/classes/xnx3.tld</taglib-location>
 		</taglib>
 	</jsp-config>
 
