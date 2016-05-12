@@ -21,10 +21,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<c:if test="${error != null}">
 					<h1><span>出错：${error }</span></h1>
 				</c:if>
-				<form action="<%=basePath %>phoneVerifyLoginSubmit.do" method="post" id="form">	
+				<form action="<%=basePath %>loginByPhoneAndCode.do" method="post" id="form">	
 					<ul><li>
 							<input type="text" placeholder="手机号" class="textInput username" name="phone" value="" >
-							<a href="sendLoginVerify.do?phone=13011658091" target="_black">获取验证码</a>
+							<a href="sendPhoneLoginCode.do?phone=13011658091" target="_black">获取验证码</a>
 							
 							<span class="icon">手机号</span>
 						</li>

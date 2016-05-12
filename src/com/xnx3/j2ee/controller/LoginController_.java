@@ -115,7 +115,7 @@ public class LoginController_ extends BaseController {
 	 * 			<br/>form表单需提交参数：phone(发送到的手机号)
 	 * @return {@link BaseVO}
 	 */
-	@RequestMapping("sendLoginVerify")
+	@RequestMapping("sendPhoneLoginCode")
 	@ResponseBody
 	public BaseVO sendPhoneLoginCode(HttpServletRequest request){
 		return smsLogService.sendPhoneLoginCode(request);

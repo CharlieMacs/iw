@@ -46,7 +46,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</shiro:hasPermission>
 
 		<li>
-			<a href="#">Iworkware</a>
+			<a href="https://github.com/xnx3/iw" target="_black">powered by iw</a>
 		</li>
 	</ul>
 </div>      

@@ -29,7 +29,7 @@ import com.xnx3.j2ee.entity.SmsLog;
  * methods provides additional information for how to configure it for the
  * desired type of transaction control.
  * 
- * @see com.xnx3.j2ee.dao.SmsLog
+ * @see com.xnx3.j2ee.entity.SmsLog
  * @author MyEclipse Persistence Tools
  */
 @Transactional
@@ -84,7 +84,7 @@ public class SmsLogDAO {
 		log.debug("getting SmsLog instance with id: " + id);
 		try {
 			SmsLog instance = (SmsLog) getCurrentSession().get(
-					"com.xnx3.j2ee.dao.SmsLog", id);
+					"com.xnx3.j2ee.entity.SmsLog", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -96,7 +96,7 @@ public class SmsLogDAO {
 		log.debug("finding SmsLog instance by example");
 		try {
 			List<SmsLog> results = (List<SmsLog>) getCurrentSession()
-					.createCriteria("com.xnx3.j2ee.dao.SmsLog")
+					.createCriteria("com.xnx3.j2ee.entity.SmsLog")
 					.addOrder(Order.desc("id"))
 					.add(create(instance)).list();
 			log.debug("find by example successful, result size: "

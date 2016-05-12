@@ -54,7 +54,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 	                        	<select name="type" class="form-control">
 	                        		<script type="text/javascript">writeSelectAllOptionFortype(${type});</script>
 	                        	</select>
-	                        </div>(遍历type数组，将结果集放到select中)
+	                        </div>
 	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
 	                            <span class="input-group-btn">
 	                            <input class="btn btn-success" type="submit" value="搜索">
