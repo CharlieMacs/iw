@@ -17,6 +17,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<shiro:hasPermission name="adminLog"> 
 			<li><a href="<%=basePath %>/admin/log/list.do"><i class="fa fa-dashboard"></i><span>日志管理</span></a></li>
 		</shiro:hasPermission>
+		<shiro:hasPermission name="adminSmsLog"> 
+			<li><a href="<%=basePath %>/admin/smslog/list.do"><i class="fa fa-dashboard"></i><span>验证码管理</span></a></li>
+		</shiro:hasPermission>
 		<shiro:hasPermission name="adminBbs"> 
 			<li class="sub-menu"><a href="<%=basePath %>/admin/message/list.do"><i class="fa fa-book"></i><span>论坛管理</span></a>
 			    <ul class="sub">
