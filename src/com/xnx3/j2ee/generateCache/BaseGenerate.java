@@ -20,7 +20,7 @@ public class BaseGenerate {
 	 * 创建js对象
 	 * @param objName js对象名（保存的js文件名、使用时引用的js对象名）
 	 */
-	void createCacheObject(String objName){
+	public void createCacheObject(String objName){
 		this.objName=objName;
 		content="var "+objName+" = new Array(); ";
 	}
@@ -30,35 +30,34 @@ public class BaseGenerate {
 	 * @param key 键
 	 * @param value 值
 	 */
-	void cacheAdd(Object key,Object value){
+	public void cacheAdd(Object key,Object value){
 		content += objName+"['"+key+"']='"+value+"'; ";
 	}
 	
 	/**
 	 * 生成js缓存文件保存
 	 */
-	void generateCacheFile(){
+	public void generateCacheFile(){
 		addCommonJsFunction();
 		try {
 			FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content,FileUtil.UTF8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content);
 		this.content=null;
 	}
 	
 	/**
 	 * 增加一些常用的js函数
 	 */
-	void addCommonJsFunction(){
+	public void addCommonJsFunction(){
 		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectId){ var content = \"\"; if(selectId==''){ content = content + '<option value=\"\" selected=\"selected\">所有</option>'; }else{ content = content + '<option value=\"\">所有</option>'; } for(var p in "+this.objName+"){ if(p == selectId){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write(content); }";
 	}
 	
 	/**
 	 * 向写出的js文件里增加内容
 	 */
-	void appendContent(String content){
+	public void appendContent(String content){
 		this.content = this.content+" "+content;
 	}
 }
