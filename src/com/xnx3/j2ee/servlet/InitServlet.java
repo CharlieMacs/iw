@@ -18,6 +18,7 @@ import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.generateCache.Role;
+import com.xnx3.j2ee.generateCache.SmsLog;
 import com.xnx3.j2ee.generateCache.User;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.generateCache.Message;
@@ -52,6 +53,7 @@ public class InitServlet extends HttpServlet {
 		new Role().role(roleService.findAll());
 		new User().isfreeze();
 		loadLogType();
+		new SmsLog().used();
 		
 		readSystemTable();
 	}

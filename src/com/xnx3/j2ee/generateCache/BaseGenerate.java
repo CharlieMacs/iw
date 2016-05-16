@@ -5,6 +5,10 @@ import java.io.IOException;
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
 
+/**
+ * 所有js缓存生成的父类
+ * @author 管雷鸣
+ */
 public class BaseGenerate {
 	/**
 	 * 生成js缓存文件的内容
