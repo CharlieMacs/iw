@@ -80,6 +80,14 @@ public interface UserService {
 	public BaseVO loginByPhoneAndCode(HttpServletRequest request);
 	
 	/**
+	 * 手机号登陆，会自动检测上次登陆的ip，若上次登陆的ip跟当前的ip一样，则这个手机用户登陆成功
+	 * @param request {@link HttpServletRequest} 
+	 * 		<br/>登陆时form表单需提交一个参数：phone(手机号)
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO loginByPhone(HttpServletRequest request);
+	
+	/**
 	 * 注册页面初始化数据，注册页面填写表单时先调用此，初始化推荐人相关数据
 	 * <br/>GET/POST参数：inviteid 推荐人id，user.id。可为空为不传
 	 */

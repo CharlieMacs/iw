@@ -444,7 +444,12 @@ public class UserServiceImpl implements UserService{
     		smsLog.setUserid(user.getId());
     		smsLog.setUsed(SmsLog.USED_TRUE);
     		smsLogDAO.save(smsLog);
-			
+    		
+    		/*******更改User状态******/
+    		user.setLasttime(DateUtil.timeForUnix10());
+    		user.setLastip(IpUtil.getIpAddress(request));
+			save(user);
+    		
 			UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
 	        token.setRememberMe(false);
 			Subject currentUser = SecurityUtils.getSubject();  
@@ -465,6 +470,65 @@ public class UserServiceImpl implements UserService{
     		baseVO.setBaseVO(BaseVO.FAILURE, "验证码不存在！");
     		return baseVO;
     	}
+	}
+	
+
+	/**
+	 * 手机号登陆，会自动检测上次登陆的ip，若上次登陆的ip跟当前的ip一样，则这个手机用户登陆成功
+	 * @param request {@link HttpServletRequest} 
+	 * 		<br/>登陆时form表单需提交两个参数：phone(手机号)、code(手机收到的动态验证码)
+	 * @return {@link BaseVO}
+	 */
+	@Override
+	public BaseVO loginByPhone(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		String phone = request.getParameter("phone");
+		if(phone==null || phone.length() != 11){
+			baseVO.setBaseVO(BaseVO.FAILURE, "请输入正确的手机号");
+			return baseVO;
+		}
+		
+    	
+		User user = findByPhone(phone);
+		if(user == null){
+			baseVO.setBaseVO(BaseVO.FAILURE, "用户不存在！");
+			return baseVO;
+		}
+		
+		//ip检测
+		String ip = IpUtil.getIpAddress(request);
+		if(!(user.getLastip().equals(ip) || user.getRegip().equals(ip))){
+			baseVO.setBaseVO(BaseVO.FAILURE, "上次登陆ip跟当前ip不一致，安全考虑不让其登陆");
+			return baseVO;
+		}
+		
+		//检验此用户状态是否正常，是否被冻结
+		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
+			baseVO.setBaseVO(BaseVO.FAILURE, "您的账号已被冻结！无法登陆");
+			return baseVO;
+		}
+		
+		/*******更改User状态******/
+		user.setLasttime(DateUtil.timeForUnix10());
+		user.setLastip(IpUtil.getIpAddress(request));
+		save(user);
+		
+		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
+        token.setRememberMe(false);
+		Subject currentUser = SecurityUtils.getSubject();  
+		
+		try {  
+			currentUser.login(token);  
+		} catch ( UnknownAccountException uae ) {
+		} catch ( IncorrectCredentialsException ice ) {
+		} catch ( LockedAccountException lae ) {
+		} catch ( ExcessiveAttemptsException eae ) {
+		} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+		}
+		
+		logDao.insert("USER_LOGIN_SUCCESS");
+		baseVO.setBaseVO(BaseVO.SUCCESS, "登录成功");
+		return baseVO;
 	}
 
 	@Override
