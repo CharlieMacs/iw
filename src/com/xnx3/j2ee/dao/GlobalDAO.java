@@ -57,9 +57,13 @@ public class GlobalDAO {
 	 * @param entityClass 转化为什么实体类
 	 * @return
 	 */
-	public List findBySqlQuery(String selectFrom,String where,int limitStart,int limitNumber,Class entityClass) {
+	public List findBySqlQuery(String selectFrom,String where,Page page,Class entityClass) {
 		try {
-			String queryString = selectFrom+where+" LIMIT "+limitStart+","+limitNumber;
+			String orderBy = "";
+			if(page.getOrderBy() != null){
+				orderBy = " ORDER BY "+page.getOrderBy();
+			}
+			String queryString = selectFrom+where+orderBy+" LIMIT "+page.getLimitStart()+","+page.getEveryNumber();
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).addEntity(entityClass);
 			return queryObject.list();
 		} catch (RuntimeException re) {
@@ -75,9 +79,13 @@ public class GlobalDAO {
 	 * @param limitNumber
 	 * @return 
 	 */
-	public List<Map<String,String>> findBySqlQuery(String sql,int limitStart,int limitNumber) {
+	public List<Map<String,String>> findBySqlQuery(String sql,Page page) {
 		try {
-			String queryString = sql+" LIMIT "+limitStart+","+limitNumber;
+			String orderBy = "";
+			if(page.getOrderBy() != null){
+				orderBy = " ORDER BY "+page.getOrderBy();
+			}
+			String queryString = sql+orderBy+" LIMIT "+page.getLimitStart()+","+page.getEveryNumber();
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			return queryObject.list();
 		} catch (RuntimeException re) {

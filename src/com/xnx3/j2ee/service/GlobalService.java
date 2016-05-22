@@ -37,8 +37,6 @@ public interface GlobalService {
 	 * 同 {@link #findBySqlQuery(String, String, int, int, Class)}
 	 * 返回的是List<Map<String,String>>
 	 * @param sql 执行的sql，不包含limit，limit会自动拼接
-	 * @param limitStart 
-	 * @param limitNumber
 	 * @return List<Map<String,Object>>
 	 */
 	public List<Map<String,String>> findBySqlQuery(String sql,Page page);

@@ -22,12 +22,12 @@ public class GlobalServiceImpl implements GlobalService {
 
 	@Override
 	public List findBySqlQuery(String selectFrom, String where, Page page,Class entityClass) {
-		return globalDAO.findBySqlQuery(selectFrom, where, page.getLimitStart(),page.getEveryNumber(),entityClass);
+		return globalDAO.findBySqlQuery(selectFrom, where, page,entityClass);
 	}
 
 	@Override
 	public List<Map<String, String>> findBySqlQuery(String sql, Page page) {
-		return globalDAO.findBySqlQuery(sql, page.getLimitStart(), page.getEveryNumber());
+		return globalDAO.findBySqlQuery(sql,page);
 	}
 
 }
