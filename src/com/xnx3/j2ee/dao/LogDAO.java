@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xnx3.DateUtil;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.shiro.ShiroFunc;
@@ -191,7 +192,7 @@ public class LogDAO {
 	 */
 	public void insert(int goalid, String type, String value) {
 		Log log = new Log();
-		log.setAddtime(new Date());
+		log.setAddtime(DateUtil.timeForUnix10());
 		log.setUserid(getUserId());
 		log.setValue(value);
 		log.setGoalid(goalid);
@@ -219,7 +220,7 @@ public class LogDAO {
 	 */
 	public void insert(String type, String value) {
 		Log log = new Log();
-		log.setAddtime(new Date());
+		log.setAddtime(DateUtil.timeForUnix10());
 		log.setUserid(getUserId());
 		log.setValue(value);
 		log.setType(Log.typeMap.get(type));
@@ -233,7 +234,7 @@ public class LogDAO {
 	 */
 	public void insert(int goalid, String type) {
 		Log log = new Log();
-		log.setAddtime(new Date());
+		log.setAddtime(DateUtil.timeForUnix10());
 		log.setUserid(getUserId());
 		log.setGoalid(goalid);
 		log.setType(Log.typeMap.get(type));
@@ -246,13 +247,11 @@ public class LogDAO {
 	 */
 	public void insert(String type) {
 		Log log = new Log();
-		log.setAddtime(new Date());
+		log.setAddtime(DateUtil.timeForUnix10());
 		log.setUserid(getUserId());
 		log.setType(Log.typeMap.get(type));
 		save(log);
 	}
-	
-	
 
 	public static LogDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (LogDAO) ctx.getBean("LogDAO");

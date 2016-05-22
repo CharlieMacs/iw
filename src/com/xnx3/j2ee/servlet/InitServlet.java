@@ -83,12 +83,13 @@ public class InitServlet extends HttpServlet {
     	for (int i = 0; i < list.size(); i++) {
     		String[] array = list.get(i).split("#");
     		String name = array[0];
-    		Short value = (short) Lang.stringToInt(array[1], 0);
+    		int value = Lang.stringToInt(array[1], 0);
     		String description = array[2];
     		Log.typeMap.put(name, value);
     		Log.typeDescriptionMap.put(value, description);
 		}
 	}
+	
 	
 	/**
 	 * 生成缓存数据

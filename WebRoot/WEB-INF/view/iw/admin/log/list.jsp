@@ -1,7 +1,7 @@
 <%@page import="com.xnx3.j2ee.Global"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.xnx3.com/java_xnx3/xnx3_tld" prefix="x" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -59,7 +59,6 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 	                            <span class="input-group-btn">
 	                            <input class="btn btn-success" type="submit" value="搜索">
 	                            <i class="fa fa-search"></i>
-	                            </button>
 	                            </span>
 	                        </div>
                         </form>  
@@ -83,7 +82,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 		                                    <td><script type="text/javascript">document.write(type[${log['type']}]);</script></td>
 		                                    <td>${log['value'] }</td>
 		                                    <td>
-		                                    	<fmt:formatDate value="${log['addtime'] }" type="both"/>
+		                                    	<x:time linuxTime="${log['addtime'] }"></x:time>
 		                                    </td>
 		                                </tr>
 	                                </c:forEach>
