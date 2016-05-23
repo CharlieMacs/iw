@@ -1,20 +1,21 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.PostDataDAO;
 import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.service.PostDataService;
 
-@Service("postDataService")
 public class PostDataServiceImpl implements PostDataService {
 	
-	@Resource
 	private PostDataDAO postDataDAO;
+
+	public PostDataDAO getPostDataDAO() {
+		return postDataDAO;
+	}
+
+	public void setPostDataDAO(PostDataDAO postDataDAO) {
+		this.postDataDAO = postDataDAO;
+	}
 
 	@Override
 	public void save(PostData transientInstance) {

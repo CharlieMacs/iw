@@ -2,10 +2,7 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 import java.util.Random;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -14,8 +11,6 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Service;
-
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
@@ -29,19 +24,45 @@ import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.entity.*;
 
-@Service("userService")
 public class UserServiceImpl implements UserService{
 
-	@Resource
 	private UserDAO userDao;
-	@Resource
 	private LogDAO logDao;
-	@Resource
 	private UserRoleDAO userRoleDAO;
-	@Resource
 	private SmsLogDAO smsLogDAO;
 	
-	
+	public UserDAO getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDAO userDao) {
+		this.userDao = userDao;
+	}
+
+	public LogDAO getLogDao() {
+		return logDao;
+	}
+
+	public void setLogDao(LogDAO logDao) {
+		this.logDao = logDao;
+	}
+
+	public UserRoleDAO getUserRoleDAO() {
+		return userRoleDAO;
+	}
+
+	public void setUserRoleDAO(UserRoleDAO userRoleDAO) {
+		this.userRoleDAO = userRoleDAO;
+	}
+
+	public SmsLogDAO getSmsLogDAO() {
+		return smsLogDAO;
+	}
+
+	public void setSmsLogDAO(SmsLogDAO smsLogDAO) {
+		this.smsLogDAO = smsLogDAO;
+	}
+
 	@Override
 	public void save(User user) {
 		// TODO Auto-generated method stub

@@ -1,28 +1,36 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.PermissionDAO;
 import com.xnx3.j2ee.dao.UserDAO;
 import com.xnx3.j2ee.dao.UserRoleDAO;
 import com.xnx3.j2ee.service.UserRoleService;
 import com.xnx3.j2ee.entity.*;
 
-@Service("userRoleService")
 public class UserRoleServiceImpl implements UserRoleService{
 
-	@Resource
 	private UserDAO userDao;
-	
-	@Resource
 	private UserRoleDAO userRoleDao;
-	
-	@Resource
 	private PermissionDAO permissionDAO;
+	
+	public UserDAO getUserDao() {
+		return userDao;
+	}
+	public void setUserDao(UserDAO userDao) {
+		this.userDao = userDao;
+	}
+	public UserRoleDAO getUserRoleDao() {
+		return userRoleDao;
+	}
+	public void setUserRoleDao(UserRoleDAO userRoleDao) {
+		this.userRoleDao = userRoleDao;
+	}
+	public PermissionDAO getPermissionDAO() {
+		return permissionDAO;
+	}
+	public void setPermissionDAO(PermissionDAO permissionDAO) {
+		this.permissionDAO = permissionDAO;
+	}
 
 	@Override
 	public void save(UserRole transientInstance) {

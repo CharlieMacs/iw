@@ -17,6 +17,7 @@ import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
+import com.xnx3.j2ee.generateCache.PayLog;
 import com.xnx3.j2ee.generateCache.Role;
 import com.xnx3.j2ee.generateCache.SmsLog;
 import com.xnx3.j2ee.generateCache.User;
@@ -54,6 +55,7 @@ public class InitServlet extends HttpServlet {
 		new User().isfreeze();
 		loadLogType();
 		new SmsLog().used();
+		new PayLog().channel();
 		
 		readSystemTable();
 	}

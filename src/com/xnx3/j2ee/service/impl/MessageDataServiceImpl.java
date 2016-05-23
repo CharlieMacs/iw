@@ -1,18 +1,22 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
 import com.xnx3.j2ee.dao.MessageDataDAO;
 import com.xnx3.j2ee.entity.MessageData;
 import com.xnx3.j2ee.service.MessageDataService;
 
-@Service("messageDataService")
 public class MessageDataServiceImpl implements MessageDataService {
 
-	@Resource
 	private MessageDataDAO messageDataDAO;
 	
+	public MessageDataDAO getMessageDataDAO() {
+		return messageDataDAO;
+	}
+
+	public void setMessageDataDAO(MessageDataDAO messageDataDAO) {
+		this.messageDataDAO = messageDataDAO;
+	}
+
 	@Override
 	public void save(MessageData transientInstance) {
 		// TODO Auto-generated method stub

@@ -1,12 +1,7 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 import com.xnx3.StringUtil;
@@ -16,23 +11,41 @@ import com.xnx3.j2ee.dao.PostCommentDAO;
 import com.xnx3.j2ee.dao.PostDAO;
 import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.Post;
-import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
-import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.service.PostCommentService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.vo.BaseVO;
 
-@Service("postCommentService")
 public class PostCommentServiceImpl implements PostCommentService {
 
-	@Resource
 	private PostCommentDAO postCommentDAO;
-	@Resource
 	private LogDAO logDAO;
-	@Resource
 	private PostDAO postDAO;
 	
+	public PostCommentDAO getPostCommentDAO() {
+		return postCommentDAO;
+	}
+
+	public void setPostCommentDAO(PostCommentDAO postCommentDAO) {
+		this.postCommentDAO = postCommentDAO;
+	}
+
+	public LogDAO getLogDAO() {
+		return logDAO;
+	}
+
+	public void setLogDAO(LogDAO logDAO) {
+		this.logDAO = logDAO;
+	}
+
+	public PostDAO getPostDAO() {
+		return postDAO;
+	}
+
+	public void setPostDAO(PostDAO postDAO) {
+		this.postDAO = postDAO;
+	}
+
 	@Override
 	public void save(PostComment transientInstance) {
 		// TODO Auto-generated method stub

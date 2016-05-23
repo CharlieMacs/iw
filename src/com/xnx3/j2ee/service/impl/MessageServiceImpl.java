@@ -1,12 +1,7 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
@@ -22,18 +17,45 @@ import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.MessageVO;
 
-@Service("messageService")
 public class MessageServiceImpl implements MessageService {
 
-	@Resource
 	private MessageDAO messageDao;
-	@Resource
 	private MessageDataDAO messageDataDao;
-	@Resource
 	private LogDAO logDao;
-	@Resource
 	private UserDAO userDao;
 	
+	public MessageDAO getMessageDao() {
+		return messageDao;
+	}
+
+	public void setMessageDao(MessageDAO messageDao) {
+		this.messageDao = messageDao;
+	}
+
+	public MessageDataDAO getMessageDataDao() {
+		return messageDataDao;
+	}
+
+	public void setMessageDataDao(MessageDataDAO messageDataDao) {
+		this.messageDataDao = messageDataDao;
+	}
+
+	public LogDAO getLogDao() {
+		return logDao;
+	}
+
+	public void setLogDao(LogDAO logDao) {
+		this.logDao = logDao;
+	}
+
+	public UserDAO getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDAO userDao) {
+		this.userDao = userDao;
+	}
+
 	@Override
 	public void save(Message transientInstance) {
 		// TODO Auto-generated method stub

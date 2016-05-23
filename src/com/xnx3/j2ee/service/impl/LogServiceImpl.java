@@ -1,25 +1,22 @@
 package com.xnx3.j2ee.service.impl;
 
-import java.util.Date;
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.LogDAO;
-import com.xnx3.j2ee.dao.MessageDataDAO;
 import com.xnx3.j2ee.entity.Log;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.shiro.ShiroFunc;
 
-@Service("logService")
 public class LogServiceImpl implements LogService {
 	
-	@Resource
 	private LogDAO logDAO;
 	
+	public LogDAO getLogDAO() {
+		return logDAO;
+	}
+
+	public void setLogDAO(LogDAO logDAO) {
+		this.logDAO = logDAO;
+	}
+
 	@Override
 	public void save(Log transientInstance) {
 		// TODO Auto-generated method stub

@@ -2,19 +2,21 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.PermissionDAO;
+import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.service.PermissionService;
-import com.xnx3.j2ee.entity.*;
 
-@Service("permissionService")
 public class PermissionServiceImpl implements PermissionService{
 	
-	@Resource
 	private PermissionDAO permissionDAO;
+
+	public PermissionDAO getPermissionDAO() {
+		return permissionDAO;
+	}
+
+	public void setPermissionDAO(PermissionDAO permissionDAO) {
+		this.permissionDAO = permissionDAO;
+	}
 
 	@Override
 	public List<Permission> getPermissionByUserId(int userId) {

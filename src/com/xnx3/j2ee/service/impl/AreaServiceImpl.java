@@ -1,19 +1,22 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
 import com.xnx3.j2ee.dao.AreaDAO;
 import com.xnx3.j2ee.entity.Area;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.service.AreaService;
 
-@Service("areaService")
 public class AreaServiceImpl implements AreaService {
-
-	@Resource
 	private AreaDAO areaDAO;
 	
+	public AreaDAO getAreaDAO() {
+		return areaDAO;
+	}
+
+	public void setAreaDAO(AreaDAO areaDAO) {
+		this.areaDAO = areaDAO;
+	}
+
 	@Override
 	public void save(Log transientInstance) {
 		// TODO Auto-generated method stub

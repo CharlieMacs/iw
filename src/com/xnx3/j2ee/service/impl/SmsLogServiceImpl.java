@@ -2,12 +2,7 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 import java.util.Random;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.DateUtil;
 import com.xnx3.SendPhoneMsgUtil;
 import com.xnx3.j2ee.dao.SmsLogDAO;
@@ -16,12 +11,16 @@ import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 
-@Service("smsLogService")
 public class SmsLogServiceImpl implements SmsLogService {
 
-	@Resource
 	private SmsLogDAO smsLogDAO;
-	
+	public SmsLogDAO getSmsLogDAO() {
+		return smsLogDAO;
+	}
+	public void setSmsLogDAO(SmsLogDAO smsLogDAO) {
+		this.smsLogDAO = smsLogDAO;
+	}
+
 	@Override
 	public void save(SmsLog transientInstance) {
 		// TODO Auto-generated method stub

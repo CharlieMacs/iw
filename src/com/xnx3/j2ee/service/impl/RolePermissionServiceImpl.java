@@ -1,24 +1,22 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.xnx3.j2ee.dao.PermissionDAO;
-import com.xnx3.j2ee.dao.RolePermissionDAO;
-import com.xnx3.j2ee.dao.UserDAO;
-import com.xnx3.j2ee.dao.UserRoleDAO;
 import com.xnx3.j2ee.service.RolePermissionService;
-import com.xnx3.j2ee.service.UserRoleService;
-import com.xnx3.j2ee.entity.*;
+import com.xnx3.j2ee.dao.RolePermissionDAO;
+import com.xnx3.j2ee.entity.Permission;
+import com.xnx3.j2ee.entity.RolePermission;
 
-@Service("rolePermissionService")
 public class RolePermissionServiceImpl implements RolePermissionService{
 
-	@Resource
 	private RolePermissionDAO rolePermissionDAO;
+
+	public RolePermissionDAO getRolePermissionDAO() {
+		return rolePermissionDAO;
+	}
+
+	public void setRolePermissionDAO(RolePermissionDAO rolePermissionDAO) {
+		this.rolePermissionDAO = rolePermissionDAO;
+	}
 
 	@Override
 	public void save(RolePermission transientInstance) {

@@ -1,21 +1,22 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.RoleDAO;
 import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.service.RoleService;
 
-@Service("roleService")
 public class RoleServiceImpl implements RoleService {
 
-	@Resource
 	private RoleDAO roleDao;
 	
+	public RoleDAO getRoleDao() {
+		return roleDao;
+	}
+
+	public void setRoleDao(RoleDAO roleDao) {
+		this.roleDao = roleDao;
+	}
+
 	@Override
 	public void save(Role transientInstance) {
 		// TODO Auto-generated method stub

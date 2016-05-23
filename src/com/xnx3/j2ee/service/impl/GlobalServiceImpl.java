@@ -2,18 +2,21 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
-import org.springframework.stereotype.Service;
 import com.xnx3.j2ee.dao.GlobalDAO;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.util.Page;
 
-@Service("globalService")
 public class GlobalServiceImpl implements GlobalService {
-
-	@Resource
 	private GlobalDAO globalDAO;
 	
+	public GlobalDAO getGlobalDAO() {
+		return globalDAO;
+	}
+
+	public void setGlobalDAO(GlobalDAO globalDAO) {
+		this.globalDAO = globalDAO;
+	}
+
 	@Override
 	public int count(String tableName, String where) {
 		// TODO Auto-generated method stub

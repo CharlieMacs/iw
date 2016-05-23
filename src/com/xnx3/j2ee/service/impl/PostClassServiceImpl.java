@@ -1,30 +1,37 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.Lang;
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.PostClassDAO;
 import com.xnx3.j2ee.entity.BaseEntity;
-import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.service.PostClassService;
 import com.xnx3.j2ee.vo.BaseVO;
 
-@Service("postClassService")
 public class PostClassServiceImpl implements PostClassService {
 
-	@Resource
 	private PostClassDAO postClassDAO;
-	@Resource
 	private LogDAO logDAO;
 	
+	public PostClassDAO getPostClassDAO() {
+		return postClassDAO;
+	}
+
+	public void setPostClassDAO(PostClassDAO postClassDAO) {
+		this.postClassDAO = postClassDAO;
+	}
+
+	public LogDAO getLogDAO() {
+		return logDAO;
+	}
+
+	public void setLogDAO(LogDAO logDAO) {
+		this.logDAO = logDAO;
+	}
+
 	@Override
 	public void save(PostClass transientInstance) {
 		// TODO Auto-generated method stub

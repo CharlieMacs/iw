@@ -1,21 +1,22 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.FriendLogDAO;
 import com.xnx3.j2ee.entity.FriendLog;
 import com.xnx3.j2ee.service.FriendLogService;
 
-@Service("friendLogService")
 public class FriendLogServiceImpl implements FriendLogService {
 
-	@Resource
 	private FriendLogDAO friendLogDAO;
 	
+	public FriendLogDAO getFriendLogDAO() {
+		return friendLogDAO;
+	}
+
+	public void setFriendLogDAO(FriendLogDAO friendLogDAO) {
+		this.friendLogDAO = friendLogDAO;
+	}
+
 	@Override
 	public void save(FriendLog transientInstance) {
 		// TODO Auto-generated method stub

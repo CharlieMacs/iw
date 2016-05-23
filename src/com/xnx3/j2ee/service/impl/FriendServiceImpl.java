@@ -1,20 +1,20 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.xnx3.j2ee.dao.FriendDAO;
 import com.xnx3.j2ee.entity.Friend;
 import com.xnx3.j2ee.service.FriendService;
 
-@Service("friendService")
 public class FriendServiceImpl implements FriendService {
-	
-	@Resource
 	private FriendDAO friendDAO;
+
+	public FriendDAO getFriendDAO() {
+		return friendDAO;
+	}
+
+	public void setFriendDAO(FriendDAO friendDAO) {
+		this.friendDAO = friendDAO;
+	}
 
 	@Override
 	public void save(Friend transientInstance) {
