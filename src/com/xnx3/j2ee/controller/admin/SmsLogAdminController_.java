@@ -37,6 +37,7 @@ public class SmsLogAdminController_ extends BaseController {
 		String where = sql.generateWhere(request, column, null);
 		int count = globalService.count("sms_log", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		page.setDefaultOrderBy("id_DESC");
 		List<User> list = globalService.findBySqlQuery("SELECT * FROM sms_log", where, page,SmsLog.class);
 		
 		model.addAttribute("page", page);

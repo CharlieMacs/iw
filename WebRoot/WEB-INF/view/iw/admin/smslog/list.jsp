@@ -11,7 +11,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   	<jsp:include page="../common/head.jsp">
+   	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="验证码历史列表"/>
     </jsp:include>
     <script src="<%=basePath+Global.CACHE_FILE %>SmsLog_used.js"></script>
@@ -21,12 +21,12 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 
 <section id="container" >
 <!--header start-->
-<jsp:include page="../common/topHeader.jsp"></jsp:include>     
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <!--header end-->
 <aside>
     <div id="sidebar" class="nav-collapse">
         <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>   
+        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>   
 		<!-- sidebar menu end-->
     </div>
 </aside>
@@ -47,15 +47,15 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
                     <div class="col-xs-12" style="padding:0;">
                        <form method="get">
 	                        <span style="float:left;line-height:34px;margin-left:10px;">会员ID：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
+	                        <div class="input-group m-bot15 " style="width: 16%;float: left;">
 	                            <input type="text" name="userid" class="form-control" value="<%=request.getParameter("userid")==null? "":request.getParameter("userid")  %>">
 	                        </div>
 	                        <span style="float:left;line-height:34px;margin-left:10px;">接收手机号：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
+	                        <div class="input-group m-bot15 " style="width: 16%;float: left;">
 	                            <input type="text" name="phone" class="form-control" value="<%=request.getParameter("phone")==null? "":request.getParameter("phone")  %>">
 	                        </div>
 	                        <span style="float:left;line-height:34px;margin-left:10px;">使用状态：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
+	                        <div class="input-group m-bot15 " style="width: 16%;float: left;"> 
 	                        	<select name="used" class="form-control">
 	                        		<script type="text/javascript">writeSelectAllOptionForused(<%=request.getParameter("used") %>);</script>
 	                        	</select>
@@ -67,6 +67,9 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 	                            </span>
 	                        </div>
                         </form>  
+                        <div style="float: right;">
+	                      	<script type="text/javascript"> orderBy('id_DESC=编号'); </script>
+                       </div>
                     </div>
                         <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
@@ -95,7 +98,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
                             </table>
                         </section>
                         <!-- 通用分页跳转 -->
-                        <jsp:include page="../common/page.jsp">
+                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
                         	<jsp:param name="page" value="${page }"/>
                         </jsp:include>
                     </div>
@@ -114,7 +117,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 
 <!--right sidebar end-->
 <!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 
 </body>
 </html>

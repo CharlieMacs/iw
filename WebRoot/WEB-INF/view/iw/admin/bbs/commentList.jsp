@@ -9,30 +9,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <jsp:include page="../common/head.jsp">
+    <jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="回帖列表"/>
     </jsp:include>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
-<jsp:include page="../common/topHeader.jsp"></jsp:include>     
-<!--header end-->
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>     
-		<!-- sidebar menu end -->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
         <!-- page start-->
-
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel">
@@ -75,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             </table>
                         </section>
                         <!-- 通用分页跳转 -->
-                        <jsp:include page="../common/page.jsp">
+                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
                         	<jsp:param name="page" value="${page }"/>
                         </jsp:include>
                     </div>
@@ -87,11 +80,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </section>
     </section>
     <!--main content end-->
-
 </section>
-<!--right sidebar start-->
 
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>
 </html>
 

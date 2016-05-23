@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="注册"/>
     </jsp:include>
 	<link href="<%=basePath %>style/user/css/login.css" rel="stylesheet" type="text/css">

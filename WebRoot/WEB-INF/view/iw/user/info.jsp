@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="个人中心"/>
     </jsp:include>
 	
@@ -54,7 +54,7 @@ $(function(){
 <body>
 
 	<article id="container">
-	<jsp:include page="../common/top.jsp"></jsp:include>
+	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
 		
 		<section id="main">
 			<div class="bgBox"></div>
@@ -141,7 +141,7 @@ $(function(){
 					</p>
 				</div>
 			</div>
-			<jsp:include page="../common/menu.jsp"></jsp:include>
+			<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 			</section>
 		<footer id="footer"></footer>
 	</article>

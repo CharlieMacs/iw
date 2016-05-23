@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <jsp:include page="../common/head.jsp">
+    <jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="帖子列表"/>
     </jsp:include>
     <script src="<%=basePath+Global.CACHE_FILE %>Bbs_postClass.js"></script>
@@ -17,35 +17,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	function writePostClassName(postClassId){
     		document.write(postClass[postClassId]);
     	}
-    	
     	//根据帖子id删除帖子
     	function deletePost(postId){
     		//要用ajax
     		window.location="<%=basePath %>/admin/bbs/deletePost.do?id="+postId;
     	}
-
     </script>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
-<jsp:include page="../common/topHeader.jsp"></jsp:include>     
-<!--header end-->
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>     
-		<!-- sidebar menu end -->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
-        <!-- page start-->
-
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel">
@@ -68,38 +58,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                        <span style="float:left;line-height:34px;margin-left:10px;">板块：</span>
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
 	                        <select name="classid" class="form-control">
-	                        		<script type="text/javascript">
-	                        			if('<%=request.getParameter("classid") %>'==''){
-	                        				document.write('<option value="" selected="selected">所有</option>');
-	                        			}else{
-	                        				document.write('<option value="">所有</option>');
-	                        			}
-	                        			for(var p in postClass){  
-	                        				if(p == '<%=request.getParameter("classid") %>'){
-	                        					document.write('<option value="'+p+'" selected="selected">'+postClass[p]+'</option>');
-	                        				}else{
-	                        					document.write('<option value="'+p+'">'+postClass[p]+'</option>');
-	                        				}
-	  									}  
-	                        		</script>
+	                        		<script type="text/javascript">writeSelectAllOptionForpostClass(<%=request.getParameter("classid") %>);</script>
 								</select>
 	                        </div>
-	                        
-	                        <span style="float:left;line-height:34px;margin-left:10px;">时间：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
-	                            <input type="text" name="addtime" class="form-control" value="<%=request.getParameter("addtime")==null? "2015-12-12 12:12:12":request.getParameter("addtime")  %>">
-	                        </div>
-	                        
-	                        
 	                        
 	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
 	                            <span class="input-group-btn">
 	                            <input class="btn btn-success" type="submit" value="搜索">
 	                            <i class="fa fa-search"></i>
-	                            </button>
 	                            </span>
 	                        </div>
                         </form>   
+                        <div style="float: right;">
+	                      	<script type="text/javascript"> orderBy('id_DESC=编号,view_DESC=浏览量'); </script>
+                       </div>
                         <div style="float: right">
                             <a type="button" class="btn btn-primary" style="float: left;margin-right: 10px" href="post.do?classid=<%=request.getParameter("classid") %>">
                                 <i class="fa fa-plus"></i>
@@ -131,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="<%=basePath %>/admin/bbs/post.do?id=${post.id }">
 	                                    		修改
 	                                    	</a>
-	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deletePost(${post.id });">
+	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" onclick="deletePost(${post.id });">
 	                                    		<i class="fa fa-trash-o"></i>
 	                                    	</button>
 	                                    </td>
@@ -142,23 +114,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             </table>
                         </section>
                         <!-- 通用分页跳转 -->
-                        <jsp:include page="../common/page.jsp">
+                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
                         	<jsp:param name="page" value="${page }"/>
                         </jsp:include>
                     </div>
                 </section>
-                
             </div>
         </div>
         <!-- page end-->
         </section>
     </section>
     <!--main content end-->
-
 </section>
-<!--right sidebar start-->
 
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>
 </html>
 

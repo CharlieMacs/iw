@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="板块列表"/>
     </jsp:include>
     <script type="text/javascript">
@@ -17,24 +17,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		//要用ajax
     		window.location="<%=basePath %>/admin/bbs/deleteClass.do?id="+postClassId;
     	}
-
     </script>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
-<jsp:include page="../common/topHeader.jsp"></jsp:include>     
-<!--header end-->
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>     
-		<!-- sidebar menu end -->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
@@ -92,7 +85,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="<%=basePath %>/admin/bbs/editClass.do?id=${postClass.id }">
 	                                    		<i class="fa fa-pencil"></i>
 	                                    	</a>
-	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deleteClass(${postClass.id });">
+	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" onclick="deleteClass(${postClass.id });">
 	                                    		<i class="fa fa-trash-o"></i>
 	                                    	</button>
 	                                    </td>
@@ -103,7 +96,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             </table>
                         </section>
                         <!-- 通用分页跳转 -->
-                        <jsp:include page="../common/page.jsp">
+                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
                         	<jsp:param name="page" value="${page }"/>
                         </jsp:include>
                     </div>
@@ -119,7 +112,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </section>
 <!--right sidebar start-->
 
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>
 </html>
 

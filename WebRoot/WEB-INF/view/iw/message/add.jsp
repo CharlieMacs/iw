@@ -7,14 +7,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="发信"/>
     </jsp:include>
 <link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <article id="container">
-	<jsp:include page="../common/top.jsp"></jsp:include>
+	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
 	<section id="main">
 		<form method="post" action="send.do">
 			对方id：<input type="text" name="recipientid" value="" />（待优化）
@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<input type="submit" value="发送" />(待优化)
 		</form>
 	</section>
-	<jsp:include page="../common/menu.jsp"></jsp:include>
+	<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 	<footer id="footer"></footer>
 </article>
 </body>

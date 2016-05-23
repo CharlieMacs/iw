@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="项目列表"/>
     </jsp:include>
     <script type="text/javascript">
@@ -25,12 +25,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <section id="container" >
 <!--header start-->
-<jsp:include page="../common/topHeader.jsp"></jsp:include>     
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <!--header end-->
 <aside>
     <div id="sidebar" class="nav-collapse">
         <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>     
+        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
 		<!-- sidebar menu end -->
     </div>
 </aside>
@@ -132,7 +132,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </section>
 <!--right sidebar start-->
 
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>
 </html>
 

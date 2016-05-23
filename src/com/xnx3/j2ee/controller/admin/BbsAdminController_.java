@@ -70,7 +70,7 @@ public class BbsAdminController_ extends BaseController {
 		String where = sql.generateWhere(request, column, " isdelete = "+BaseEntity.ISDELETE_NORMAL);
 		int count = globalService.count("post", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post", where+" ORDER BY id DESC", page,Post.class);
+		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post", where, page,Post.class);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

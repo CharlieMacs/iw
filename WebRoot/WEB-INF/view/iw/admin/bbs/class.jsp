@@ -7,32 +7,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="编辑板块"/>
     </jsp:include>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
-	<jsp:include page="../common/topHeader.jsp"></jsp:include>     
-<!--header end-->
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>         
-		<!-- sidebar menu end-->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content" >
         <section class="wrapper">
-
-
             <div class="row">
-
             <div class="col-lg-12">
             <!--tab nav start-->
             <section class="panel">
@@ -72,19 +63,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
                 </div>
             </section>
-
             </div>
-
             </div>
-
-
         </section>
     </section>
     <!--main content end-->
 
 </section>
 
-<!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>
 </html>

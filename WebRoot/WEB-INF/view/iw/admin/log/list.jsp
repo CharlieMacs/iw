@@ -5,31 +5,24 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-request.setAttribute("type", request.getParameter("type")==null? "":request.getParameter("type"));
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   	<jsp:include page="../common/head.jsp">
+   	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
     	<jsp:param name="title" value="日志列表"/>
     </jsp:include>
     <script src="<%=basePath+Global.CACHE_FILE %>Log_type.js"></script>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
-<jsp:include page="../common/topHeader.jsp"></jsp:include>     
-<!--header end-->
+<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../common/menu.jsp"></jsp:include>   
-		<!-- sidebar menu end-->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>   
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
@@ -52,7 +45,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 	                        <span style="float:left;line-height:34px;margin-left:10px;">动作：</span>
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
 	                        	<select name="type" class="form-control">
-	                        		<script type="text/javascript">writeSelectAllOptionFortype(${type});</script>
+	                        		<script type="text/javascript">writeSelectAllOptionFortype('<%=request.getParameter("type") %>');</script>
 	                        	</select>
 	                        </div>
 	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
@@ -62,6 +55,9 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
 	                            </span>
 	                        </div>
                         </form>  
+                        <div style="float: right;">
+	                      	<script type="text/javascript"> orderBy('id_DESC=编号'); </script>
+                       </div>
                     </div>
                         <section id="unseen">
                             <table class="table table-bordered table-striped table-condensed">
@@ -90,7 +86,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
                             </table>
                         </section>
                         <!-- 通用分页跳转 -->
-                        <jsp:include page="../common/page.jsp">
+                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
                         	<jsp:param name="page" value="${page }"/>
                         </jsp:include>
                     </div>
@@ -104,13 +100,8 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
     <!--main content end-->
 
 </section>
-<!--right sidebar start-->
 
-
-<!--right sidebar end-->
-<!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../common/footImport.jsp"></jsp:include>  
-
+<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>
 </html>
 

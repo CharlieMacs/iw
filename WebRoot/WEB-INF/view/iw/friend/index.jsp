@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="好友中心"/>
     </jsp:include>
 <link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
@@ -96,7 +96,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <article id="container">
-	<jsp:include page="../common/top.jsp"></jsp:include>
+	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
 	<section id="main">
 		<div class="bgBox"></div>
 		<h2><img src="<%=basePath %>style/user/img/common/star01.png" alt="">好友管理</h2>
@@ -156,7 +156,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</form>	
 			</div>
 		</div>
-		<jsp:include page="../common/menu.jsp"></jsp:include>
+		<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 		
 	</section>
 	<footer id="footer"></footer>

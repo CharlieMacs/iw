@@ -11,14 +11,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="${postVO.post.title }"/>
     	<jsp:param name="keywords" value="${postVO.post.title }"/>
     	<jsp:param name="description" value="${postVO.post.info }"/>
     </jsp:include>
 </head>
 <body>
-<jsp:include page="../common/head.jsp"></jsp:include>
+<jsp:include page="../../publicPage/common/head.jsp"></jsp:include>
 
 <div style="text-align:left; padding:20px;">
 	<div>
@@ -81,6 +81,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</form>
 	</div>
 </div>
-<jsp:include page="../common/menu.jsp"></jsp:include>
+<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 </body>
 </html>

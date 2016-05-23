@@ -66,6 +66,7 @@ public class UserAdminController_ extends BaseController {
 		String where = sql.generateWhere(request, column, null);
 		int count = globalService.count("user", where);
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		page.setDefaultOrderBy("id_DESC");
 		List<User> list = globalService.findBySqlQuery("SELECT * FROM user", where, page,User.class);
 
 		model.addAttribute("page", page);

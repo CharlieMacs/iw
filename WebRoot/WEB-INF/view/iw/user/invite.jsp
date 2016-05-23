@@ -8,14 +8,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="邀请注册"/>
     </jsp:include>
 </head>
 <body>
 
 	<article id="container">
-	<jsp:include page="../common/top.jsp"></jsp:include>
+	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
 		
 		<section id="main">
 			<div class="bgBox"></div>
@@ -32,7 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<br/>三级下线：<%=Global.get("INVITEREG_AWARD_THREE") %><%=Global.get("CURRENCY_NAME") %>
 					<br/>四级下线：<%=Global.get("INVITEREG_AWARD_FOUR") %><%=Global.get("CURRENCY_NAME") %>
 				</div>
-			<jsp:include page="../common/menu.jsp"></jsp:include>
+			<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 			</section>
 		<footer id="footer"></footer>
 	</article>

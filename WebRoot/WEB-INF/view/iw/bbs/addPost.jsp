@@ -7,13 +7,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="发帖"/>
     </jsp:include>
 </head>
 <body>
 	<article id="container">
-		<jsp:include page="../common/top.jsp"></jsp:include>
+		<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
 		<section id="main">
 			<div class="bgBox"></div>
 			<h2>发帖<a href="<%=basePath%>bbs/list.do" class="btn fR">返回论坛</a></h2>
@@ -41,7 +41,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input type="reset" value="重置" class="btn btn01"></dd>
 				</dl>
 			</div>
-			<jsp:include page="../common/menu.jsp"></jsp:include>
+			<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 			</section>
 		<footer id="footer"></footer>
 	</article>

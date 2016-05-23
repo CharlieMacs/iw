@@ -7,14 +7,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../common/head.jsp">
+	<jsp:include page="../../publicPage/common/head.jsp">
     	<jsp:param name="title" value="阅读站内信"/>
     </jsp:include>
 <link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <article id="container">
-	<jsp:include page="../common/top.jsp"></jsp:include>
+	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
 	<section id="main">
 		<hr/>
 		发信者：${messageVO.senderUser.nickname }
