@@ -60,6 +60,11 @@ function orderBy(content){
 			defaultShow = value;
 		}
 	}
+	
+	if(content.indexOf(defaultShow)==-1 || defaultShow.length==0){
+		defaultShow = ds;
+	}
+	
 	c = '<ul role="menu" class="dropdown-menu" style="min-width:120px;">'+c+'</ul>';
 	c = '<div class="btn-group"><button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="submit">'+defaultShow+'<span class="caret"></span></button> '+c;
 	document.write(c);

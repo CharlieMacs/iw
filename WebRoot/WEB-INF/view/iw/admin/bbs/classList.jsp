@@ -47,6 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div class="space15"></div>
                     <div class="col-xs-12" style="padding:0;" >
                        	<form method="get">
+                       		<input type="hidden" name="orderBy" value="<%=request.getParameter("orderBy") %>" />
 	                        <span style="float:left;line-height:34px;margin-left:10px;">板块名称：</span>
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
 	                            <input type="text" name="name" class="form-control" value="<%=request.getParameter("name")==null? "":request.getParameter("name")  %>">
@@ -56,7 +57,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                            <span class="input-group-btn">
 	                            <input class="btn btn-success" type="submit" value="搜索">
 	                            <i class="fa fa-search"></i>
-	                            </button>
 	                            </span>
 	                        </div>
                         </form>   

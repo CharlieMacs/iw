@@ -1,19 +1,23 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
@@ -65,12 +69,21 @@ public class BbsAdminController_ extends BaseController {
 	@RequiresPermissions("adminBbsPostList")
 	@RequestMapping("postList")
 	public String postList(HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"};
-		String where = sql.generateWhere(request, column, " isdelete = "+BaseEntity.ISDELETE_NORMAL);
-		int count = globalService.count("post", where);
+//		Sql sql = new Sql();
+//		String[] column = {"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"};
+//		String where = sql.generateWhere(request, column, " isdelete = "+BaseEntity.ISDELETE_NORMAL);
+//		int count = globalService.count("post", where);
+//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+//		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post", where, page,Post.class);
+		
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"});
+		int count = globalService.count("post", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post", where, page,Post.class);
+		sql.setSelectFromAndPage("SELECT * FROM post", page);
+		sql.setDefaultOrderBy("post.id DESC");
+		List<Post> list = globalService.findEntityBySql(sql, Post.class);
+		
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
@@ -128,13 +141,22 @@ public class BbsAdminController_ extends BaseController {
 	@RequiresPermissions("adminBbsClassList")
 	@RequestMapping("classList")
 	public String classList(HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"id=","name"};
-		String where = sql.generateWhere(request, column, null);
-		int count = globalService.count("post_class", where);
+//		Sql sql = new Sql();
+//		String[] column = {"id=","name"};
+//		String where = sql.generateWhere(request, column, null);
+//		int count = globalService.count("post_class", where);
+//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+//		where = sql.generateWhere(request, column, null);
+//		List<PostClass> list = globalService.findBySqlQuery("SELECT * FROM post_class", where, page,PostClass.class);
+		
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"id=","name"});
+		int count = globalService.count("post_class", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-		where = sql.generateWhere(request, column, null);
-		List<PostClass> list = globalService.findBySqlQuery("SELECT * FROM post_class", where, page,PostClass.class);
+		sql.setSelectFromAndPage("SELECT * FROM post_class", page);
+		sql.setDefaultOrderBy("post_class.id DESC");
+		List<PostClass> list = globalService.findEntityBySql(sql, PostClass.class);
+		
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
@@ -237,12 +259,20 @@ public class BbsAdminController_ extends BaseController {
 	@RequiresPermissions("adminBbsPostCommentList")
 	@RequestMapping("commentList")
 	public String commentList(HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"postid=","userid="};
-		String where = sql.generateWhere(request, column, null);
-		int count = globalService.count("post_comment", where);
+//		Sql sql = new Sql();
+//		String[] column = {"postid=","userid="};
+//		String where = sql.generateWhere(request, column, null);
+//		int count = globalService.count("post_comment", where);
+//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+//		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post_comment", where+" ORDER BY id DESC", page,PostComment.class);
+		
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"postid=","userid="});
+		int count = globalService.count("post_comment", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post_comment", where+" ORDER BY id DESC", page,PostComment.class);
+		sql.setSelectFromAndPage("SELECT * FROM post_comment", page);
+		sql.setDefaultOrderBy("post_comment.id DESC");
+		List<PostComment> list = globalService.findEntityBySql(sql, PostComment.class);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.xnx3.j2ee.Global;
+import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.UserService;
@@ -61,14 +62,23 @@ public class UserAdminController_ extends BaseController {
 	@RequiresPermissions("adminUserList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"};
-		String where = sql.generateWhere(request, column, null);
-		int count = globalService.count("user", where);
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-		page.setDefaultOrderBy("id_DESC");
-		List<User> list = globalService.findBySqlQuery("SELECT * FROM user", where, page,User.class);
+//		Sql sql = new Sql();
+//		String[] column = {"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"};
+//		String where = sql.generateWhere(request, column, null);
+//		int count = globalService.count("user", where);
+//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+//		page.setDefaultOrderBy("id_DESC");
+//		List<User> list = globalService.findBySqlQuery("SELECT * FROM user", where, page,User.class);
 
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"});
+		int count = globalService.count("user", sql.getWhere());
+		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		sql.setSelectFromAndPage("SELECT * FROM user", page);
+		sql.setDefaultOrderBy("user.id DESC");
+		List<User> list = globalService.findEntityBySql(sql, User.class);
+		
+		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
 		return "/iw/admin/user/list";

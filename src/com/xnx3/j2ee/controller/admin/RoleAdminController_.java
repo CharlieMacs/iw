@@ -229,14 +229,15 @@ public class RoleAdminController_ extends BaseController {
 	@RequiresPermissions("adminRolePermissionList")
 	@RequestMapping("permissionList")
 	public String permissionList(Permission permission,HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"description","url","name","parent_id","percode"};
-		String where = sql.generateWhere(request, column, null);
-		int count = globalService.count("permission", where);
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"description","url","name","parent_id","percode"});
+		int count = globalService.count("permission", sql.getWhere());
 		Page page = new Page(count, 1000, request);
-		List<Permission> list = globalService.findBySqlQuery("SELECT * FROM permission", where, page,Permission.class);
-		List<PermissionTree> permissionTreeList = new ShiroFunc().PermissionToTree(new ArrayList<Permission>(), list);
+		sql.setSelectFromAndPage("SELECT * FROM permission", page);
+		sql.setDefaultOrderBy("permission.id DESC");
+		List<Permission> list = globalService.findEntityBySql(sql, Permission.class);
 		
+		List<PermissionTree> permissionTreeList = new ShiroFunc().PermissionToTree(new ArrayList<Permission>(), list);
 		model.addAttribute("page", page);
 		model.addAttribute("list", permissionTreeList);
 		return "iw/admin/role/permissionList";

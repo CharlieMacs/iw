@@ -6,7 +6,6 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-request.setAttribute("type", request.getParameter("type")==null? "":request.getParameter("type"));
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,26 +15,18 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
     </jsp:include>
     <script src="<%=basePath+Global.CACHE_FILE %>SmsLog_used.js"></script>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
 <jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>   
-		<!-- sidebar menu end-->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>   
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
-        <!-- page start-->
-
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel">
@@ -46,6 +37,7 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
                     <div class="space15"></div>
                     <div class="col-xs-12" style="padding:0;">
                        <form method="get">
+                       		<input type="hidden" name="orderBy" value="<%=request.getParameter("orderBy") %>" />
 	                        <span style="float:left;line-height:34px;margin-left:10px;">会员ID：</span>
 	                        <div class="input-group m-bot15 " style="width: 16%;float: left;">
 	                            <input type="text" name="userid" class="form-control" value="<%=request.getParameter("userid")==null? "":request.getParameter("userid")  %>">
@@ -106,19 +98,13 @@ request.setAttribute("type", request.getParameter("type")==null? "":request.getP
                 
             </div>
         </div>
-        <!-- page end-->
         </section>
     </section>
     <!--main content end-->
 
 </section>
-<!--right sidebar start-->
 
-
-<!--right sidebar end-->
-<!-- Placed js at the end of the document so the pages load faster -->
 <jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-
 </body>
 </html>
 

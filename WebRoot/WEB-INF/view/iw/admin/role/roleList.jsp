@@ -24,17 +24,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body>
 
 <section id="container" >
-<!--header start-->
 <jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
-		<!-- sidebar menu end -->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">

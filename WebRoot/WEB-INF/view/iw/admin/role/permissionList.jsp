@@ -20,26 +20,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     </script>
 </head>
-
 <body>
 
 <section id="container" >
-<!--header start-->
 <jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
 <aside>
     <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
-		<!-- sidebar menu end -->
+        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
     </div>
 </aside>
-<!--sidebar end-->
     <!--main content start-->
     <section id="main-content">
         <section class="wrapper">
-        <!-- page start-->
-
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel">
@@ -54,6 +46,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div class="space15"></div>
                     <div class="col-xs-12" style="padding:0;" >
                         <form method="get">
+                        	<input type="hidden" name="orderBy" value="<%=request.getParameter("orderBy") %>" />
 	                        <span style="float:left;line-height:34px;margin-left:10px;">名字：</span>
 	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
 	                            <input type="text" name="name" class="form-control" value="<%=request.getParameter("name")==null? "":request.getParameter("name")  %>">
@@ -71,7 +64,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                            <span class="input-group-btn">
 	                            <input class="btn btn-success" type="submit" value="搜索">
 	                            <i class="fa fa-search"></i>
-	                            </button>
 	                            </span>
 	                        </div>
                         </form>   
@@ -89,7 +81,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <th class="numeric">顶级的</th>
                                     <th class="numeric">菜单名称</th>
                                     <th class="numeric">描述</th>
-                                    <th class="numeric">URL</th>
+                                    <!-- <th class="numeric">URL</th> -->
                                     <th class="numeric">percode</th>
                                     <th class="numeric">操作</th>
                                 </tr>
@@ -101,7 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                                    <td>+/-</td>
 	                                    <td class="numeric">${permissionTree.permissionMark.permission.name }</td>
 	                                    <td class="numeric">${permissionTree.permissionMark.permission.description }</td>
-	                                    <td class="numeric">${permissionTree.permissionMark.permission.url }</td>
+	                                    <%-- <td class="numeric">${permissionTree.permissionMark.permission.url }</td> --%>
 	                                    <td class="numeric">${permissionTree.permissionMark.permission.percode }</td>
 	                                    <td class="numeric">
 	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="addPermission.do?parentId=${permissionTree.permissionMark.permission.id }">
@@ -123,7 +115,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                                    <td>&nbsp;</td>
 		                                    <td class="numeric">${permissionMark.permission.name }</td>
 		                                    <td class="numeric">${permissionMark.permission.description }</td>
-		                                    <td class="numeric">${permissionMark.permission.url }</td>
+		                                    <%-- <td class="numeric">${permissionMark.permission.url }</td> --%>
 		                                    <td class="numeric">${permissionMark.permission.percode }</td>
 		                                    <td class="numeric">
 		                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="editPermission.do?id=${permissionMark.permission.id }">
@@ -150,13 +142,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 
             </div>
         </div>
-        <!-- page end-->
         </section>
     </section>
     <!--main content end-->
 
 </section>
-<!--right sidebar start-->
 
 <jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
 </body>

@@ -39,13 +39,20 @@ public class LogAdminController_ extends BaseController{
 	@RequiresPermissions("adminLogList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"userid","type=","goalid=","addtime"};
-		String where = sql.generateWhere(request, column, "isdelete = 0");
-		int count = globalService.count("log", where);
+//		Sql sql = new Sql();
+//		String[] column = {"userid","type=","goalid=","addtime"};
+//		String where = sql.generateWhere(request, column, "isdelete = 0");
+//		int count = globalService.count("log", where);
+//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+//		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT log.*,(SELECT user.nickname FROM user WHERE user.id=log.userid) AS nickname FROM log "+where,page);
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"userid","type=","goalid=","addtime"});
+		sql.appendWhere("log.isdelete = 0");
+		int count = globalService.count("log", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		page.setDefaultOrderBy("log.id DESC");
-		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT log.*,(SELECT user.nickname FROM user WHERE user.id=log.userid) AS nickname FROM log "+where,page);
+		sql.setSelectFromAndPage("SELECT log.*,(SELECT user.nickname FROM user WHERE user.id=log.userid) AS nickname FROM log ", page);
+		sql.setDefaultOrderBy("log.id DESC");
+		List<Map<String, String>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

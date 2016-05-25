@@ -116,15 +116,24 @@ public class MessageController_ extends BaseController {
 	public String list(@RequestParam(value = "type", defaultValue = "inboxAll") String type, 
 			@RequestParam(value = "box", defaultValue = "inbox") String box, 
 			HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"id","state="};
+//		Sql sql = new Sql();
+//		String[] column = {"id","state="};
+//		String boxWhere = box.equals("inbox")? "message.recipientid="+getUser().getId():"message.senderid="+getUser().getId();
+//		String where = sql.generateWhere(request, column, boxWhere+" AND message.senderid=user.id AND message.isdelete = "+Message.ISDELETE_NORMAL+" AND user.isfreeze="+User.ISFREEZE_NORMAL);
+//		int count = globalService.count("message,user", where);
+//		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+//		where = sql.generateWhere(request, column, "message.senderid=user.id AND message.id=message_data.id AND user.isfreeze="+User.ISFREEZE_NORMAL+" AND "+boxWhere,"message");
+//		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
+		Sql sql = new Sql(request);
+		sql.setSearchTable("message");
+		sql.setSearchColumn(new String[]{"id","state="});
 		String boxWhere = box.equals("inbox")? "message.recipientid="+getUser().getId():"message.senderid="+getUser().getId();
-		
-		String where = sql.generateWhere(request, column, boxWhere+" AND message.senderid=user.id AND message.isdelete = "+Message.ISDELETE_NORMAL+" AND user.isfreeze="+User.ISFREEZE_NORMAL);
-		int count = globalService.count("message,user", where);
+		sql.appendWhere(boxWhere+" AND message.senderid=user.id AND message.isdelete = "+Message.ISDELETE_NORMAL+" AND user.isfreeze="+User.ISFREEZE_NORMAL);
+		int count = globalService.count("message,user", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
-		where = sql.generateWhere(request, column, "message.senderid=user.id AND message.id=message_data.id AND user.isfreeze="+User.ISFREEZE_NORMAL+" AND "+boxWhere,"message");
-		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id ORDER BY message.id DESC", page);
+		sql.setSelectFromAndPage("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user ", page);
+		sql.setGroupBy("message.id");
+		List<Map<String, String>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

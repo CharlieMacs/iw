@@ -38,12 +38,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div class="space15"></div>
                     <div class="col-xs-12" style="padding:0;">
                        <form method="get">
+                       		<input type="hidden" name="orderBy" value="<%=request.getParameter("orderBy") %>" />
 	                        <span style="float:left;line-height:34px;margin-left:10px;">会员ID：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
+	                        <div class="input-group m-bot15 " style="width: 16%;float: left;">
 	                            <input type="text" name="userid" class="form-control" value="<%=request.getParameter("userid")==null? "":request.getParameter("userid")  %>">
 	                        </div>
 	                        <span style="float:left;line-height:34px;margin-left:10px;">动作：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
+	                        <div class="input-group m-bot15 " style="width: 16%;float: left;"> 
 	                        	<select name="type" class="form-control">
 	                        		<script type="text/javascript">writeSelectAllOptionFortype('<%=request.getParameter("type") %>');</script>
 	                        	</select>

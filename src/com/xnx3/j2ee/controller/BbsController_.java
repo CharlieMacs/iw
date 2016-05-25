@@ -2,20 +2,16 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.GlobalService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
@@ -113,12 +109,21 @@ public class BbsController_ extends BaseController {
 	@RequiresPermissions("bbsList")
 	@RequestMapping("/list")
 	public String list(Post post,HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"classid=","title","view>","info","addtime","userid="};
-		String where = sql.generateWhere(request, column, "state = "+Post.STATE_NORMAL+" AND isdelete = "+Post.ISDELETE_NORMAL);
-		int count = globalService.count("post", where);
+//		Sql sql = new Sql();
+//		String[] column = {"classid=","title","view>","info","addtime","userid="};
+//		String where = sql.generateWhere(request, column, "state = "+Post.STATE_NORMAL+" AND isdelete = "+Post.ISDELETE_NORMAL);
+//		int count = globalService.count("post", where);
+//		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+//		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid "+where+" ORDER BY post.id DESC",page);
+		
+		Sql sql = new Sql(request);
+		sql.setSearchColumn(new String[]{"classid=","title","view>","info","addtime","userid="});
+		sql.appendWhere("post.state = "+Post.STATE_NORMAL+" AND post.isdelete = "+Post.ISDELETE_NORMAL);
+		int count = globalService.count("post", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
-		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid "+where+" ORDER BY post.id DESC",page);
+		sql.setSelectFromAndPage("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid ", page);
+		sql.setDefaultOrderBy("post.id DESC");
+		List<Map<String, String>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

@@ -2,13 +2,16 @@ package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.service.GlobalService;
@@ -50,13 +53,17 @@ public class MessageAdminController_ extends BaseController {
 	@RequiresPermissions("adminMessageList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
-		Sql sql = new Sql();
-		String[] column = {"id=","senderid=","recipientid="};
-		String where = sql.generateWhere(request, column, "isdelete = "+Message.ISDELETE_NORMAL);
-		int count = globalService.count("message", where);
+		Sql sql = new Sql(request);
+		sql.setSearchTable("message");
+		sql.setSearchColumn(new String[]{"id=","senderid=","recipientid="});
+		sql.appendWhere("message.isdelete = "+Message.ISDELETE_NORMAL);
+		int count = globalService.count("message", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-		where = sql.generateWhere(request, column, "message.id=message_data.id","message");
-		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user "+where+" GROUP BY message.id", page);
+		sql.setSelectFromAndPage("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user ", page);
+		sql.appendWhere("message.id=message_data.id");
+		sql.setGroupBy("message.id");
+		sql.setDefaultOrderBy("message.id DESC");
+		List<Map<String, String>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

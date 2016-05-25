@@ -50,6 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div class="space15"></div>
                     <div class="col-xs-12" style="padding:0;">
                        <form method="get">
+                       		<input type="hidden" name="orderBy" value="<%=request.getParameter("orderBy") %>" />
 	                        <span style="float:left;line-height:34px;margin-left:10px;">发信用户ID：</span>
 	                        <div class="input-group m-bot15 " style="width: 16%;float: left;"> 
 	                            <input type="text" name="senderid" class="form-control" value="<%=request.getParameter("senderid")==null? "":request.getParameter("senderid")  %>">
