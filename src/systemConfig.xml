@@ -38,7 +38,8 @@
 		<type>ADMIN_SYSTEM_BBS_CLASS_SAVE#141#修改论坛板块</type>
 		<type>ADMIN_SYSTEM_BBS_CLASS_DELETE#142#删除论坛板块</type>
 		<type>ADMIN_SYSTEM_BBS_CLASS_ADD#143#添加论坛板块</type>
-		
+		<type>COLLECT_ADD#201#添加用户关注</type>
+		<type>COLLECT_DELETE#202#取消用户关注</type>
 		<!-- 	
 		<type>PAINT_ADD#51#创建图表</type>
 		<type>PAINT_COMMENT_ADD#52#添加图表评论</type>

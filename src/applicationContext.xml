@@ -181,6 +181,12 @@
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
+	<bean id="CollectDAO"
+		class="com.xnx3.j2ee.dao.CollectDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
 	<!-- <bean id="ProjectDAO" class="com.iworkware.dao.ProjectDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
@@ -260,5 +266,10 @@
 	</bean>
 	<bean id="areaService" class="com.xnx3.j2ee.service.impl.AreaServiceImpl">
 		<property name="areaDAO"><ref bean="AreaDAO" /></property>
+	</bean>
+	<bean id="collectService" class="com.xnx3.j2ee.service.impl.CollectServiceImpl">
+		<property name="collectDAO"><ref bean="CollectDAO" /></property>
+		<property name="logDAO"><ref bean="LogDAO" /></property>
+		<property name="userDAO"><ref bean="UserDAO" /></property>
 	</bean>
 </beans>
