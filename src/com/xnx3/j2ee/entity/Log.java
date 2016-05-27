@@ -72,8 +72,8 @@ public class Log implements java.io.Serializable {
 	 */
 	public void setValue(String value) {
 		if(value!=null){
-			if(value.length()>20){
-				value = value.substring(0, 20);
+			if(value.length()>15){
+				value = value.substring(0, 15);
 			}
 		}
 		
