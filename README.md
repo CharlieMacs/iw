@@ -2,6 +2,18 @@
 <br/>
 整合权限分配管理、论坛、会员、日志、消息、系统缓存管理等功能
 <br/>加入了<a href="http://github.com/xnx3/xnx3" target="_black">xnx3.jar</a>，快速开发列表、搜索页面、分布式附件上传等常用工具
+
+##快速开发示例
+*列表分页
+**[单数据表、分页示例](http://www.xnx3.com/software/iw/20160527/946.html)
+**[单数据表、搜索、分页示例](http://www.xnx3.com/software/iw/20160527/947.html)
+**[单数据表、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160524/944.html)
+**[多表查询、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160527/949.html)
+**[多数据表联合查询、搜索、排序、状态码js缓存](http://www.xnx3.com/software/iw/20160527/950.html)
+*日志
+**[添加日志记录](http://www.xnx3.com/software/iw/20160527/951.html)
+
+<br/>
 <br/>
 使用框架：<br/>
 hibernate 4.2<br/>
