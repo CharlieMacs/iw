@@ -1,7 +1,7 @@
 # iw &nbsp;web 快速开发，基础功能集成底层
 <br/>
-整合权限分配管理、论坛、会员、日志、消息、系统缓存管理等功能
-<br/>加入了<a href="http://github.com/xnx3/xnx3" target="_black">xnx3.jar</a>，快速开发列表、搜索页面、分布式附件上传等常用工具
+整合权限、论坛、会员、日志、消息、系统、数据缓存、短信等功能
+<br/>Spring4、Spring MVC4、Hibernate4、Shiro、<a href="http://github.com/xnx3/xnx3" target="_black">xnx3-2.2</a>
 
 ##快速开发示例
 * 列表分页
@@ -15,14 +15,6 @@
 
 <br/>
 <br/>
-使用框架：<br/>
-hibernate 4.2<br/>
-spring 4.2<br/>
-spring mvc 4.2<br/>
-shiro 1.2.3<br/>
-urlrewritefilter 4.0.3<br/>
-xnx3 2.0<br/>
-fastdfs<br/>
 
 Web project<br/>
 /src								java源代码<br/>
