@@ -50,55 +50,12 @@ public class GlobalDAO {
 		return count.intValue();
 	}
 
-//	/**
-//	 * 查询列表，配合 {@link Page} {@link Sql} 一块使用
-//	 * @param selectFrom 如 SELECT * FROM user
-//	 * @param where {@link Sql#getWhere(javax.servlet.http.HttpServletRequest, String[], String)}
-//	 * @param limitStart limit开始的记录数
-//	 * @param limitNumber limit返回多少条记录
-//	 * @param entityClass 转化为什么实体类
-//	 * @return
-//	 */
-//	public List findBySqlQuery(String selectFrom,String where,Page page,Class entityClass) {
-//		try {
-//			String orderBy = "";
-//			if(page.getOrderBy() != null){
-//				orderBy = " ORDER BY "+page.getOrderBy();
-//			}
-//			String queryString = selectFrom+where+orderBy+" LIMIT "+page.getLimitStart()+","+page.getEveryNumber();
-//			Query queryObject = getCurrentSession().createSQLQuery(queryString).addEntity(entityClass);
-//			return queryObject.list();
-//		} catch (RuntimeException re) {
-//			throw re;
-//		}
-//	}
-//	
-//	/**
-//	 * 同 {@link #findBySqlQuery(String, String, int, int, Class)}
-//	 * 返回的是<List<Map<String,Object>>>
-//	 * @param sql 执行的sql，不包含limit，limit会自动拼接
-//	 * @return 
-//	 */
-//	public List<Map<String,String>> findBySqlQuery(String sql,Page page) {
-//		try {
-//			String orderBy = "";
-//			if(page.getOrderBy() != null){
-//				orderBy = " ORDER BY "+page.getOrderBy();
-//			}
-//			String queryString = sql+orderBy+" LIMIT "+page.getLimitStart()+","+page.getEveryNumber();
-//			Query queryObject = getCurrentSession().createSQLQuery(queryString).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-//			return queryObject.list();
-//		} catch (RuntimeException re) {
-//			throw re;
-//		}
-//	}
-	
 	/**
 	 * 传入 {@link Sql} 查询List列表
 	 * @param sql 组合好的{@link Sql}
 	 * @return List<Map<String,String>>
 	 */
-	public List<Map<String,String>> findMapBySql(Sql sql){
+	public List<Map<String,Object>> findMapBySql(Sql sql){
 		try {
 			Query queryObject = getCurrentSession().createSQLQuery(sql.getSql()).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			return queryObject.list();
@@ -113,9 +70,9 @@ public class GlobalDAO {
 	 * @param entityClass 转化为什么实体类
 	 * @return List<Entity>
 	 */
-	public List findEntityBySqlQuery(Sql sql,Class entityClass) {
+	public List findEntityBySqlQuery(String sqlQuery,Class entityClass) {
 		try {
-			Query queryObject = getCurrentSession().createSQLQuery(sql.getSql()).addEntity(entityClass);
+			Query queryObject = getCurrentSession().createSQLQuery(sqlQuery).addEntity(entityClass);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			throw re;

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.xnx3.j2ee.dao.GlobalDAO;
 import com.xnx3.j2ee.service.GlobalService;
-import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 
 public class GlobalServiceImpl implements GlobalService {
@@ -25,24 +24,21 @@ public class GlobalServiceImpl implements GlobalService {
 		return globalDAO.count(tableName, where);
 	}
 
-//	@Override
-//	public List findBySqlQuery(String selectFrom, String where, Page page,Class entityClass) {
-//		return globalDAO.findBySqlQuery(selectFrom, where, page,entityClass);
-//	}
-
-//	@Override
-//	public List<Map<String, String>> findBySqlQuery(String sql, Page page) {
-//		return globalDAO.findBySqlQuery(sql,page);
-//	}
-
 	@Override
 	public List findEntityBySql(Sql sql, Class entityClass) {
 		// TODO Auto-generated method stub
-		return globalDAO.findEntityBySqlQuery(sql, entityClass);
+		return globalDAO.findEntityBySqlQuery(sql.getSql(), entityClass);
 	}
 
 	@Override
-	public List<Map<String, String>> findMapBySql(Sql sql) {
+	public List findEntityBySqlQuery(String sqlQuery, Class entityClass) {
+		// TODO Auto-generated method stub
+		return globalDAO.findEntityBySqlQuery(sqlQuery, entityClass);
+	}
+	
+	
+	@Override
+	public List<Map<String, Object>> findMapBySql(Sql sql) {
 		// TODO Auto-generated method stub
 		return globalDAO.findMapBySql(sql);
 	}
@@ -87,6 +83,12 @@ public class GlobalServiceImpl implements GlobalService {
 	public void addOne(String tableName, String fieldName, String where) {
 		// TODO Auto-generated method stub
 		globalDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"+1 WHERE "+where);
+	}
+
+	@Override
+	public void subtractOne(String tableName, String fieldName, String where) {
+		// TODO Auto-generated method stub
+		globalDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"-1 WHERE "+where);
 	}
 
 }

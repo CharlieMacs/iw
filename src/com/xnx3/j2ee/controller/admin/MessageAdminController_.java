@@ -63,7 +63,7 @@ public class MessageAdminController_ extends BaseController {
 		sql.appendWhere("message.id=message_data.id");
 		sql.setGroupBy("message.id");
 		sql.setDefaultOrderBy("message.id DESC");
-		List<Map<String, String>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

@@ -109,13 +109,6 @@ public class BbsController_ extends BaseController {
 	@RequiresPermissions("bbsList")
 	@RequestMapping("/list")
 	public String list(Post post,HttpServletRequest request,Model model){
-//		Sql sql = new Sql();
-//		String[] column = {"classid=","title","view>","info","addtime","userid="};
-//		String where = sql.generateWhere(request, column, "state = "+Post.STATE_NORMAL+" AND isdelete = "+Post.ISDELETE_NORMAL);
-//		int count = globalService.count("post", where);
-//		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
-//		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid "+where+" ORDER BY post.id DESC",page);
-		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"classid=","title","view>","info","addtime","userid="});
 		sql.appendWhere("post.state = "+Post.STATE_NORMAL+" AND post.isdelete = "+Post.ISDELETE_NORMAL);
@@ -123,7 +116,7 @@ public class BbsController_ extends BaseController {
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid ", page);
 		sql.setDefaultOrderBy("post.id DESC");
-		List<Map<String, String>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

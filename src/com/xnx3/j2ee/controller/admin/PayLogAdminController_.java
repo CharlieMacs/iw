@@ -42,12 +42,6 @@ public class PayLogAdminController_ extends BaseController{
 	@RequiresPermissions("adminPayLogList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
-//		Sql sql = new Sql();
-//		String[] column = {"userid=","orderno","channel"};
-//		String where = sql.generateWhere(request, column, null);
-//		int count = globalService.count("pay_log", where);
-//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		List<Map<String, String>> list = globalService.findBySqlQuery("SELECT pay_log.*,(SELECT user.nickname FROM user WHERE user.id=pay_log.userid) AS nickname FROM pay_log "+where,page);
 		Sql sql = new Sql(request);
 		sql.setSearchTable("pay_log");
 		sql.setSearchColumn(new String[]{"userid=","orderno","channel"});
@@ -55,7 +49,7 @@ public class PayLogAdminController_ extends BaseController{
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT pay_log.*,(SELECT user.nickname FROM user WHERE user.id=pay_log.userid) AS nickname FROM pay_log ", page);
 		sql.setDefaultOrderBy("pay_log.id DESC");
-		List<Map<String, String>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

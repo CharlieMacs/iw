@@ -1,40 +1,22 @@
 package com.xnx3.j2ee.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.CollectService;
 import com.xnx3.j2ee.service.GlobalService;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.MessageService;
-import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
-import com.xnx3.net.MailUtil;
 
 /**
- * 用户User的相关操作
+ * 用户关注
  * @author 管雷鸣
  */
 @Controller
@@ -47,7 +29,7 @@ public class CollectController_ extends BaseController {
 	private GlobalService globalService;
 	
 	/**
-	 * 用户个人中心
+	 * 添加关注的表单提交（演示）
 	 * @return View
 	 */
 	@RequestMapping("/add")
@@ -85,7 +67,7 @@ public class CollectController_ extends BaseController {
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT collect.* , (SELECT nickname FROM user WHERE user.id = collect.othersid) AS nickname FROM collect", page);
 		sql.setDefaultOrderBy("collect.id DESC");
-		List<Map<String, String>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = globalService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
