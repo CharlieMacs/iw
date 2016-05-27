@@ -57,6 +57,9 @@ public class InitServlet extends HttpServlet {
 		new SmsLog().used();
 		new PayLog().channel();
 		
+		/***设置自己的项目开启运行自动设置项****/
+//		new com.guanleiming.iwdemo.grnerateCache.Log().type();		//此仅供测试，已经有初始化Log的缓存项了，这个测试完要删掉，不然正常的Log日志就无法使用了
+		
 		readSystemTable();
 	}
 	
