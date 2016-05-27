@@ -36,4 +36,12 @@ public interface CollectService {
 	 * @return {@link BaseVO}
 	 */
 	public BaseVO cancelCollect(int userid);
+	
+	/**
+	 * 检索我是否已经关注过此人了。
+	 * <br/>只能是登陆状态使用，会自动加入我的userid进行搜索。若未登录，会返回null
+	 * @param othersid 检索我是否关注过的人的userid
+	 * @return
+	 */
+	public Collect findMyByOthersid(int othersid);
 }

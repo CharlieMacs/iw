@@ -98,6 +98,11 @@ public class CollectServiceImpl implements CollectService {
 	public BaseVO addCollect(int userid){
 		BaseVO baseVO = new BaseVO();
 		
+		if(ShiroFunc.getUser().getId() == userid){
+			baseVO.setBaseVO(BaseVO.FAILURE, "您不能关注自己！");
+			return baseVO;
+		}
+		
 		User user = userDAO.findById(userid);
 		if(user == null){
 			baseVO.setBaseVO(BaseVO.FAILURE, "要关注的用户不存在！");
@@ -144,5 +149,25 @@ public class CollectServiceImpl implements CollectService {
 		return baseVO;
 	}
 	
-	
+	/**
+	 * 检索我是否已经关注过此人了。
+	 * <br/>只能是登陆状态使用，会自动加入我的userid进行搜索。若未登录，会返回null
+	 * @param othersid 检索我是否关注过的人的userid
+	 * @return
+	 */
+	public Collect findMyByOthersid(int othersid){
+		User user = ShiroFunc.getUser();
+		if(user == null){
+			return null;
+		}
+		Collect c = new Collect();
+		c.setUserid(user.getId());
+		c.setOthersid(othersid);
+		List<Collect> list = findByExample(c);
+		if(list.size()>0){
+			return list.get(0);
+		}else{
+			return null;
+		}
+	}
 }
