@@ -272,4 +272,6 @@
 		<property name="logDAO"><ref bean="LogDAO" /></property>
 		<property name="userDAO"><ref bean="UserDAO" /></property>
 	</bean>
+	<bean id="OSSService" class="com.xnx3.j2ee.service.impl.OSSServiceImpl">
+	</bean>
 </beans>
