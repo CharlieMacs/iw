@@ -28,7 +28,7 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 	private MessageService messageService;
 	
 	static{
-		useMessage = ConfigManagerUtil.getSingleton("systemConfig.xml").selectValue("useMessage").equals("true");
+		useMessage = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.used").equals("true");
 	}
 	
 	@Override

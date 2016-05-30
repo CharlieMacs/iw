@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<!-- 是否使用站内信息功能，若开启，则访问任何页面都会读数据库判断是否有新的未读信息 -->
-	<useMessage>true</useMessage>
+	
+	<!-- 站内信功能 -->
+	<message>
+		<!-- 是否使用站内信息功能，若开启，则访问任何页面都会提前读数据库判断是否有新的未读信息 -->
+		<used>true</used>
+		<!-- 发送站内信时短信内容允许的最小字符 -->
+		<content_minlength>2</content_minlength>
+		<!-- 发送站内信时短信内容允许的最大字符，英文或者汉字 -->
+		<content_maxlength>100</content_maxlength>
+	</message>
 	
 	<!-- 日志表 Log 里面，type字段的值，每个值代表一个功能记录 -->
 	<logTypeList>
@@ -47,7 +55,6 @@
 		<type>PROJECT_DELETE#62#删除项目组</type>
 		<type>PROJECT_ADD_MEMBER#63#项目组添加成员</type>
 		 -->
-		
 	</logTypeList>
 	
 	<sms>
@@ -75,5 +82,15 @@
 		<commentTextMaxLength>100</commentTextMaxLength>
 		<!-- 是否将阅读帖子写日志进行记录-->
 		<readPost_addLog>true</readPost_addLog>
+		<!-- 发帖时，如果没有选择发帖到哪，这里默认选中的那个分类id -->
+		<default_createPost_classId>1</default_createPost_classId>
+		<!-- 发帖时，自动截取内容前多少个字节作为简介。这里是截取的开头的最大字符 -->
+		<post_info_autoCat_max>60</post_info_autoCat_max>
 	</bbs>
+	
+	<!-- aliyun OSS 文件上传 -->
+	<OSS>
+		<!-- 图片文件，允许上传的图片的后缀名，多个以|分割 -->
+		<imageSuffixList>jpg|png|gif</imageSuffixList>
+	</OSS>
 </configuration>

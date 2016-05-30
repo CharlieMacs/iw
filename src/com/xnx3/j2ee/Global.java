@@ -2,7 +2,6 @@ package com.xnx3.j2ee;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 
@@ -20,11 +19,10 @@ public class Global {
 	 */
 	public final static String language="chineseSimple";
 	
-	public final static int MESSAGE_CONTENT_MINLENGTH = 2;		//发送站内信时短信内容允许的最小字符	
-	public final static int MESSAGE_CONTENT_MAXLENGTH = 100;	//发送站内信时短信内容允许的最大字符
-	
-	public final static int DEFAULT_BBS_CREATEPOST_CLASSID=1;	//发帖时，如果没有选择发帖到哪，这里默认选中的那个分类id
-	public final static int POST_INFO_AUTOCAT_MAX=60;		//发帖时，自动截取内容前多少个字节作为简介。这里是截取的开头的最大字符
+	/****站内信****/
+	public static boolean MESSAGE_USED = true;			//是否使用站内信息功能，若开启，则访问任何页面都会提前读数据库判断是否有新的未读信息 	systemConfig.xml
+	public static int MESSAGE_CONTENT_MINLENGTH = 2;		//发送站内信时短信内容允许的最小字符	systemConfig.xml
+	public static int MESSAGE_CONTENT_MAXLENGTH = 100;		//发送站内信时短信内容允许的最大字符 systemConfig.xml
 	
 	/********文件目录相关，会在当前项目的根目录下的文件夹*********/
 	public final static String CACHE_FILE="cache/js/";
@@ -43,22 +41,41 @@ public class Global {
 	public final static int PROMPT_STATE_SUCCESS=1;			//中专提示页面prompt.jsp的成功提示状态
 	public final static int PROMPT_STATE_ERROR=0;			//中专提示页面prompt.jsp的失败（错误）提示状态
 	public final static int PAGE_DEFAULT_EVERYNUMBER=20;	//用户前台分页，默认每页20行记录
-	public final static int PAGE_ADMIN_DEFAULT_EVERYNUMBER=10;	//后台分业，每页10条纪录
+	public final static int PAGE_ADMIN_DEFAULT_EVERYNUMBER=10;	//后台分页，每页10条纪录
 	
+	/*****论坛相关******/
 	public static int bbs_titleMinLength;	//发帖标题允许的最小长度（英文长度）
 	public static int bbs_titleMaxLength;	//发帖标题允许的最大长度（英文长度），最大值同时取决于数据库字段的最大值限制
 	public static int bbs_textMinLength;	//内容所允许的最小长度（英文长度)
 	public static boolean bbs_readPost_addLog;	//是否将阅读帖子写日志进行记录
 	public static int bbs_commentTextMinLength;	//回帖，内容所允许的最小长度（英文长度)
 	public static int bbs_commentTextMaxLength;	//回帖，内容所允许的最大长度（英文长度)
+	public static int DEFAULT_BBS_CREATEPOST_CLASSID=1;	//发帖时，如果没有选择发帖到哪，这里默认选中的那个分类id systemConfig.xml
+	public static int POST_INFO_AUTOCAT_MAX=60;		//发帖时，自动截取内容前多少个字节作为简介。这里是截取的开头的最大字符 systemConfig.xml
+	
+	/**** 文件上传 *****/
+	public static String ossFileUploadImageSuffixList = ""; //图片文件，允许上传的图片的后缀名，多个以|分割，如 "png|jpg|gif"
 	
 	static{
+		/****站内信****/
+		MESSAGE_USED = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.used").equals("true");
+		MESSAGE_CONTENT_MINLENGTH = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.content_minlength"), 0);
+		MESSAGE_CONTENT_MAXLENGTH = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.content_maxlength"), 0);
+		
+		/*****论坛相关******/
 		bbs_titleMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.titleMinLength"), 0);
 		bbs_titleMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.titleMaxLength"), 0);
 		bbs_textMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.textMinLength"), 0);
 		bbs_readPost_addLog = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.readPost_addLog").equals("true");
 		bbs_commentTextMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.commentTextMinLength"), 0);
 		bbs_commentTextMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.commentTextMaxLength"), 0);
+		DEFAULT_BBS_CREATEPOST_CLASSID = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.default_createPost_classId"), 0);
+		POST_INFO_AUTOCAT_MAX = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.post_info_autoCat_max"), 0);
+		
+		
+		/****图片文件上传 ****/
+		ossFileUploadImageSuffixList = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("OSS.imageSuffixList");
+		
 	}
 	
 	/**
