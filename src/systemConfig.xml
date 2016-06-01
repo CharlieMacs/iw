@@ -91,6 +91,6 @@
 	<!-- aliyun OSS 文件上传 -->
 	<OSS>
 		<!-- 图片文件，允许上传的图片的后缀名，多个以|分割 -->
-		<imageSuffixList>jpg|png|gif</imageSuffixList>
+		<imageSuffixList>jpg|png|gif|bmp|jpeg</imageSuffixList>
 	</OSS>
 </configuration>

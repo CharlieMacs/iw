@@ -24,7 +24,7 @@ public class OSSServiceImpl implements OSSService {
 	@Override
 	public UploadFileVO upload(String filePath, MultipartFile multipartFile) {
 		UploadFileVO vo = new UploadFileVO();
-		if(multipartFile == null){
+		if(multipartFile == null || multipartFile.isEmpty()){
 			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
 			return vo;
 		}
@@ -40,6 +40,7 @@ public class OSSServiceImpl implements OSSService {
 		
 		vo.setPath(pr.getPath());
 		vo.setFileName(pr.getFileName());
+		vo.setUrl(pr.getUrl());
 		
 		return vo;
 	}
@@ -61,7 +62,7 @@ public class OSSServiceImpl implements OSSService {
 		//判断上传的文件后缀是否再指定的可上传文件里面
 		String fileSuffix=com.xnx3.Lang.subString(multipartFile.getOriginalFilename(), ".", null, 3);	//获得文件后缀，以便重命名
 		boolean find = false;	//是否再可上传后缀里发现此后缀
-		String[] ia = Global.ossFileUploadImageSuffixList.split("|");
+		String[] ia = Global.ossFileUploadImageSuffixList.split("\\|");
 		for (int j = 0; j < ia.length; j++) {
 			if(ia[j].length()>0){
 				if(ia[j].equals(fileSuffix)){

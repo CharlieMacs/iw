@@ -72,8 +72,10 @@
 		<accessKeyId>aaaaaaaaaa</accessKeyId>
 		<!-- AccessKeySecret -->
 		<accessKeySecret>aaaaaaaaaaaaaaaaaaa</accessKeySecret>
-		<!-- BucketName -->
-		<bucketName>aaaaa</bucketName>
+		<!-- Bucket名称 -->
+		<bucketName>xnx3</bucketName>
+		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 -->
+		<url>xnx3.oss-cn-qingdao.aliyuncs.com</url>
 	</aliyunOSS>
 	
 </configuration>
