@@ -6,8 +6,8 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
 String redirectUrl = request.getAttribute("redirectUrl").toString();
-if(redirectUrl.indexOf("http")>0){
-}else if(redirectUrl.indexOf("avascript")>0){
+if(redirectUrl.indexOf("http")>-1){
+}else if(redirectUrl.indexOf("avascript")>-1){
 }else{
 	redirectUrl = basePath+redirectUrl;
 }
