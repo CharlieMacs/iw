@@ -75,7 +75,7 @@
   
 	<context-param> 
 		<param-name>log4jConfigLocation</param-name> 
-		<param-value>/WEB-INF/classes/log4j.properties</param-value> 
+		<param-value>classpath:log4j.properties</param-value> 
 	</context-param> 
 	<listener> 
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class> 
@@ -94,16 +94,4 @@
 	  <servlet-class>com.xnx3.j2ee.servlet.InitServlet</servlet-class>
 	  <load-on-startup>2</load-on-startup>
 	</servlet>
-	
-  <filter>
-    <filter-name>UrlRewriteFilter</filter-name>
-    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>UrlRewriteFilter</filter-name>
-    <url-pattern>/plugin/steal/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-    <dispatcher>FORWARD</dispatcher>
-  </filter-mapping>
-  
 </web-app>
