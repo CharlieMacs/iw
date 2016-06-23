@@ -20,7 +20,7 @@ public interface SystemService {
 
 	public List<System> findByExample(System instance);
 
-	public List<System> findByName(Object name);
+	public System findByName(Object name);
 
 	public List<System> findByListshow(Object listshow);
 	

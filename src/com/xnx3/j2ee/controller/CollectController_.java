@@ -2,15 +2,18 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.service.CollectService;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
@@ -26,7 +29,7 @@ public class CollectController_ extends BaseController {
 	@Resource
 	private CollectService collectService;
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	
 	/**
 	 * 添加关注的表单提交（演示）
@@ -54,25 +57,43 @@ public class CollectController_ extends BaseController {
 	}
 	
 	/**
-	 * 我的关注列表
-	 * @param request
-	 * @param model
-	 * @return
+	 * 关注列表,关注我的
 	 */
-	@RequestMapping("/list")
-	public String list(HttpServletRequest request,Model model){
+	@RequestMapping("/myList")
+	public String myList(HttpServletRequest request,Model model){
 		Sql sql = new Sql(request);
-		sql.appendWhere("collect.userid="+getUser().getId());
-		int count = globalService.count("collect", sql.getWhere());
+		sql.appendWhere("collect.othersid="+getUser().getId());
+		int count = sqlService.count("collect", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
-		sql.setSelectFromAndPage("SELECT collect.* , (SELECT nickname FROM user WHERE user.id = collect.othersid) AS nickname FROM collect", page);
+		sql.setSelectFromAndPage("SELECT collect.*,user.nickname,user.head FROM collect,user", page);
+		sql.appendWhere("collect.userid = user.id");
 		sql.setDefaultOrderBy("collect.id DESC");
-		List<Map<String, Object>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
 		return "iw/collect/list";
 	}
+	
+	/**
+	 * 关注列表,我关注别人的
+	 */
+	@RequestMapping("/otherList")
+	public String otherList(HttpServletRequest request,Model model){
+		Sql sql = new Sql(request);
+		sql.appendWhere("collect.userid="+getUser().getId());
+		int count = sqlService.count("collect", sql.getWhere());
+		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+		sql.setSelectFromAndPage("SELECT collect.*,user.nickname,user.head FROM collect,user", page);
+		sql.appendWhere("collect.othersid = user.id");
+		sql.setDefaultOrderBy("collect.id DESC");
+		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("list", list);
+		return "iw/collect/list";
+	}
+	
 	
 	/**
 	 * 取消关注

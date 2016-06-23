@@ -130,10 +130,10 @@ public class MessageServiceImpl implements MessageService {
 				save(m);
 				logDao.insert(m.getId(), "MESSAGE_DELETE");
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, "信息不存在");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_notFind"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "信息编号传入错误");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_idFailure"));
 		}
 		return baseVO;
 	}
@@ -144,24 +144,29 @@ public class MessageServiceImpl implements MessageService {
 		int recipientid = Lang.stringToInt(request.getParameter("recipientid"), 0);
 		String content = request.getParameter("content");
 		if(recipientid<1){
-			baseVO.setBaseVO(BaseVO.FAILURE, "信息发送给谁呢？");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_unknowRecipient"));
+			return baseVO;
+		}
+		
+		if(recipientid == ShiroFunc.getUser().getId()){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_notSendOneself"));
 			return baseVO;
 		}
 		
 		if(content == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请输入要发送的信息内容");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_pleaseInputText"));
 		}else if(content.length()>Global.MESSAGE_CONTENT_MINLENGTH&&content.length()<Global.MESSAGE_CONTENT_MAXLENGTH) {
 			//正常
 			
 			//拿到收信人信息
 			User recipiendUser = userDao.findById(recipientid);
 			if(recipiendUser == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, "发送的目标用户不存在！");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_sendRecipientNotFind"));
 				return baseVO;
 			}
 			//检验目标用户状态是否正常，是否被冻结
 			if(recipiendUser.getIsfreeze() == User.ISFREEZE_FREEZE){
-				baseVO.setBaseVO(BaseVO.FAILURE, "您发送信息的目标用户账号已被冻结！信息无法发送");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_sendRecipientUserFreeze"));
 				return baseVO;
 			}
 			
@@ -179,12 +184,12 @@ public class MessageServiceImpl implements MessageService {
 			messageDataDao.save(messageData);
 			
 			if(messageData.getId()==0){
-				baseVO.setBaseVO(BaseVO.FAILURE,"信息发送失败");
+				baseVO.setBaseVO(BaseVO.FAILURE,Global.getLanguage("message_saveFailure"));
 			}else{
 				logDao.insert(message.getId(), "MESSAGE_SEND",content);
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "信息内容必须在"+Global.MESSAGE_CONTENT_MINLENGTH+"～"+Global.MESSAGE_CONTENT_MAXLENGTH+"之间");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_sizeFailure").replaceAll("\\$\\{min\\}", Global.MESSAGE_CONTENT_MINLENGTH+"").replaceAll("\\$\\{max\\}", Global.MESSAGE_CONTENT_MAXLENGTH+""));
 		}
 		
 		return baseVO;
@@ -201,7 +206,7 @@ public class MessageServiceImpl implements MessageService {
 				if(userId==message.getRecipientid()||userId==message.getSenderid()){
 					//检测此信息是否已被删除
 					if(message.getIsdelete() == Message.ISDELETE_DELETE){
-						messageVO.setBaseVO(MessageVO.FAILURE, "此信息已被删除！");
+						messageVO.setBaseVO(MessageVO.FAILURE, Global.getLanguage("message_alreadyDelete"));
 					}else{
 						//拿到信息的内容
 						MessageData messageData = messageDataDao.findById(id);
@@ -220,7 +225,7 @@ public class MessageServiceImpl implements MessageService {
 						
 						//检验目标用户状态是否正常，是否被冻结
 						if(senderUser.getIsfreeze() == User.ISFREEZE_FREEZE){
-							messageVO.setBaseVO(BaseVO.FAILURE, "发件人用户账号已被冻结！信息无法查看");
+							messageVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_senderUserFreeze"));
 							return messageVO;
 						}
 						messageVO.setSenderUser(senderUser);
@@ -230,13 +235,13 @@ public class MessageServiceImpl implements MessageService {
 						messageVO.setRecipientUser(recipientUser);
 					}
 				}else{
-					messageVO.setBaseVO(MessageVO.FAILURE, "您无权查看此信息！");
+					messageVO.setBaseVO(MessageVO.FAILURE, Global.getLanguage("message_notRoleRead"));
 				}
 			}else{
-				messageVO.setBaseVO(BaseVO.FAILURE, "要查看的信息不存在！");
+				messageVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_notFind"));
 			}
 		}else{
-			messageVO.setBaseVO(BaseVO.FAILURE, "请传入要查看的信息id");
+			messageVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_idFailure"));
 		}
 		
 		return messageVO;

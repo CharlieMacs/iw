@@ -3,6 +3,7 @@ package com.xnx3.j2ee.service.impl;
 import java.util.List;
 
 import com.xnx3.DateUtil;
+import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.CollectDAO;
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.UserDAO;
@@ -99,13 +100,13 @@ public class CollectServiceImpl implements CollectService {
 		BaseVO baseVO = new BaseVO();
 		
 		if(ShiroFunc.getUser().getId() == userid){
-			baseVO.setBaseVO(BaseVO.FAILURE, "您不能关注自己！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_notCollectOneself"));
 			return baseVO;
 		}
 		
 		User user = userDAO.findById(userid);
 		if(user == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, "要关注的用户不存在！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_null"));
 			return baseVO;
 		}
 		
@@ -114,7 +115,7 @@ public class CollectServiceImpl implements CollectService {
 		collect.setUserid(ShiroFunc.getUser().getId());
 		List<Collect> list = findByExample(collect);;
 		if(list.size()>0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "已经关注过了，无需再关注！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_already"));
 			return baseVO;
 		}
 		
@@ -125,7 +126,7 @@ public class CollectServiceImpl implements CollectService {
 			baseVO.setBaseVO(BaseVO.SUCCESS, collect.getId()+"");
 			return baseVO;
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "存入关注表失败！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_saveFailure"));
 			return baseVO;
 		}
 	}
@@ -139,12 +140,12 @@ public class CollectServiceImpl implements CollectService {
 		collect.setUserid(ShiroFunc.getUser().getId());
 		List<Collect> list = findByExample(collect);
 		if(list.size()==0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "您并未关注此人，不需要取消关注");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_notCollectSoNotCancel"));
 			return baseVO;
 		}
 		Collect c = list.get(0);
 		delete(c);
-		logDAO.insert(c.getOthersid(), "COLLECT_DELETE");
+		logDAO.insert(c.getOthersid(), "COLLECT_DELETE",userid+"");
 		
 		return baseVO;
 	}

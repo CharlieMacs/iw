@@ -14,7 +14,7 @@ import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.RolePermission;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.entity.UserRole;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PermissionService;
 import com.xnx3.j2ee.service.RolePermissionService;
@@ -49,7 +49,7 @@ public class RoleAdminController_ extends BaseController {
 	@Resource
 	private UserService userService;
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	@Resource
 	private LogService logService;
 	/**
@@ -231,11 +231,11 @@ public class RoleAdminController_ extends BaseController {
 	public String permissionList(Permission permission,HttpServletRequest request,Model model){
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"description","url","name","parent_id","percode"});
-		int count = globalService.count("permission", sql.getWhere());
+		int count = sqlService.count("permission", sql.getWhere());
 		Page page = new Page(count, 1000, request);
 		sql.setSelectFromAndPage("SELECT * FROM permission", page);
 		sql.setDefaultOrderBy("permission.id DESC");
-		List<Permission> list = globalService.findEntityBySql(sql, Permission.class);
+		List<Permission> list = sqlService.findEntityBySql(sql, Permission.class);
 		
 		List<PermissionTree> permissionTreeList = new ShiroFunc().PermissionToTree(new ArrayList<Permission>(), list);
 		model.addAttribute("page", page);

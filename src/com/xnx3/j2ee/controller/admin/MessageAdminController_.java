@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageDataService;
 import com.xnx3.j2ee.service.MessageService;
@@ -39,7 +39,7 @@ public class MessageAdminController_ extends BaseController {
 	private MessageDataService messageDataService;
 	
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	
 	@Resource
 	private LogService logService;
@@ -57,13 +57,13 @@ public class MessageAdminController_ extends BaseController {
 		sql.setSearchTable("message");
 		sql.setSearchColumn(new String[]{"id=","senderid=","recipientid="});
 		sql.appendWhere("message.isdelete = "+Message.ISDELETE_NORMAL);
-		int count = globalService.count("message", sql.getWhere());
+		int count = sqlService.count("message", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user ", page);
 		sql.appendWhere("message.id=message_data.id");
 		sql.setGroupBy("message.id");
 		sql.setDefaultOrderBy("message.id DESC");
-		List<Map<String, Object>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

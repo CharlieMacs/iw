@@ -1,8 +1,11 @@
 package com.xnx3.j2ee.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -11,8 +14,11 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
+import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.SmsLogDAO;
@@ -23,6 +29,7 @@ import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.entity.*;
+import com.xnx3.net.OSSUtil;
 
 public class UserServiceImpl implements UserService{
 
@@ -206,11 +213,11 @@ public class UserServiceImpl implements UserService{
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		if(username==null || username.length() == 0 ){
-			baseVO.setBaseVO(BaseVO.FAILURE, "用户名/邮箱不能为空");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserOrEmailNotNull"));
 			return baseVO;
 		}
 		if(password==null || password.length() == 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "密码不能为空");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginPasswordNotNull"));
 			return baseVO;
 		}
 		
@@ -220,7 +227,7 @@ public class UserServiceImpl implements UserService{
 		}else{
 			l = findByUsername(username);
 		}
-		if(l!=null){
+		if(l!=null && l.size()>0){
 			User user = l.get(0);
 			
 			String md5Password = new Md5Hash(password, user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
@@ -228,7 +235,7 @@ public class UserServiceImpl implements UserService{
 			if(md5Password.equals(user.getPassword())){
 				//检验此用户状态是否正常，是否被冻结
 				if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-					baseVO.setBaseVO(BaseVO.FAILURE, "您的账号已被冻结！无法登陆");
+					baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
 					return baseVO;
 				}
 				
@@ -254,12 +261,12 @@ public class UserServiceImpl implements UserService{
 					java.lang.System.out.println("AuthenticationException:"+ae.getMessage());
 				}
 				logDao.insert("USER_LOGIN_SUCCESS");
-				baseVO.setBaseVO(BaseVO.SUCCESS, "登陆成功");
+				baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, "密码错误！");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginPasswordFailure"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "用户不存在");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserNotFind"));
 		}
 		
 		return baseVO;
@@ -304,7 +311,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		if(user.getUsername()==null||user.getUsername().equals("")||user.getEmail()==null||user.getEmail().equals("")||user.getPassword()==null||user.getPassword().equals("")){
-			baseVO.setBaseVO(BaseVO.FAILURE, "信息不全！请重新输入");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regDataNotAll"));
 		}else{
 			Random random = new Random();
 			user.setSalt(random.nextInt(10)+""+random.nextInt(10)+""+random.nextInt(10)+""+random.nextInt(10)+"");
@@ -360,9 +367,9 @@ public class UserServiceImpl implements UserService{
 				}
 				
 				logDao.insert("USER_REGISTER_SUCCESS");
-				baseVO.setBaseVO(BaseVO.SUCCESS, "注册成功");
+				baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_regSuccess"));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, "注册失败");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailure"));
 			}
 		}
 		
@@ -416,11 +423,11 @@ public class UserServiceImpl implements UserService{
 		String phone = request.getParameter("phone");
 		String code = request.getParameter("code");
 		if(phone==null || phone.length() != 11){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请输入正确的手机号");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodePhoneFailure"));
 			return baseVO;
 		}
 		if(code==null || code.length() != 6){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请输入正确的验证码");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeCodeFailure"));
 			return baseVO;
 		}
 		
@@ -451,13 +458,13 @@ public class UserServiceImpl implements UserService{
     		}
     		user = findByPhone(phone);
     		if(user == null){
-    			baseVO.setBaseVO(BaseVO.FAILURE, "自动注册用户失败！");
+    			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeRegFailure"));
     			return baseVO;
     		}
     		
     		//检验此用户状态是否正常，是否被冻结
 			if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-				baseVO.setBaseVO(BaseVO.FAILURE, "您的账号已被冻结！无法登陆");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
 				return baseVO;
 			}
     		
@@ -485,10 +492,10 @@ public class UserServiceImpl implements UserService{
 			}
 			
 			logDao.insert("USER_LOGIN_SUCCESS");
-			baseVO.setBaseVO(BaseVO.SUCCESS, "登录成功");
+			baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
 			return baseVO;
     	}else{
-    		baseVO.setBaseVO(BaseVO.FAILURE, "验证码不存在！");
+    		baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeCodeNotFind"));
     		return baseVO;
     	}
 	}
@@ -505,27 +512,27 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 		String phone = request.getParameter("phone");
 		if(phone==null || phone.length() != 11){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请输入正确的手机号");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
 			return baseVO;
 		}
 		
     	
 		User user = findByPhone(phone);
 		if(user == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, "用户不存在！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
 			return baseVO;
 		}
 		
 		//ip检测
 		String ip = IpUtil.getIpAddress(request);
 		if(!(user.getLastip().equals(ip) || user.getRegip().equals(ip))){
-			baseVO.setBaseVO(BaseVO.FAILURE, "上次登陆ip跟当前ip不一致，安全考虑不让其登陆");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneIpFailure"));
 			return baseVO;
 		}
 		
 		//检验此用户状态是否正常，是否被冻结
 		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-			baseVO.setBaseVO(BaseVO.FAILURE, "您的账号已被冻结！无法登陆");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
 			return baseVO;
 		}
 		
@@ -548,7 +555,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		logDao.insert("USER_LOGIN_SUCCESS");
-		baseVO.setBaseVO(BaseVO.SUCCESS, "登录成功");
+		baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
 		return baseVO;
 	}
 
@@ -572,7 +579,7 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 		String nickname = request.getParameter("nickname");
 		if(nickname==null){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请输入要修改的昵称！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateNicknameNicknameIsNull"));
 		}else{
 			User uu=findById(ShiroFunc.getUser().getId());
 			String oldNickName = uu.getNickname();
@@ -593,13 +600,13 @@ public class UserServiceImpl implements UserService{
 		if(id > 0){
 			User user = findById(id);
 			if(user == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, "要冻结的用户不存在");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_freezeUserIsNotFind"));
 			}else{
 				user.setIsfreeze(User.ISFREEZE_FREEZE);
 				save(user);
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要冻结的用户id");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_freezeUserPleaseEntryId"));
 		}
 		
 		return baseVO;
@@ -611,14 +618,114 @@ public class UserServiceImpl implements UserService{
 		if(id > 0){
 			User user = findById(id);
 			if(user == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, "要解除冻结的用户不存在");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_unfreezeUserIsNotFind"));
 			}else{
 				user.setIsfreeze(User.ISFREEZE_NORMAL);
 				save(user);
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要解除冻结的用户id");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_unfreezeUserPleaseEntryId"));
 		}
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO updateHeadByOSS(MultipartFile head) {
+		BaseVO baseVO = new BaseVO();
+		if(head == null || head.isEmpty()){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_uploadHeadImageNotFind"));
+			return baseVO;
+		}
+		
+		User user = ShiroFunc.getUser();
+		String fileSuffix = "png";
+		fileSuffix = Lang.findFileSuffix(head.getOriginalFilename());
+		String newHead = user.getId()+"."+fileSuffix;
+		try {
+			OSSUtil.put("image/head/"+newHead, head.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+			baseVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
+			return baseVO;
+		}
+		
+		if(!(user.getHead().equals(newHead))){
+			User u = findById(user.getId());
+			u.setHead(newHead);
+			save(u);
+			ShiroFunc.getUser().setHead(newHead);
+		}
+		logDao.insert("USER_UPDATEHEAD");
+		
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO updateSex(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		String sex = request.getParameter("sex");
+		if(sex == null || sex.length()<0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateSexSexNotIsNull"));
+			return baseVO;
+		}
+		if(!(sex.equals("男") || sex.equals("女"))){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateSexEntryFailure"));
+			return baseVO;
+		}
+		User u = findById(ShiroFunc.getUser().getId());
+		u.setSex(sex);
+		save(u);
+		logDao.insert("USER_UPDATE_SEX", ShiroFunc.getUser().getSex()+"修改为"+sex);
+		ShiroFunc.getUser().setSex(sex);
+		
+		return baseVO; 
+	}
+
+	@Override
+	public BaseVO updateNickname(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		String nickname = request.getParameter("nickname");
+		if(nickname == null){
+			nickname = "";
+		}
+		nickname = StringUtil.filterHtmlTag(nickname);
+		if(nickname.length()==0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateNicknameNotNull"));
+			return baseVO;
+		}
+		if(nickname.length()>15){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateNicknameSizeFailure"));
+			return baseVO;
+		}
+		
+		User u = findById(ShiroFunc.getUser().getId());
+		u.setNickname(nickname);
+		save(u);
+		logDao.insert("USER_UPDATE_NICKNAME", ShiroFunc.getUser().getNickname());
+		ShiroFunc.getUser().setNickname(nickname);
+		
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO updateSign(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		String sign = request.getParameter("sign");
+		if(sign == null){
+			sign = "";
+		}
+		sign = StringUtil.filterHtmlTag(sign);
+		if(sign.length()>40){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateSignSizeFailure"));
+			return baseVO;
+		}
+		
+		User u = findById(ShiroFunc.getUser().getId());
+		u.setSign(sign);
+		save(u);
+		logDao.insert("USER_UPDATE_NICKNAME", sign);
+		ShiroFunc.getUser().setSign(sign);
+		
 		return baseVO;
 	}
 

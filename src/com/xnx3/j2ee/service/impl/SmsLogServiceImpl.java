@@ -2,9 +2,12 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
+
 import com.xnx3.DateUtil;
 import com.xnx3.SendPhoneMsgUtil;
+import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.SmsLogDAO;
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.service.SmsLogService;
@@ -141,7 +144,7 @@ public class SmsLogServiceImpl implements SmsLogService {
 		BaseVO baseVO = new BaseVO();
 		String phone = request.getParameter("phone");
 		if(phone==null || phone.length() != 11){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请输入正确的手机号");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_sendPhoneLoginCodeNumberFailure"));
 		}else{
 			//此参数决定最终是否可发送短信验证码
 			boolean send = false;
@@ -152,7 +155,7 @@ public class SmsLogServiceImpl implements SmsLogService {
 				if(phoneNum<SmsLog.everyDayPhoneNum){
 					send = true;
 				}else{
-					baseVO.setBaseVO(BaseVO.FAILURE, "此手机当天验证码发送已达上限！请明日再进行尝试");
+					baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_thisPhoneNumberDayUpperLimit"));
 					send = false;
 				}
 			}else{
@@ -165,7 +168,7 @@ public class SmsLogServiceImpl implements SmsLogService {
 					if(ipNum<SmsLog.everyDayIpNum){
 						send = true;
 					}else{
-						baseVO.setBaseVO(BaseVO.FAILURE, "此IP当天验证码发送已达上限！请明日再进行尝试");
+						baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_thisIpDayUpperLimit"));
 						send = false;
 					}
 				}
@@ -187,10 +190,10 @@ public class SmsLogServiceImpl implements SmsLogService {
 				save(smsLog);
 				
 				if(smsLog.getId()>0){
-					SendPhoneMsgUtil.send(phone, code);
-					baseVO.setBaseVO(BaseVO.SUCCESS, "验证码已发送至您手机");
+					SendPhoneMsgUtil.send(phone, Global.getLanguage("sms_loginSendCodeText").replaceAll("\\$\\{code\\}", code+""));
+					baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("sms_codeSendYourPhoneSuccess"));
 				}else{
-					baseVO.setBaseVO(BaseVO.FAILURE, "验证码保存失败！");
+					baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_saveFailure"));
 				}
 			}
 		}

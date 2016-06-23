@@ -25,7 +25,7 @@ public class OSSServiceImpl implements OSSService {
 	public UploadFileVO upload(String filePath, MultipartFile multipartFile) {
 		UploadFileVO vo = new UploadFileVO();
 		if(multipartFile == null || multipartFile.isEmpty()){
-			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
+			vo.setBaseVO(UploadFileVO.FAILURE, Global.getLanguage("oss_pleaseSelectUploadFile"));
 			return vo;
 		}
 		
@@ -34,7 +34,7 @@ public class OSSServiceImpl implements OSSService {
 			pr = OSSUtil.put(filePath, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
-			vo.setBaseVO(BaseVO.FAILURE, "上传失败");
+			vo.setBaseVO(BaseVO.FAILURE, Global.getLanguage("oss_uploadFailure"));
 			return vo;
 		}
 		
@@ -55,7 +55,7 @@ public class OSSServiceImpl implements OSSService {
 	public UploadFileVO uploadImage(String filePath, MultipartFile multipartFile) {
 		UploadFileVO vo = new UploadFileVO();
 		if(multipartFile == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
+			vo.setBaseVO(UploadFileVO.FAILURE, Global.getLanguage("oss_pleaseSelectUploadFile"));
 			return vo;
 		}
 		
@@ -72,7 +72,7 @@ public class OSSServiceImpl implements OSSService {
 			}
 		}
 		if(!find){
-			vo.setBaseVO(UploadFileVO.FAILURE, "此后缀名不在可上传文件列表中！");
+			vo.setBaseVO(UploadFileVO.FAILURE, Global.getLanguage("oss_uploadFileNotInSuffixList"));
 			return vo;
 		}
 		

@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
@@ -16,12 +18,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.service.LanguageService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageService;
+import com.xnx3.j2ee.service.OSSService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.net.MailUtil;
 
 /**
@@ -39,7 +45,11 @@ public class UserController_ extends BaseController {
 	private UserService userService;
 	
 	@Resource
+	private OSSService ossService;
+	
+	@Resource
 	private LogService logService;
+
 	
 	/**
 	 * 用户个人中心
@@ -49,6 +59,17 @@ public class UserController_ extends BaseController {
 	@RequestMapping("/info")
 	public String userInfo(){
 		return "iw/user/info";
+	}
+	
+	
+	public String uploadHead(@RequestParam("head") MultipartFile file,Model model){
+		UploadFileVO v = ossService.uploadImage("head/", file);
+		if(v.getResult() == UploadFileVO.SUCCESS){
+			new LanguageService
+			return success(model, "上传成功，文件路径："+v.getPath());
+		}else{
+			return error(model, v.getInfo());
+		}
 	}
 	
 	/**

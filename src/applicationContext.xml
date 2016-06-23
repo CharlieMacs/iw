@@ -155,7 +155,7 @@
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	<bean id="GlobalDAO" class="com.xnx3.j2ee.dao.GlobalDAO">
+	<bean id="SqlDAO" class="com.xnx3.j2ee.dao.SqlDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
@@ -255,8 +255,8 @@
 	<bean id="logService" class="com.xnx3.j2ee.service.impl.LogServiceImpl">
 		<property name="logDAO"><ref bean="LogDAO" /></property>
 	</bean>
-	<bean id="globalService" class="com.xnx3.j2ee.service.impl.GlobalServiceImpl">
-		<property name="globalDAO"><ref bean="GlobalDAO" /></property>
+	<bean id="sqlService" class="com.xnx3.j2ee.service.impl.SqlServiceImpl">
+		<property name="sqlDAO"><ref bean="SqlDAO" /></property>
 	</bean>
 	<bean id="friendService" class="com.xnx3.j2ee.service.impl.FriendServiceImpl">
 		<property name="friendDAO"><ref bean="FriendDAO" /></property>
@@ -273,5 +273,7 @@
 		<property name="userDAO"><ref bean="UserDAO" /></property>
 	</bean>
 	<bean id="ossService" class="com.xnx3.j2ee.service.impl.OSSServiceImpl">
+	</bean>
+	<bean id="languageService" class="com.xnx3.j2ee.service.impl.LanguageServiceImpl">
 	</bean>
 </beans>

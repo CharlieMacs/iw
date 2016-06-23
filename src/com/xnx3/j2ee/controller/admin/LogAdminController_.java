@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
@@ -28,7 +28,7 @@ public class LogAdminController_ extends BaseController{
 	private LogService logService;
 	
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	
 	/**
 	 * 日志列表
@@ -42,11 +42,11 @@ public class LogAdminController_ extends BaseController{
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"userid","type=","goalid=","addtime"});
 		sql.appendWhere("log.isdelete = 0");
-		int count = globalService.count("log", sql.getWhere());
+		int count = sqlService.count("log", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT log.*,(SELECT user.nickname FROM user WHERE user.id=log.userid) AS nickname FROM log ", page);
 		sql.setDefaultOrderBy("log.id DESC");
-		List<Map<String, Object>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

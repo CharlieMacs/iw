@@ -151,10 +151,10 @@ public class PostCommentServiceImpl implements PostCommentService {
 				save(pc);
 				logDAO.insert(pc.getId(), "BBS_POST_DELETE_COMMENT", pc.getText());
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, "要删除的评论不存在！");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_deleteCommentNotFind"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "请传入正确的评论编号");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_commentIdFailure"));
 		}
 		return baseVO;
 	}
@@ -165,29 +165,29 @@ public class PostCommentServiceImpl implements PostCommentService {
 		int postid = Lang.stringToInt(request.getParameter("postid"), 0);
 		String text = request.getParameter("text");
 		if(postid == 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "要回复哪篇呢？");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_unknowCommentPost"));
 			return baseVO;
 		}
 		
 		if(text==null || text.length()<Global.bbs_commentTextMinLength || text.length()>Global.bbs_commentTextMaxLength){
-			baseVO.setBaseVO(BaseVO.FAILURE, "回复内容长度必须在"+Global.bbs_commentTextMinLength+"到"+Global.bbs_commentTextMaxLength+"个英文或汉字之间");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_commentSizeFailure").replaceAll("\\$\\{min\\}", Global.bbs_commentTextMinLength+"").replaceAll("\\$\\{max\\}", Global.bbs_commentTextMaxLength+""));
 			return baseVO;
 		}
 		
 		//先查询是不是有这个主贴
 		Post p=postDAO.findById(postid);
 		if(p == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, "要回复的帖子不存在！");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_commentPostNotFind"));
 			return baseVO;
 		}
 		
 		if(p.getState() != Post.STATE_NORMAL){
-			baseVO.setBaseVO(BaseVO.FAILURE, "要回复的帖子非正常状态，无法回复");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_commentPostIsNotNormal"));
 			return baseVO;
 		}
 		
 		if(p.getIsdelete() == Post.ISDELETE_DELETE){
-			baseVO.setBaseVO(BaseVO.FAILURE, "要回复的帖子已删除，无法回复");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_commentPostIsDelete"));
 			return baseVO;
 		}
 		

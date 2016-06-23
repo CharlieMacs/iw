@@ -15,7 +15,7 @@ import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 
@@ -28,7 +28,7 @@ import com.xnx3.j2ee.util.Sql;
 public class SmsLogAdminController_ extends BaseController {
 	
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	
 	@RequiresPermissions("adminSmsLogList")
 	@RequestMapping("list")
@@ -36,17 +36,17 @@ public class SmsLogAdminController_ extends BaseController {
 //		Sql sql = new Sql();
 //		String[] column = {"phone","used=","userid="};
 //		String where = sql.generateWhere(request, column, null);
-//		int count = globalService.count("sms_log", where);
+//		int count = sqlService.count("sms_log", where);
 //		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 //		page.setDefaultOrderBy("id_DESC");
-//		List<User> list = globalService.findBySqlQuery("SELECT * FROM sms_log", where, page,SmsLog.class);
+//		List<User> list = sqlService.findBySqlQuery("SELECT * FROM sms_log", where, page,SmsLog.class);
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"phone","used=","userid="});
-		int count = globalService.count("sms_log", sql.getWhere());
+		int count = sqlService.count("sms_log", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM sms_log", page);
 		sql.setDefaultOrderBy("sms_log.id DESC");
-		List<SmsLog> list = globalService.findEntityBySql(sql, SmsLog.class);
+		List<SmsLog> list = sqlService.findEntityBySql(sql, SmsLog.class);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

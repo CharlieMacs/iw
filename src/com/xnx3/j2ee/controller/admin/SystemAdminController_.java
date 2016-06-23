@@ -16,7 +16,6 @@ import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
 import com.xnx3.j2ee.service.RoleService;
 import com.xnx3.j2ee.service.SystemService;
-import com.xnx3.j2ee.servlet.InitServlet;
 import com.xnx3.j2ee.controller.BaseController;
 
 /**
@@ -79,11 +78,8 @@ public class SystemAdminController_ extends BaseController {
 	public String userRegRole(
 			@RequestParam(value = "value", required = false) String value,
 			Model model){
-		com.xnx3.j2ee.entity.System system = new System();
-		List<com.xnx3.j2ee.entity.System> systemList = systemService.findByName("USER_REG_ROLE");
-		if(systemList!=null&&systemList.size()==1){
-			system=systemList.get(0);
-		}else{
+		com.xnx3.j2ee.entity.System system = systemService.findByName("USER_REG_ROLE");
+		if(system == null){
 			system.setName("USER_REG_ROLE");
 			system.setDescription("用户注册后的权限");
 		}

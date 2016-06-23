@@ -1,8 +1,11 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import com.xnx3.Lang;
+import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.dao.PostClassDAO;
 import com.xnx3.j2ee.entity.BaseEntity;
@@ -98,7 +101,7 @@ public class PostClassServiceImpl implements PostClassService {
 		int id = Lang.stringToInt(request.getParameter("id"), 0);
 		String name = request.getParameter("name");
 		if(name == null || name.length()==0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "板块的名字不能为空");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_savePostClassNameNotNull"));
 			return baseVO;
 		}
 		
@@ -109,7 +112,7 @@ public class PostClassServiceImpl implements PostClassService {
 			//修改
 			postClass = findById(id);
 			if(postClass == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, "要修改的板块不存在");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_updatePostClassNotFind"));
 				return baseVO;
 			}
 		}
@@ -126,7 +129,7 @@ public class PostClassServiceImpl implements PostClassService {
 			}
 			new Bbs().postClass(findByIsdelete(BaseEntity.ISDELETE_NORMAL));
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "操作失败");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_savePostClassFailure"));
 		}
 		return baseVO;
 	}
@@ -142,10 +145,10 @@ public class PostClassServiceImpl implements PostClassService {
 				logDAO.insert(pc.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", pc.getName());
 				new Bbs().postClass(findByIsdelete(BaseEntity.ISDELETE_NORMAL));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, "要删除的板块不存在！");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_deletePostClassNotFind"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要删除的板块编号");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_pleaseAddDeletePostClassID"));
 		}
 		return baseVO;
 	}

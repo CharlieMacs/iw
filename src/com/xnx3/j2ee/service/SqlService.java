@@ -13,12 +13,12 @@ import com.xnx3.j2ee.util.Sql;
  * @author 管雷鸣
  *
  */
-public interface GlobalService {
+public interface SqlService {
 
 	/**
 	 * 获取查询的信息条数
 	 * @param tableName 表名,多个表名中间用,分割，如: "user,message,log"。同样如果是多个表，where参数需要增加关联条件
-	 * @param appendWhere {@link Sql#getWhere(HttpServletRequest, String[], String)}
+	 * @param appendWhere {@link Sql#getWhere(HttpServletRequest, String[], String)} 或者直接传入字符串如："WHERE userid = 2"
 	 * @return
 	 */
 	public int count(String tableName,String where);
@@ -45,6 +45,13 @@ public interface GlobalService {
 	 * @return List<Map<String,String>>
 	 */
 	public List<Map<String,Object>> findMapBySql(Sql sql);
+	
+	/**
+	 * 传入查询的SQL语句
+	 * @param sqlQuery SQL语句
+	 * @return List<Map<String,String>>
+	 */
+	public List<Map<String,Object>> findMapBySqlQuery(String sqlQuery);
 	
 	/**
 	 * 添加/修改

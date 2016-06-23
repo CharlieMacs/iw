@@ -2,9 +2,12 @@ package com.xnx3.j2ee.controller;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.shiro.ActiveUser;
+import com.xnx3.net.ossbean.PutResult;
 
 /**
  * 所有Controller父类
@@ -125,7 +128,7 @@ public class BaseController {
 	 * 				<ul>
 	 * @return View
 	 */
-	private String prompt(Model model , String info,String redirectUrl, int state){
+	public String prompt(Model model , String info,String redirectUrl, int state){
 		model.addAttribute("info", info);
 		model.addAttribute("state", state);
 		
@@ -147,11 +150,12 @@ public class BaseController {
 	 * 				</ul>
 	 * @return 组合后的字符串，如：redirect:/admin/user/list.do
 	 */
-	protected String redirect(String redirectUtl) {
+	public String redirect(String redirectUtl) {
 		if(redirectUtl != null && redirectUtl.indexOf("http")>-1){
 			return "redirect:"+redirectUtl;
 		}else{
 			return "redirect:/"+redirectUtl;
 		}
 	}
+
 }

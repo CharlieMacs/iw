@@ -1,11 +1,9 @@
 package com.xnx3.j2ee.dao;
 
 import static org.hibernate.criterion.Example.create;
-
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -13,9 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
 
 /**
@@ -23,7 +19,7 @@ import com.xnx3.j2ee.util.Sql;
  * @author 管雷鸣
  */
 @Transactional
-public class GlobalDAO {
+public class SqlDAO {
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -45,7 +41,7 @@ public class GlobalDAO {
 	 * @return
 	 */
 	public int count(String tableName,String where){
-		String queryString = "SELECT count(*) FROM "+tableName+where;
+		String queryString = "SELECT count(*) FROM "+tableName+" "+where;
 		BigInteger count = (BigInteger)getCurrentSession().createSQLQuery(queryString).uniqueResult();
 		return count.intValue();
 	}
@@ -58,6 +54,20 @@ public class GlobalDAO {
 	public List<Map<String,Object>> findMapBySql(Sql sql){
 		try {
 			Query queryObject = getCurrentSession().createSQLQuery(sql.getSql()).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+	
+	/**
+	 * 传入查询的SQL语句
+	 * @param sqlQuery SQL语句
+	 * @return List<Map<String,String>>
+	 */
+	public List<Map<String,Object>> findMapBySqlQuery(String sqlQuery){
+		try {
+			Query queryObject = getCurrentSession().createSQLQuery(sqlQuery).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			throw re;
@@ -166,7 +176,7 @@ public class GlobalDAO {
         return result;
     }
 	
-	public static GlobalDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (GlobalDAO) ctx.getBean("GlobalDAO");
+	public static SqlDAO getFromApplicationContext(ApplicationContext ctx) {
+		return (SqlDAO) ctx.getBean("SqlDAO");
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.vo.BaseVO;
@@ -129,4 +130,28 @@ public interface UserService {
 	 */
 	public BaseVO unfreezeUser(int id);
 	
+	/**
+	 * 利用OSS上传头像
+	 * @param head
+	 * @return
+	 */
+	public BaseVO updateHeadByOSS(MultipartFile head);
+	
+	/**
+	 * 修改性别
+	 * @param request GET／POST传入如： sex=男
+	 */
+	public BaseVO updateSex(HttpServletRequest request);
+	
+	/**
+	 * 修改昵称
+	 * @param request GET／POST传入如： nickname=管雷鸣  不允许为空。字符限制1～15个汉字或英文
+	 */
+	public BaseVO updateNickname(HttpServletRequest request);
+	
+	/**
+	 * 修改签名
+	 * @param request GET／POST传入如： sign=我是签名  允许为空。字符限制0～40个汉字或英文
+	 */
+	public BaseVO updateSign(HttpServletRequest request);
 }

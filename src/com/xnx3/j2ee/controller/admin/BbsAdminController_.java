@@ -18,7 +18,7 @@ import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.PostClassService;
 import com.xnx3.j2ee.service.PostCommentService;
@@ -55,7 +55,7 @@ public class BbsAdminController_ extends BaseController {
 	private UserService userService;
 	
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	
 	@Resource
 	private LogService logService;
@@ -72,17 +72,17 @@ public class BbsAdminController_ extends BaseController {
 //		Sql sql = new Sql();
 //		String[] column = {"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"};
 //		String where = sql.generateWhere(request, column, " isdelete = "+BaseEntity.ISDELETE_NORMAL);
-//		int count = globalService.count("post", where);
+//		int count = sqlService.count("post", where);
 //		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post", where, page,Post.class);
+//		List<Post> list = sqlService.findBySqlQuery("SELECT * FROM post", where, page,Post.class);
 		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"});
-		int count = globalService.count("post", sql.getWhere());
+		int count = sqlService.count("post", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM post", page);
 		sql.setDefaultOrderBy("post.id DESC");
-		List<Post> list = globalService.findEntityBySql(sql, Post.class);
+		List<Post> list = sqlService.findEntityBySql(sql, Post.class);
 		
 		
 		model.addAttribute("page", page);
@@ -144,18 +144,18 @@ public class BbsAdminController_ extends BaseController {
 //		Sql sql = new Sql();
 //		String[] column = {"id=","name"};
 //		String where = sql.generateWhere(request, column, null);
-//		int count = globalService.count("post_class", where);
+//		int count = sqlService.count("post_class", where);
 //		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 //		where = sql.generateWhere(request, column, null);
-//		List<PostClass> list = globalService.findBySqlQuery("SELECT * FROM post_class", where, page,PostClass.class);
+//		List<PostClass> list = sqlService.findBySqlQuery("SELECT * FROM post_class", where, page,PostClass.class);
 		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"id=","name"});
-		int count = globalService.count("post_class", sql.getWhere());
+		int count = sqlService.count("post_class", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM post_class", page);
 		sql.setDefaultOrderBy("post_class.id DESC");
-		List<PostClass> list = globalService.findEntityBySql(sql, PostClass.class);
+		List<PostClass> list = sqlService.findEntityBySql(sql, PostClass.class);
 		
 		
 		model.addAttribute("list", list);
@@ -262,17 +262,17 @@ public class BbsAdminController_ extends BaseController {
 //		Sql sql = new Sql();
 //		String[] column = {"postid=","userid="};
 //		String where = sql.generateWhere(request, column, null);
-//		int count = globalService.count("post_comment", where);
+//		int count = sqlService.count("post_comment", where);
 //		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		List<Post> list = globalService.findBySqlQuery("SELECT * FROM post_comment", where+" ORDER BY id DESC", page,PostComment.class);
+//		List<Post> list = sqlService.findBySqlQuery("SELECT * FROM post_comment", where+" ORDER BY id DESC", page,PostComment.class);
 		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"postid=","userid="});
-		int count = globalService.count("post_comment", sql.getWhere());
+		int count = sqlService.count("post_comment", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM post_comment", page);
 		sql.setDefaultOrderBy("post_comment.id DESC");
-		List<PostComment> list = globalService.findEntityBySql(sql, PostComment.class);
+		List<PostComment> list = sqlService.findEntityBySql(sql, PostComment.class);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);

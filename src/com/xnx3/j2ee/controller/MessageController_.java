@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.LogService;
 import com.xnx3.j2ee.service.MessageDataService;
 import com.xnx3.j2ee.service.MessageService;
@@ -44,7 +44,7 @@ public class MessageController_ extends BaseController {
 	private UserService userService;
 	
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 
 	@Resource
 	private LogService logService;
@@ -121,11 +121,11 @@ public class MessageController_ extends BaseController {
 		sql.setSearchColumn(new String[]{"id","state="});
 		String boxWhere = box.equals("inbox")? "message.recipientid="+getUser().getId():"message.senderid="+getUser().getId();
 		sql.appendWhere(boxWhere+" AND message.senderid=user.id AND message.isdelete = "+Message.ISDELETE_NORMAL+" AND user.isfreeze="+User.ISFREEZE_NORMAL);
-		int count = globalService.count("message,user", sql.getWhere());
+		int count = sqlService.count("message,user", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user ", page);
 		sql.setGroupBy("message.id");
-		List<Map<String, Object>> list = globalService.findMapBySql(sql);
+		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);

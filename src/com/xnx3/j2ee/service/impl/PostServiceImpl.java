@@ -181,15 +181,15 @@ public class PostServiceImpl implements PostService {
 		String text = request.getParameter("text");
 		
 		if(classid == 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, "请选择发布的板块");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_addPostPleaseSelectClass"));
 			return baseVO;
 		}
 		if(title==null || title.length()<Global.bbs_titleMinLength || title.length()>Global.bbs_titleMaxLength){
-			baseVO.setBaseVO(BaseVO.FAILURE, "标题必须是"+Global.bbs_titleMinLength+"到"+Global.bbs_titleMaxLength+"个字母或汉字");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_addPostTitleSizeFailure").replaceAll("\\$\\{min\\}", Global.bbs_titleMinLength+"").replaceAll("\\$\\{max\\}", Global.bbs_titleMaxLength+""));
 			return baseVO;
 		}
 		if(text==null || text.length()<Global.bbs_textMinLength){
-			baseVO.setBaseVO(BaseVO.FAILURE, "内容不能少于"+Global.bbs_textMinLength+"个字母或汉字");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_addPostTextSizeFailure").replaceAll("\\$\\{min\\}",Global.bbs_textMinLength+""));
 			return baseVO;
 		}
 		
@@ -198,7 +198,7 @@ public class PostServiceImpl implements PostService {
 		if(id != 0){
 			post = findById(id);
 			if(post == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, "要修改的帖子不存在！");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_updatePostNotFind"));
 				return baseVO;
 			}else{
 				post.setId(id);
@@ -251,10 +251,10 @@ public class PostServiceImpl implements PostService {
 				save(p);
 				logDAO.insert(p.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", p.getTitle());
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, "要删除的帖子不存在！");
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_deletePostNotFind"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, "请传入要删除的帖子编号");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_deletePostIdFailure"));
 		}
 		return baseVO;
 	}
@@ -267,7 +267,7 @@ public class PostServiceImpl implements PostService {
 			//查询帖子详情
 			Post post=findById(id);
 			if(post == null){
-				postVO.setBaseVO(PostVO.FAILURE, "您所查看的帖子不存在");
+				postVO.setBaseVO(PostVO.FAILURE, Global.getLanguage("bbs_viewPostNotFind"));
 				return postVO;
 			}
 			
@@ -275,7 +275,7 @@ public class PostServiceImpl implements PostService {
 			User user = userDAO.findById(post.getUserid());
 			//检验此用户状态是否正常，是否被冻结
 			if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-				postVO.setBaseVO(BaseVO.FAILURE, "发帖者账号已被冻结！无法查看帖子");
+				postVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_postCreateUserIsFreeze"));
 				return postVO;
 			}
 			postVO.setUser(user);
@@ -283,7 +283,7 @@ public class PostServiceImpl implements PostService {
 			//查所属板块
 			PostClass postClass = postClassDAO.findById(post.getClassid());
 			if(postClass == null || postClass.getIsdelete() == BaseEntity.ISDELETE_DELETE){
-				postVO.setBaseVO(PostVO.FAILURE, "您所查看的帖子所属板块不存在或已被删除！");
+				postVO.setBaseVO(PostVO.FAILURE, Global.getLanguage("bbs_postViewPostClassIsNotFind"));
 			}else{
 				postVO.setPostClass(postClass);
 				postVO.setPost(post);
@@ -300,7 +300,7 @@ public class PostServiceImpl implements PostService {
 				}
 			}
 		}else{
-			postVO.setBaseVO(PostVO.FAILURE, "请传入帖子id");
+			postVO.setBaseVO(PostVO.FAILURE, Global.getLanguage("bbs_postIdFailure"));
 		}
 		
 		return postVO;

@@ -48,9 +48,13 @@ public class SystemServiceImpl implements SystemService {
 	}
 
 	@Override
-	public List<System> findByName(Object name) {
-		// TODO Auto-generated method stub
-		return systemDao.findByName(name);
+	public System findByName(Object name) {
+		List<System> list = systemDao.findByName(name);
+		if(list.size()>0){
+			return list.get(0);
+		}else{
+			return null;
+		}
 	}
 
 	@Override

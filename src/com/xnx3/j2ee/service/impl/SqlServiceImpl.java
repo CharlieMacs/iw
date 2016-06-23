@@ -2,93 +2,96 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
-import com.xnx3.j2ee.dao.GlobalDAO;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.dao.SqlDAO;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.util.Sql;
 
-public class GlobalServiceImpl implements GlobalService {
-	private GlobalDAO globalDAO;
+public class SqlServiceImpl implements SqlService {
+	private SqlDAO sqlDAO;
 	
-	public GlobalDAO getGlobalDAO() {
-		return globalDAO;
+	public SqlDAO getSqlDAO() {
+		return sqlDAO;
 	}
 
-	public void setGlobalDAO(GlobalDAO globalDAO) {
-		this.globalDAO = globalDAO;
+	public void setSqlDAO(SqlDAO sqlDAO) {
+		this.sqlDAO = sqlDAO;
 	}
 
 	@Override
 	public int count(String tableName, String where) {
 		// TODO Auto-generated method stub
-		return globalDAO.count(tableName, where);
+		return sqlDAO.count(tableName, where);
 	}
 
 	@Override
 	public List findEntityBySql(Sql sql, Class entityClass) {
 		// TODO Auto-generated method stub
-		return globalDAO.findEntityBySqlQuery(sql.getSql(), entityClass);
+		return sqlDAO.findEntityBySqlQuery(sql.getSql(), entityClass);
 	}
 
 	@Override
 	public List findEntityBySqlQuery(String sqlQuery, Class entityClass) {
 		// TODO Auto-generated method stub
-		return globalDAO.findEntityBySqlQuery(sqlQuery, entityClass);
+		return sqlDAO.findEntityBySqlQuery(sqlQuery, entityClass);
 	}
 	
 	
 	@Override
 	public List<Map<String, Object>> findMapBySql(Sql sql) {
 		// TODO Auto-generated method stub
-		return globalDAO.findMapBySql(sql);
+		return sqlDAO.findMapBySql(sql);
 	}
 
+	public List<Map<String,Object>> findMapBySqlQuery(String sqlQuery){
+		return sqlDAO.findMapBySqlQuery(sqlQuery);
+	}
+	
 	@Override
 	public void save(Object entity) {
 		// TODO Auto-generated method stub
-		globalDAO.save(entity);
+		sqlDAO.save(entity);
 	}
 
 	@Override
 	public void delete(Object entity) {
 		// TODO Auto-generated method stub
-		globalDAO.delete(entity);
+		sqlDAO.delete(entity);
 	}
 
 	@Override
 	public Object findById(Class c, int id) {
 		// TODO Auto-generated method stub
-		return globalDAO.findById(c, id);
+		return sqlDAO.findById(c, id);
 	}
 
 	@Override
 	public List findByExample(Object entity) {
 		// TODO Auto-generated method stub
-		return globalDAO.findByExample(entity);
+		return sqlDAO.findByExample(entity);
 	}
 
 	@Override
 	public List findByProperty(Class c, String propertyName, Object value) {
 		// TODO Auto-generated method stub
-		return globalDAO.findByProperty(c, propertyName, value);
+		return sqlDAO.findByProperty(c, propertyName, value);
 	}
 
 	@Override
 	public int executeSql(String sql) {
 		// TODO Auto-generated method stub
-		return globalDAO.executeSql(sql);
+		return sqlDAO.executeSql(sql);
 	}
 
 	@Override
 	public void addOne(String tableName, String fieldName, String where) {
 		// TODO Auto-generated method stub
-		globalDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"+1 WHERE "+where);
+		sqlDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"+1 WHERE "+where);
 	}
 
 	@Override
 	public void subtractOne(String tableName, String fieldName, String where) {
 		// TODO Auto-generated method stub
-		globalDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"-1 WHERE "+where);
+		sqlDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"-1 WHERE "+where);
 	}
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.service.GlobalService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
@@ -33,7 +33,7 @@ public class UserAdminController_ extends BaseController {
 	private UserService userService;
 	
 	@Resource
-	private GlobalService globalService;
+	private SqlService sqlService;
 	
 	/**
 	 * 删除用户
@@ -65,18 +65,18 @@ public class UserAdminController_ extends BaseController {
 //		Sql sql = new Sql();
 //		String[] column = {"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"};
 //		String where = sql.generateWhere(request, column, null);
-//		int count = globalService.count("user", where);
+//		int count = sqlService.count("user", where);
 //		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 //		page.setDefaultOrderBy("id_DESC");
-//		List<User> list = globalService.findBySqlQuery("SELECT * FROM user", where, page,User.class);
+//		List<User> list = sqlService.findBySqlQuery("SELECT * FROM user", where, page,User.class);
 
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"});
-		int count = globalService.count("user", sql.getWhere());
+		int count = sqlService.count("user", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM user", page);
 		sql.setDefaultOrderBy("user.id DESC");
-		List<User> list = globalService.findEntityBySql(sql, User.class);
+		List<User> list = sqlService.findEntityBySql(sql, User.class);
 		
 		
 		model.addAttribute("page", page);
