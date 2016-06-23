@@ -44,6 +44,7 @@ public class User extends BaseEntity {
 	private Short isfreeze;	//是否已冻结，1已冻结（拉入黑名单），0正常
 	private Short idcardauth;	//是否已经经过真实身份认证了（身份证、银行卡绑定等）。默认为没有认证。预留字段
 	private String sign;		//用户签名,限制50个汉字或100个英文字符
+	private String sex;		//性别，三个值：男、女、未知
 	
 	// Constructors
 
@@ -347,7 +348,30 @@ public class User extends BaseEntity {
 	public void setSign(String sign) {
 		this.sign = sign;
 	}
-
+	/**
+	 * 性别，三个值：男、女、未知
+	 * @return 三个值：
+	 * 		<ul>
+	 * 			<li>男
+	 * 			<li>女
+	 * 			<li>未知
+	 * 		</ul>
+	 */
+	public String getSex() {
+		return sex;
+	}
+	/**
+	 * 性别，三个值：男、女、未知
+	 * @param sex 值：
+	 * 		<ul>
+	 * 			<li>男
+	 * 			<li>女
+	 * 			<li>未知
+	 * 		</ul>
+	 */
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", email=" + email
@@ -358,9 +382,8 @@ public class User extends BaseEntity {
 				+ ", currency=" + currency + ", referrerid=" + referrerid
 				+ ", money=" + money + ", freezemoney=" + freezemoney
 				+ ", isfreeze=" + isfreeze + ", idcardauth=" + idcardauth
-				+ ", sign=" + sign + "]";
+				+ ", sign=" + sign + ", sex=" + sex + "]";
 	}
-	
-	
+
 
 }
