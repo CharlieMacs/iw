@@ -1,7 +1,10 @@
 package com.xnx3.j2ee;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 
@@ -14,10 +17,14 @@ public class Global {
 	
 	/**
 	 * 用户可自由切换当前语言，此处为语言库配置，使用哪种。默认根据IP智能判断，若是在中国则使用简体中文，不在中国一律使用英语
-	 * chineseSimple：简体中文
+	 * chinese:简体中文
 	 * english:英语
 	 */
-	public final static String language="chineseSimple";
+	public static String language_default="chinese";
+	/**
+	 * language.get("chinese").get("collect_notCollectOneself")
+	 */
+	public static Map<String, Map<String, String>> language; 
 	
 	/****站内信****/
 	public static boolean MESSAGE_USED = true;			//是否使用站内信息功能，若开启，则访问任何页面都会提前读数据库判断是否有新的未读信息 	systemConfig.xml
@@ -76,6 +83,50 @@ public class Global {
 		/****图片文件上传 ****/
 		ossFileUploadImageSuffixList = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("OSS.imageSuffixList");
 		
+		/*****语言包*****/
+		language_default = ConfigManagerUtil.getSingleton("language.xml").getValue("defaultLanguage");
+		loadLanguagePackage();
+	}
+	
+	/**
+	 * 从language.xml中获取语言包的名字
+	 * 
+	 */
+	private static void loadLanguagePackage(){
+		language = new HashMap<String, Map<String,String>>();
+		
+		ConfigManagerUtil config = ConfigManagerUtil.getSingleton("language.xml");
+		Iterator englishIt = config.getFileConfiguration().getKeys();
+		Map<String, String> languageMap = new HashMap<String, String>();
+		while(englishIt.hasNext()){
+			String key = (String) englishIt.next();
+			if(key.indexOf(".")>-1){
+				String[] l = key.split("\\.");
+				languageMap.put(l[0], l[0]);
+			}
+		}
+		
+		Iterator<Map.Entry<String, String>> it = languageMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, String> entry = it.next();
+			loadLanguagePackage(entry.getKey());
+		}
+	}
+	
+	/**
+	 * 从language.xml加载语言包
+	 * @param languageName 语言名，如chinese、english等
+	 */
+	private static void loadLanguagePackage(String languageName){
+		ConfigManagerUtil config = ConfigManagerUtil.getSingleton("language.xml");
+		Iterator englishIt = config.getFileConfiguration().getKeys(languageName);
+		Map<String, String> englishMap = new HashMap<String, String>();
+		while(englishIt.hasNext()){
+			String key = (String) englishIt.next();
+			String value = config.getValue(key);
+			englishMap.put(key.replace(languageName+".", ""), value);
+		}
+		language.put(languageName, englishMap);
 	}
 	
 	/**
@@ -85,5 +136,21 @@ public class Global {
 	 */
 	public static String get(String systemName){
 		return system.get(systemName);
+	}
+	
+	/**
+	 * 获取语言包language.xml中的描述文字。如果没有找到返回空字符""
+	 * @param key
+	 * @return
+	 */
+	public static String getLanguage(String key){
+		String value = language.get(language_default).get(key);
+		if(value == null){
+			value = "";
+		}
+		return value;
+	}
+	
+	public static void main(String[] args) {
 	}
 }

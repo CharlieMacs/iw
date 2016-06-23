@@ -12,13 +12,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.xnx3.ConfigManagerUtil;
+import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.shiro.ActiveUser;
+import com.xnx3.j2ee.util.CookieUtil;
 
 /**
- * 站内信息最新未读信息查询
+ * 每次请求页面时，都会先通过这个
  * @author 管雷鸣
  *
  */
@@ -48,6 +50,7 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 		if(activeUser!=null){
 			User user=activeUser.getUser();
 			
+			//站内信
 			if(useMessage){
 				Message messageWhere=new Message();
 				messageWhere.setRecipientid(user.getId());
@@ -61,6 +64,25 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 				}
 			}
 		}
+		
+		//语言
+		//如果是第一次访问，先设定默认语言
+		if(request.getSession().getAttribute("language_default") == null){
+			String language_default = null;
+			CookieUtil cookieUtil = new CookieUtil(request, response);
+			if(cookieUtil.getCookie("language_default") != null){
+				language_default = cookieUtil.getCookie("language_default").getValue();
+			}
+			if(language_default == null){
+				language_default = Global.language_default;
+			}
+			
+			if(Global.language.get(language_default) != null){
+				Global.language_default = language_default;
+			}
+			request.getSession().setAttribute("language_default", Global.language_default);
+		}
+		
 		super.postHandle(request, response, handler, modelAndView);
 	}
 
@@ -69,7 +91,4 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 			HttpServletResponse response, Object handler) throws Exception {
 		return true;
 	}
-	
-	
-	
 }

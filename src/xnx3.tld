@@ -21,7 +21,46 @@
  		<required>false</required>
  		<description>转换格式 ,若不填，默认为yyyy-MM-dd hh:mm:ss</description>
  	</attribute>
- 	
+ </tag>
+ 
+ <tag>
+ 	<name>language</name>
+ 	<tag-class>com.xnx3.j2ee.tld.Language</tag-class>
+ 	<body-content>jsp</body-content>
+ 	<attribute>
+ 		<name>key</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 		<description>language.xml中语言下的节点名字，如 user_loginSuccess</description>
+ 	</attribute>
+ 	<attribute>
+ 		<name>remark</name>
+ 		<required>false</required>
+ 		<description>备注，程序中无任何作用，只是给开发人员自己看</description>
+ 	</attribute>
+ </tag>
+ 
+ <tag>
+ 	<name>substring</name>
+ 	<tag-class>com.xnx3.j2ee.tld.TimeTag</tag-class>
+ 	<body-content>jsp</body-content>
+ 	<attribute>
+ 		<name>text</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 		<description>原字符串，要剪裁的字符串</description>
+ 	</attribute>
+ 	<attribute>
+ 		<name>maxLength</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 		<description>字符串显示的最大长度（汉字或英文）</description>
+ 	</attribute>
+ 	<attribute>
+ 		<name>more</name>
+ 		<required>false</required>
+ 		<description>若超过最大长度，裁减的字符串会加上此输出。若不填默认使用 ...</description>
+ 	</attribute>
  </tag>
  
 </taglib>
