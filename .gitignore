@@ -19,3 +19,13 @@
 src/db.properties
 
 src/db.properties
+
+.settings/com.genuitec.eclipse.core.prefs
+
+.settings/com.genuitec.eclipse.migration.prefs
+
+.settings/org.eclipse.core.resources.prefs
+
+.springBeans
+
+.settings/org.eclipse.wst.common.project.facet.core.prefs.xml
