@@ -68,6 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <th>用户昵称</th>
                                     <th class="numeric">动作</th>
                                     <th class="numeric">记录</th>
+                                    <th class="numeric">目标编号</th>
                                     <th class="numeric">操作时间</th>
                                 </tr>
                                 </thead>
@@ -78,6 +79,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                                    <td>${log['nickname'] }(ID:${log['userid'] })</td>
 		                                    <td><script type="text/javascript">document.write(type[${log['type']}]);</script></td>
 		                                    <td>${log['value'] }</td>
+		                                    <td>${log['goalid'] }</td>
 		                                    <td>
 		                                    	<x:time linuxTime="${log['addtime'] }"></x:time>
 		                                    </td>
