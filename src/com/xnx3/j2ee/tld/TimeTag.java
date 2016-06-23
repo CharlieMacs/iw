@@ -1,12 +1,9 @@
 package com.xnx3.j2ee.tld;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
-
 import com.xnx3.DateUtil;
 import com.xnx3.exception.NotReturnValueException;
 

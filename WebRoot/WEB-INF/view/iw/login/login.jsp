@@ -1,6 +1,7 @@
 <%@page import="com.xnx3.j2ee.Global"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib uri="http://www.xnx3.com/java_xnx3/xnx3_tld" prefix="x" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -17,7 +18,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<article id="container">
 		<section class="section"><h1><%=Global.get("SITE_NAME") %></h1>
 			<div class="loginBox">
-				<h2><span>用户登录</span></h2>
+				<h2><span>用户登录 </span></h2>
 				<c:if test="${error != null}">
 					<h1><span>出错：${error }</span></h1>
 				</c:if>
