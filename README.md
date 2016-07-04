@@ -14,6 +14,12 @@
 	* [添加日志记录](http://www.xnx3.com/software/iw/20160527/951.html)
 * 文件上传
 	* [OSS文件上传](http://www.xnx3.com/software/iw/20160601/952.html)
+* 多语言支持
+	* [中文、英文、...添加减少语言种类自由配置](http://www.xnx3.com/software/iw/20160623/953.html)
+* 数据库操作
+	* [事务](http://www.xnx3.com/software/iw/20160628/954.html)
+	* [乐观锁](http://www.xnx3.com/software/iw/20160628/955.html)
+
 <br/>
 <br/>
 
