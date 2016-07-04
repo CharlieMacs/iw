@@ -1,6 +1,5 @@
-package com.xnx3.j2ee.servlet;
+package com.xnx3.j2ee.init;
 
-import java.io.File;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -12,17 +11,16 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
-import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.generateCache.Bbs;
+import com.xnx3.j2ee.generateCache.Message;
 import com.xnx3.j2ee.generateCache.PayLog;
 import com.xnx3.j2ee.generateCache.Role;
 import com.xnx3.j2ee.generateCache.SmsLog;
 import com.xnx3.j2ee.generateCache.User;
 import com.xnx3.j2ee.entity.Log;
-import com.xnx3.j2ee.generateCache.Message;
 import com.xnx3.j2ee.service.PostClassService;
 import com.xnx3.j2ee.service.RoleService;
 import com.xnx3.j2ee.service.SystemService;
@@ -43,40 +41,17 @@ public class InitServlet extends HttpServlet {
 		systemService = ctx.getBean("systemService", SystemService.class);
 		roleService = ctx.getBean("roleService",RoleService.class);
 
-		String path = getClass().getResource("/").getPath();
-		Global.projectPath = path.replace("WEB-INF/classes/", "");
-		
-		initCacheFolder();
-		new Bbs().state();
 		generateCache_postClass();
-		new Message().state();
-		new Message().isdelete();
 		new Role().role(roleService.findAll());
-		new User().isfreeze();
 		loadLogType();
-		new SmsLog().used();
-		new PayLog().channel();
-		
-		/***设置自己的项目开启运行自动设置项****/
-//		new com.guanleiming.iwdemo.grnerateCache.Log().type();		//此仅供测试，已经有初始化Log的缓存项了，这个测试完要删掉，不然正常的Log日志就无法使用了
+		new Message();
+		new PayLog();
+		new SmsLog();
+		new User();
 		
 		readSystemTable();
 	}
 	
-	/**
-	 * 初始化缓存文件夹，若根目录下没有缓存文件夹，自动创建
-	 */
-	public void initCacheFolder(){
-		String[] folders = Global.CACHE_FILE.split("/");
-		String path = Global.projectPath;
-		for (int i = 0; i < folders.length; i++) {
-			if(folders[i].length()>0&&!FileUtil.exists(path+folders[i])){
-				File file = new File(path+folders[i]);
-				file.mkdir();
-			}
-			path = path+folders[i]+"/";
-		}
-	}
 	
 	/**
 	 * 加载Log的type类型，同时将其做js文件缓存
