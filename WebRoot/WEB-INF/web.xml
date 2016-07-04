@@ -91,7 +91,7 @@
 	<!-- 项目启动初始化 -->
 	<servlet>
 	  <servlet-name>init</servlet-name>
-	  <servlet-class>com.xnx3.j2ee.servlet.InitServlet</servlet-class>
+	  <servlet-class>com.xnx3.j2ee.init.InitServlet</servlet-class>
 	  <load-on-startup>2</load-on-startup>
 	</servlet>
 </web-app>

@@ -65,7 +65,6 @@ public class UserController_ extends BaseController {
 	public String uploadHead(@RequestParam("head") MultipartFile file,Model model){
 		UploadFileVO v = ossService.uploadImage("head/", file);
 		if(v.getResult() == UploadFileVO.SUCCESS){
-			new LanguageService
 			return success(model, "上传成功，文件路径："+v.getPath());
 		}else{
 			return error(model, v.getInfo());
