@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
+import com.xnx3.file.FileUtil;
 
 /**
  * 基础配置、集中管理
@@ -151,6 +152,16 @@ public class Global {
 		return value;
 	}
 	
+	public static String getProjectPath(){
+		if(projectPath == null){
+			String path = new Global().getClass().getResource("/").getPath();
+			projectPath = path.replace("WEB-INF/classes/", "");
+		}
+		return projectPath;
+	}
+	
 	public static void main(String[] args) {
+		System.out.println(getProjectPath());
+		System.out.println(FileUtil.exists("/Library/Tomcat8/webapps/iw"));
 	}
 }
