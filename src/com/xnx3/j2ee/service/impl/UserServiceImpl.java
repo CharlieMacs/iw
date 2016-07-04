@@ -28,8 +28,10 @@ import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.j2ee.entity.*;
 import com.xnx3.net.OSSUtil;
+import com.xnx3.net.ossbean.PutResult;
 
 public class UserServiceImpl implements UserService{
 
@@ -630,11 +632,11 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public BaseVO updateHeadByOSS(MultipartFile head) {
-		BaseVO baseVO = new BaseVO();
+	public UploadFileVO updateHeadByOSS(MultipartFile head) {
+		UploadFileVO uploadFileVO = new UploadFileVO();
 		if(head == null || head.isEmpty()){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_uploadHeadImageNotFind"));
-			return baseVO;
+			uploadFileVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_uploadHeadImageNotFind"));
+			return uploadFileVO;
 		}
 		
 		User user = ShiroFunc.getUser();
@@ -642,11 +644,14 @@ public class UserServiceImpl implements UserService{
 		fileSuffix = Lang.findFileSuffix(head.getOriginalFilename());
 		String newHead = user.getId()+"."+fileSuffix;
 		try {
-			OSSUtil.put("image/head/"+newHead, head.getInputStream());
+			PutResult result = OSSUtil.put("image/head/"+newHead, head.getInputStream());
+			uploadFileVO.setFileName(result.getFileName());
+			uploadFileVO.setPath(result.getPath());
+			uploadFileVO.setUrl(result.getUrl());
 		} catch (IOException e) {
 			e.printStackTrace();
-			baseVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
-			return baseVO;
+			uploadFileVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
+			return uploadFileVO;
 		}
 		
 		if(!(user.getHead().equals(newHead))){
@@ -657,7 +662,7 @@ public class UserServiceImpl implements UserService{
 		}
 		logDao.insert("USER_UPDATEHEAD");
 		
-		return baseVO;
+		return uploadFileVO;
 	}
 
 	@Override

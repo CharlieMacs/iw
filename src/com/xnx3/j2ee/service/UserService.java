@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.j2ee.vo.UploadFileVO;
 
 /**
  * 用户
@@ -132,10 +133,10 @@ public interface UserService {
 	
 	/**
 	 * 利用OSS上传头像
-	 * @param head
-	 * @return
+	 * @param head {@link MultipartFile}
+	 * @return {@link UploadFileVO}
 	 */
-	public BaseVO updateHeadByOSS(MultipartFile head);
+	public UploadFileVO updateHeadByOSS(MultipartFile head);
 	
 	/**
 	 * 修改性别

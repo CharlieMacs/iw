@@ -1,5 +1,7 @@
 package com.xnx3.j2ee.vo;
 
+import com.xnx3.net.ossbean.PutResult;
+
 /**
  * aliyun OSS文件上传
  * @author 管雷鸣
