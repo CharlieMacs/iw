@@ -1,10 +1,16 @@
 package com.xnx3.j2ee.generateCache;
 
+import org.springframework.stereotype.Component;
+
 /**
- * 在线支付
+ * ping++在线支付
  * @author 管雷鸣
  */
+@Component
 public class PayLog extends BaseGenerate {
+	public PayLog() {
+		channel();
+	}
 	
 	public void channel(){
 		createCacheObject("channel");

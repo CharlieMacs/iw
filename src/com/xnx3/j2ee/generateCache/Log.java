@@ -8,7 +8,7 @@ import com.xnx3.Lang;
  *
  */
 public class Log extends BaseGenerate {
-	
+
 	/**
 	 * log.type 值－描述 缓存
 	 */

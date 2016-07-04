@@ -2,6 +2,8 @@ package com.xnx3.j2ee.generateCache;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 
@@ -10,7 +12,11 @@ import com.xnx3.j2ee.entity.PostClass;
  * @author 管雷鸣
  *
  */
+@Component
 public class Bbs extends BaseGenerate {
+	public Bbs() {
+		state();
+	}
 	
 	/**
 	 * 生成论坛板块数据缓存，数组存在

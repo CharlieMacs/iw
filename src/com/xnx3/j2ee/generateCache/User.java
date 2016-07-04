@@ -1,13 +1,15 @@
 package com.xnx3.j2ee.generateCache;
-import java.util.List;
-import com.xnx3.Lang;
+import org.springframework.stereotype.Component;
 
 /**
- * 信息相关数据缓存生成
+ * 用户相关数据缓存生成
  * @author 管雷鸣
- *
  */
+@Component
 public class User extends BaseGenerate {
+	public User() {
+		isfreeze();
+	}
 	
 	/**
 	 * log.type 值－描述 缓存

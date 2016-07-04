@@ -1,6 +1,9 @@
 package com.xnx3.j2ee.generateCache;
 
+import java.io.File;
 import java.io.IOException;
+
+import org.apache.log4j.Logger;
 
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
@@ -10,6 +13,8 @@ import com.xnx3.j2ee.Global;
  * @author 管雷鸣
  */
 public class BaseGenerate {
+	private static Logger logger = Logger.getLogger(BaseGenerate.class);
+	
 	/**
 	 * 生成js缓存文件的内容
 	 */
@@ -43,12 +48,33 @@ public class BaseGenerate {
 	 */
 	public void generateCacheFile(){
 		addCommonJsFunction();
+		initCacheFolder();
+		String filePath = Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js"; 
 		try {
-			FileUtil.write(Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js", content,FileUtil.UTF8);
+			logger.info("create cache js file success ! file path : "+filePath);
+			FileUtil.write(filePath, content,FileUtil.UTF8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.content=null;
+	}
+
+	/**
+	 * 初始化缓存文件夹，若根目录下没有缓存文件夹，自动创建
+	 */
+	private void initCacheFolder(){
+		if(!FileUtil.exists(Global.getProjectPath()+Global.CACHE_FILE)){
+			logger.info("create cache folder : "+ Global.getProjectPath()+Global.CACHE_FILE);
+			String[] folders = Global.CACHE_FILE.split("/");
+			String path = Global.getProjectPath();
+			for (int i = 0; i < folders.length; i++) {
+				if(folders[i].length()>0&&!FileUtil.exists(path+folders[i])){
+					File file = new File(path+folders[i]);
+					file.mkdir();
+				}
+				path = path+folders[i]+"/";
+			}
+		}
 	}
 	
 	/**

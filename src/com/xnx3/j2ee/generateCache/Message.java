@@ -1,11 +1,18 @@
 package com.xnx3.j2ee.generateCache;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 信息相关数据缓存生成
  * @author 管雷鸣
  *
  */
+@Component
 public class Message extends BaseGenerate {
+	public Message() {
+		state();
+		isdelete();
+	}
 	
 	/**
 	 * message.state 值－描述 缓存
