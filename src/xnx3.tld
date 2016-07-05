@@ -42,7 +42,7 @@
  
  <tag>
  	<name>substring</name>
- 	<tag-class>com.xnx3.j2ee.tld.TimeTag</tag-class>
+ 	<tag-class>com.xnx3.j2ee.tld.SubString</tag-class>
  	<body-content>jsp</body-content>
  	<attribute>
  		<name>text</name>

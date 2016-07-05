@@ -12,9 +12,11 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class SubString extends TagSupport {
 	private final static String DEFAULT_MORE="...";	//如果末尾更多字符没有传递过来，会使用这个
+	
 	private String text;	//原本的字符串
 	private int maxLength;	//显示的最大长度
 	private String more;	//若超过最大长度，裁减的字符串会加上此输出。若不填默认使用 ...
+	
 	public String getText() {
 		return text;
 	}

@@ -13,8 +13,8 @@ import com.xnx3.exception.NotReturnValueException;
  *
  */
 public class TimeTag extends TagSupport {
-
 	private static String FORMAT_DEFAULT="yyyy-MM-dd hh:mm:ss";	//如果format没有传递过来，会使用这个默认的时间戳
+	
 	private long linuxTime;	//Linux时间戳，10位或者13位
 	private String format;	//转换格式 ,若不填，默认为yyyy-MM-dd hh:mm:ss
 	
