@@ -78,20 +78,17 @@ public class SqlServiceImpl implements SqlService {
 
 	@Override
 	public int executeSql(String sql) {
-		// TODO Auto-generated method stub
 		return sqlDAO.executeSql(sql);
 	}
 
 	@Override
 	public void addOne(String tableName, String fieldName, String where) {
-		// TODO Auto-generated method stub
-		sqlDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"+1 WHERE "+where);
+		sqlDAO.addOne(tableName, fieldName, where);
 	}
 
 	@Override
 	public void subtractOne(String tableName, String fieldName, String where) {
-		// TODO Auto-generated method stub
-		sqlDAO.executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"-1 WHERE "+where);
+		sqlDAO.subtractOne(tableName, fieldName, where);
 	}
 
 }

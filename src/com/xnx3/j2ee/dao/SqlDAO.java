@@ -1,9 +1,11 @@
 package com.xnx3.j2ee.dao;
 
 import static org.hibernate.criterion.Example.create;
+
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -11,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.util.Sql;
 
@@ -175,6 +178,26 @@ public class SqlDAO {
         result = query.executeUpdate();    
         return result;
     }
+	
+	/**
+	 * 数据表的某项数值+1
+	 * @param tableName 数据表名称
+	 * @param fieldName 执行＋1的项
+	 * @param where 条件，如 id=5
+	 */
+	public void addOne(String tableName, String fieldName, String where) {
+		executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"+1 WHERE "+where);
+	}
+
+	/**
+	 * 数据表的某项数值-1
+	 * @param tableName 数据表名称
+	 * @param fieldName 执行＋1的项
+	 * @param where 条件，如 id=5
+	 */
+	public void subtractOne(String tableName, String fieldName, String where) {
+		executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"-1 WHERE "+where);
+	}
 	
 	public static SqlDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (SqlDAO) ctx.getBean("SqlDAO");
