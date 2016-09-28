@@ -1,6 +1,7 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
+
 import com.xnx3.j2ee.dao.LogDAO;
 import com.xnx3.j2ee.entity.Log;
 import com.xnx3.j2ee.service.LogService;
@@ -113,6 +114,12 @@ public class LogServiceImpl implements LogService {
 	@Override
 	public void insert(int goalid, String type) {
 		logDAO.insert(goalid, type);
+	}
+
+	@Override
+	public void insert(int userid, int goalid, String type, String value) {
+		// TODO Auto-generated method stub
+		logDAO.insert(userid, goalid, type, value);
 	}
 
 }
