@@ -14,8 +14,12 @@ import com.xnx3.j2ee.entity.User;
 public class ActiveUser {
 	
 	private User user;	//用户信息
+	private Object obj;	//登陆成功后，用户可自定义放入其存储的信息
+	private String ueUploadParam1;	//UEditor上传文件相关的参数，可用{uploadParam1}来调用。每个人的上传参数都会不同
+	private boolean allowUploadForUEditor;	//百度UEditor编辑器允许上传文件
 	private List<Permission> permissions;// 拥有的权限
 	private List<PermissionTree> permissionTreeList;	//入口列表菜单树
+	
 	
 	/**
 	 * 入口列表菜单树
@@ -49,6 +53,31 @@ public class ActiveUser {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public boolean isAllowUploadForUEditor() {
+		return allowUploadForUEditor;
+	}
+	public void setAllowUploadForUEditor(boolean allowUploadForUEditor) {
+		this.allowUploadForUEditor = allowUploadForUEditor;
+	}
+	
+	public Object getObj() {
+		return obj;
+	}
+	public void setObj(Object obj) {
+		this.obj = obj;
+	}
+	
+	public String getUeUploadParam1() {
+		return ueUploadParam1;
+	}
+	/**
+	 * UEditor上传文件相关的路径替换参数，可用{uploadParam1}来调用。每个人的上传参数都会不同
+	 * @param ueUploadParam1 参数
+	 */
+	public void setUeUploadParam1(String ueUploadParam1) {
+		this.ueUploadParam1 = ueUploadParam1;
 	}
 	@Override
 	public String toString() {

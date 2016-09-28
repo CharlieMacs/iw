@@ -98,5 +98,33 @@ public class ShiroFunc {
 		}
 	}
 
+	/**
+	 * 设置当前用户是否能使用UEditor编辑器进行图片、文件、视频等上传。若为false，则不能用其进行上传
+	 * @param allow
+	 */
+	public static void setUEditorAllowUpload(boolean allow){
+		//从shiro的session中取activeUser
+		Subject subject = SecurityUtils.getSubject();
+		//取身份信息
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		if(activeUser != null){
+			activeUser.setAllowUploadForUEditor(allow);
+//			((ActiveUser)SecurityUtils.getSubject()).setAllowUploadForUEditor(allow);
+		}
+	}
+	
+	/**
+	 * 获取当前用户是否能使用UEditor编辑器进行图片、文件、视频等上传。若为false，则不能用其进行上传
+	 * <br/>
+	 * @param allow 若用户没有登陆，同样返回false
+	 */
+	public static boolean getUEditorAllowUpload(){
+		ActiveUser au = getCurrentActiveUser();
+		if(au == null){
+			return false;
+		}else{
+			return au.isAllowUploadForUEditor();
+		}
+	}
 	
 }
