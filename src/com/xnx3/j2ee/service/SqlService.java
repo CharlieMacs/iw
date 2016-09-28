@@ -40,6 +40,14 @@ public interface SqlService {
 	public List findEntityBySqlQuery(String sqlQuery, Class entityClass);
 	
 	/**
+	 * 根据SQL语句查询一条实体类。 会自动在末尾添加 LIMIT 0,1组合查询语句
+	 * @param sqlQuery 查询语句，如 SELECT * FROM user WHERE username = 'xnx3'
+	 * @param entityClass 实体类
+	 * @return 若查询到，返回查询到的对象(需强制转化为想要的实体类)，若查询不到，返回null
+	 */
+	public Object findAloneEntityBySqlQuery(String sqlQuery,Class entityClass);
+	
+	/**
 	 * 传入 {@link Sql} 查询List列表
 	 * @param sql 组合好的{@link Sql}
 	 * @return List<Map<String,String>>

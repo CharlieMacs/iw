@@ -2,6 +2,7 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
 import java.util.Map;
+
 import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.util.Sql;
@@ -89,6 +90,12 @@ public class SqlServiceImpl implements SqlService {
 	@Override
 	public void subtractOne(String tableName, String fieldName, String where) {
 		sqlDAO.subtractOne(tableName, fieldName, where);
+	}
+
+	@Override
+	public Object findAloneEntityBySqlQuery(String sqlQuery, Class entityClass) {
+		// TODO Auto-generated method stub
+		return sqlDAO.findAloneEntityBySqlQuery(sqlQuery, entityClass);
 	}
 
 }
