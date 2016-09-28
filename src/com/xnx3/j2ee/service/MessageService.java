@@ -46,9 +46,34 @@ public interface MessageService {
 	 * 发送信息
 	 * @param request {@link HttpServletRequest}
 	 * 		<br/>form表单进行发送信息提交时，需传递两个参数：recipientid(接收者用户id)，content(信息内容)
-	 * @return {@link BaseVO}
+	 * @return {@link BaseVO} 若成功，info为新增消息的id编号
 	 */
 	public BaseVO sendMessage(HttpServletRequest request);
+	
+	/**
+	 * 发送信息，发送者就是当前登陆的用户
+	 * @param recipientid 接收者用户id
+	 * @param content 信息内容
+	 * @return {@link BaseVO} 若成功，info为新增消息的id编号
+	 */
+	public BaseVO sendMessage(int recipientid, String content);
+	
+	/**
+	 * 发送信息
+	 * @param userid 发信者的userid
+	 * @param recipientid 接收者用户id
+	 * @param content 信息内容
+	 * @return {@link BaseVO} 若成功，info为新增消息的id编号
+	 */
+	public BaseVO sendMessage(int userid, int recipientid, String content);
+	
+	/**
+	 * 向某人发送一条系统信息（发件人用户id为0）
+	 * @param recipientid 接收者用户id
+	 * @param content 信息内容
+	 * @return {@link BaseVO} 若成功，info为新增消息的id编号
+	 */
+	public BaseVO sendSystemMessage(int recipientid, String content);
 	
 	/**
 	 * 阅读信息，通过 {@link Message}.id获取此条站内信的具体信息，包含 {@link Message}、 {@link MessageData}
