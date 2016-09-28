@@ -51,6 +51,22 @@ public class BaseController {
 	}
 
 	/**
+	 * 获取当前登录用户的id
+	 * @return <ul>
+	 * 				<li>登陆了，则返回 user.id
+	 * 				<li>未登陆，返回 0
+	 * 			</ul>
+	 */
+	public int getUserId(){
+		ActiveUser activeUser = getActiveUser();
+		if(activeUser!=null){
+			return activeUser.getUser().getId();
+		}else{
+			return 0;
+		}
+	}
+	
+	/**
 	 * 更新登录的用户的用户信息
 	 * @param user {@link User}
 	 */
@@ -123,8 +139,8 @@ public class BaseController {
 	 * 				</ul>
 	 * @param state 状态，成功提示还是错误提示
 	 * 				<ul>
-	 * 					<li> {@link #PROMPT_STATE_SUCCESS }
-	 * 					<li> {@link #PROMPT_STATE_ERROR }
+	 * 					<li> {@link Global#PROMPT_STATE_ERROR }
+	 * 					<li> {@link Global#PROMPT_STATE_SUCCESS }
 	 * 				<ul>
 	 * @return View
 	 */
