@@ -60,6 +60,7 @@
 		 -->
 	</logTypeList>
 	
+	<!-- 短信验证码相关 -->
 	<sms>
 		<!-- 短信同一手机号，某个功能每天发送的条数限制，超过这个条数，这个功能便无法再次发送短信了。 -->
 		<!-- 如登录功能，这个功能今天18453663367这个手机号发送了5次短信，再次发送时，便会失败，今天不能再发送了 -->
@@ -72,6 +73,7 @@
 		<codeValidity>600</codeValidity>
 	</sms>
 	
+	<!-- 论坛相关 -->
 	<bbs>
 		<!-- 发帖,标题允许的最小长度（英文长度） -->
 		<titleMinLength>4</titleMinLength>
@@ -96,4 +98,53 @@
 		<!-- 图片文件，允许上传的图片的后缀名，多个以|分割 -->
 		<imageSuffixList>jpg|png|gif|bmp|jpeg</imageSuffixList>
 	</OSS>
+	
+	<!-- 百度 UEditor编辑器 -->
+	<UEditor>
+		<aliyunOSS>
+			<!-- 是否将图片、附件的上传，传入OSS，若为true，则只要是上传文件，都上传到OSS中；若为false，则使用UEditor的本地上传，跟UEditor原生相同 -->
+			<!-- 开启为true的前提是，xnx3Config.xml的aliyunOSS节点已配置 -->
+			<useOSS>true</useOSS>
+			<!-- 是否使用 OSSKey.properties配置文件作为UEditor的配置，无特殊问题统一为false -->
+			<useOSSKeyProperties>false</useOSSKeyProperties>
+			<!-- 是否启用本地存储，若useOSS为true，便是将文件上传到OSS服务器上，如果这项也是true，则将文件再上传到OSS上的同时，再本地也会创建这个文件，相当于上传了两份 -->
+			<useLocalStorager>false</useLocalStorager>
+			<!-- 是否限制用户上传，若为false,则不限制，都能上传。若为true，则启用限制上传，可通过 ShiroFunc.getUEditorAllowUpload()或者set来控制 -->
+			<astrictUpload>false</astrictUpload>
+			<!-- 若 astrictUpload 为true，这里配置如果不允许用户上传的提示文字。 -->
+			<astrictUploadMessage>您上传的空间已不足，请购买后再上传</astrictUploadMessage>
+			<!-- 是否异步上传，默认false -->
+			<useAsynUploader>false</useAsynUploader>
+		</aliyunOSS>
+	</UEditor>
+	
+	<!-- Controller、Service、Dao 的方法执行时间检测。若不想使用需吧used设置为false，不会对程序执行造成什么延迟 -->
+	<ExecuteTime>
+		<!-- Controller的执行时间，使用Spring MVC拦截器 com.xnx3.j2ee.interceptor.SystemInterceptor -->
+		<controller>
+			<!-- 是否启用。若为false，则不启用 -->
+			<used>true</used>
+		</controller>
+		
+		<!-- Service 、Dao 的方法执行时间，打印输出使用Log4j 的 info ，AOP位于 com.xnx3.j2ee.system.Aop -->
+		<serviceDao>
+			<!-- 是否启用。若为false，则不启用 -->
+			<used>true</used>
+		</serviceDao>
+		
+		<!-- 若上面的有其中至少一项开启，同时满足此：若执行时间超过多少毫秒，就在控制台打印出来，这里的单位是毫秒，大于这个数值的才会控制台输出 -->
+		<recordTime>1</recordTime>
+	</ExecuteTime>
+	
+	<!-- 阿里云，阿里绿网的文本过滤服务 -->
+	<aliyunTxtFilter>
+		<!-- 哪个区，如 cn-hangzhou、cn-qingdao等 -->
+		<regionId>cn-qingdao</regionId>
+		<!-- 阿里云的 AccessKeys 查看 -->
+		<accessKeyId>sadasdadasddsa</accessKeyId>
+		<accessKeySecret>asdasdasdasd</accessKeySecret>
+		<!-- 若是发现违规，同一Session下出现第一次违规跟第五次违规时，会发送一条邮件提醒，这里是提醒者的邮箱 -->
+		<receiveEmail>3333@qq.com</receiveEmail>
+	</aliyunTxtFilter>
+	
 </configuration>
