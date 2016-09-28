@@ -113,9 +113,9 @@ public class SmsLogDAO {
 				+ ", value: " + value);
 		try {
 			String queryString = "from SmsLog as model where model."
-					+ propertyName + "= ?";
+					+ propertyName + "= ?0";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -244,13 +244,13 @@ public class SmsLogDAO {
 	 */
 	public List findByPhoneAddtimeUsedType(String phone,int addtime,Short used,Short type,String code){
 		try {
-			String queryString = "from SmsLog as model where model.phone= ? and model.addtime > ? and model.used = ? and model.type = ? and model.code = ?";
+			String queryString = "from SmsLog as model where model.phone= :phone and model.addtime > :addtime and model.used = :used and model.type = :type and model.code = :code";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, phone);
-			queryObject.setParameter(1, addtime);
-			queryObject.setParameter(2, used);
-			queryObject.setParameter(3, type);
-			queryObject.setParameter(4, code);
+			queryObject.setParameter("phone", phone);
+			queryObject.setParameter("addtime", addtime);
+			queryObject.setParameter("used", used);
+			queryObject.setParameter("type", type);
+			queryObject.setParameter("code", code);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			throw re;

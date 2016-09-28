@@ -103,9 +103,9 @@ public class PostDAO {
 				+ ", value: " + value);
 		try {
 			String queryString = "from Post as model where model."
-					+ propertyName + "= ? ORDER BY id DESC";
+					+ propertyName + "= ?0 ORDER BY id DESC";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);

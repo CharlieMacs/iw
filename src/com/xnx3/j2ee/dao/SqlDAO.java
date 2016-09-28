@@ -92,6 +92,23 @@ public class SqlDAO {
 		}
 	}
 	
+	/**
+	 * 根据SQL语句查询一条实体类。 会自动在末尾添加 LIMIT 0,1组合查询语句
+	 * @param sqlQuery 查询语句，如 SELECT * FROM user WHERE username = 'xnx3'
+	 * @param entityClass 实体类
+	 * @return 若查询到，返回查询到的对象(需强制转化为想要的实体类)，若查询不到，返回null
+	 */
+	public Object findAloneEntityBySqlQuery(String sqlQuery,Class entityClass){
+		if(sqlQuery.toUpperCase().indexOf(" LIMIT ") == -1){
+			sqlQuery = sqlQuery + " LIMIT 0,1";
+		}
+		List<Object> list = findEntityBySqlQuery(sqlQuery, entityClass);
+		if(list.size() > 0){
+			return list.get(0);
+		}else{
+			return null;
+		}
+	}
 	
 	/**
 	 * 添加/修改
@@ -158,9 +175,9 @@ public class SqlDAO {
 	public List findByProperty(Class c,String propertyName, Object value) {
 		try {
 			String queryString = "from "+c.getSimpleName()+" as model where model."
-					+ propertyName + "= ?";
+					+ propertyName + "= ?0 ";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			throw re;
@@ -198,6 +215,8 @@ public class SqlDAO {
 	public void subtractOne(String tableName, String fieldName, String where) {
 		executeSql("UPDATE "+tableName+" SET "+fieldName+" = "+fieldName+"-1 WHERE "+where);
 	}
+	
+	
 	
 	public static SqlDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (SqlDAO) ctx.getBean("SqlDAO");

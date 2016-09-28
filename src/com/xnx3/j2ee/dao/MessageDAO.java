@@ -106,9 +106,9 @@ public class MessageDAO {
 				+ ", value: " + value);
 		try {
 			String queryString = "from Message as model where model."
-					+ propertyName + "= ?";
+					+ propertyName + "= ?0";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);

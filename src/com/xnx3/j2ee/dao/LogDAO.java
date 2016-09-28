@@ -110,9 +110,9 @@ public class LogDAO {
 				+ ", value: " + value);
 		try {
 			String queryString = "from Log as model where model."
-					+ propertyName + "= ?";
+					+ propertyName + "= ?0";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -194,6 +194,23 @@ public class LogDAO {
 		Log log = new Log();
 		log.setAddtime(DateUtil.timeForUnix10());
 		log.setUserid(getUserId());
+		log.setValue(value);
+		log.setGoalid(goalid);
+		log.setType(Log.typeMap.get(type));
+		save(log);
+	}
+	
+	/**
+	 * 写日志
+	 * @param userid 此日志所属的用户id
+	 * @param goalid 操作的目标id
+	 * @param type 日志分类，传入 SystemConfig.xml中logTypeList节点配置的type-程序内调用的名字
+	 * @param value 描述的内容，自动截取前20个字符
+	 */
+	public void insert(int userid, int goalid, String type, String value) {
+		Log log = new Log();
+		log.setAddtime(DateUtil.timeForUnix10());
+		log.setUserid(userid);
 		log.setValue(value);
 		log.setGoalid(goalid);
 		log.setType(Log.typeMap.get(type));

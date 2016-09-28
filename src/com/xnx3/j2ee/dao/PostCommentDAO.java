@@ -108,9 +108,9 @@ public class PostCommentDAO {
 				+ ", value: " + value);
 		try {
 			String queryString = "from PostComment as model where model."
-					+ propertyName + "= ? ORDER BY id DESC";
+					+ propertyName + "= ?0 ORDER BY id DESC";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -208,9 +208,9 @@ public class PostCommentDAO {
 			limitString = " LIMIT 0,"+limit;
 		}
 		try {
-			String queryString = "SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id FROM post_comment comment,user WHERE comment.userid=user.id AND comment.postid= ? AND user.isfreeze="+User.ISFREEZE_NORMAL+" ORDER BY comment.id DESC "+limitString;
+			String queryString = "SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id FROM post_comment comment,user WHERE comment.userid=user.id AND comment.postid= ?0 AND user.isfreeze="+User.ISFREEZE_NORMAL+" ORDER BY comment.id DESC "+limitString;
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);;
-			queryObject.setParameter(0, postid);
+			queryObject.setParameter("0", postid);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -225,9 +225,9 @@ public class PostCommentDAO {
 	 */
 	public int count(int postid){
 		try {
-			String queryString = "SELECT count(id) FROM post_comment WHERE postid= ? ";
+			String queryString = "SELECT count(id) FROM post_comment WHERE postid= ?0 ";
 			Query queryObject = getCurrentSession().createSQLQuery(queryString);
-			queryObject.setParameter(0, postid);
+			queryObject.setParameter("0", postid);
 			BigInteger b = (BigInteger) queryObject.uniqueResult();
 			return b.intValue(); 
 		} catch (RuntimeException re) {

@@ -85,9 +85,9 @@ public class UserRoleDAO {
 				+ ", value: " + value);
 		try {
 			String queryString = "from UserRole as model where model."
-					+ propertyName + "= ?";
+					+ propertyName + "= ?0 ";
 			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setParameter(0, value);
+			queryObject.setParameter("0", value);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -121,9 +121,9 @@ public class UserRoleDAO {
 	 */
 	public List<Role> findRoleByUserId(Integer userid) {
 		try {
-			String queryString = "SELECT role.* FROM user_role,role WHERE user_role.roleid=role.id AND user_role.userid= ? ";
+			String queryString = "SELECT role.* FROM user_role,role WHERE user_role.roleid=role.id AND user_role.userid= ?0 ";
 			Query queryObject = getCurrentSession().createSQLQuery(queryString).addEntity(Role.class);
-			queryObject.setParameter(0, userid);
+			queryObject.setParameter("0", userid);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
