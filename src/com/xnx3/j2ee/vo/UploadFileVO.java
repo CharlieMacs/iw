@@ -1,12 +1,14 @@
 package com.xnx3.j2ee.vo;
 
-import com.xnx3.net.ossbean.PutResult;
-
 /**
  * aliyun OSS文件上传
  * @author 管雷鸣
  */
 public class UploadFileVO extends BaseVO {
+	/**
+	 * 无文件
+	 */
+	public final static int NOTFILE=2;
 	
 	private String fileName;	//上传成功后的文件名，如 "xnx3.jar"
 	private String path;		//上传成功后的路径，如 "/jar/file/xnx3.jar"
@@ -74,7 +76,8 @@ public class UploadFileVO extends BaseVO {
 	@Override
 	public String toString() {
 		return "UploadFileVO [fileName=" + fileName + ", path=" + path
-				+ ", url=" + url + "]";
+				+ ", url=" + url + ", getResult()=" + getResult()
+				+ ", getInfo()=" + getInfo() + "]";
 	}
 
 	

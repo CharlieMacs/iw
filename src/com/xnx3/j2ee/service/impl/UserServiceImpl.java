@@ -1,11 +1,13 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -15,6 +17,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
@@ -30,10 +33,12 @@ import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.j2ee.entity.*;
+import com.xnx3.media.ImageUtil;
 import com.xnx3.net.OSSUtil;
 import com.xnx3.net.ossbean.PutResult;
 
 public class UserServiceImpl implements UserService{
+	private static Logger logger = Logger.getLogger(UserServiceImpl.class);  
 
 	private UserDAO userDao;
 	private LogDAO logDao;
@@ -315,6 +320,10 @@ public class UserServiceImpl implements UserService{
 		if(user.getUsername()==null||user.getUsername().equals("")||user.getEmail()==null||user.getEmail().equals("")||user.getPassword()==null||user.getPassword().equals("")){
 			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regDataNotAll"));
 		}else{
+			if(user.getUsername().length() > 20){
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_userNameToLong"));
+			}
+			
 			Random random = new Random();
 			user.setSalt(random.nextInt(10)+""+random.nextInt(10)+""+random.nextInt(10)+""+random.nextInt(10)+"");
 	        String md5Password = new Md5Hash(user.getPassword(), user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
@@ -513,13 +522,20 @@ public class UserServiceImpl implements UserService{
 	public BaseVO loginByPhone(HttpServletRequest request) {
 		BaseVO baseVO = new BaseVO();
 		String phone = request.getParameter("phone");
-		if(phone==null || phone.length() != 11){
+		if(phone==null){
 			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
 			return baseVO;
+		}else{
+			phone = phone.replaceAll(" ", "");
+			if(phone.length() != 11){
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
+				return baseVO;
+			}
 		}
 		
-    	
+    	logger.debug("phone:"+phone);
 		User user = findByPhone(phone);
+		logger.debug("根据用户手机号查询得到用户得信息,user:"+user);
 		if(user == null){
 			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
 			return baseVO;
@@ -527,6 +543,7 @@ public class UserServiceImpl implements UserService{
 		
 		//ip检测
 		String ip = IpUtil.getIpAddress(request);
+		logger.debug("得到用户请求得IP地址："+ip);
 		if(!(user.getLastip().equals(ip) || user.getRegip().equals(ip))){
 			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneIpFailure"));
 			return baseVO;
@@ -537,11 +554,13 @@ public class UserServiceImpl implements UserService{
 			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
 			return baseVO;
 		}
+		logger.debug("检验此用户状态是否正常，是否被冻结，未冻结，正常");
 		
 		/*******更改User状态******/
 		user.setLasttime(DateUtil.timeForUnix10());
 		user.setLastip(IpUtil.getIpAddress(request));
 		save(user);
+		logger.debug("更新User状态，更新后的User为："+user);
 		
 		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
         token.setRememberMe(false);
@@ -731,6 +750,166 @@ public class UserServiceImpl implements UserService{
 		logDao.insert("USER_UPDATE_NICKNAME", sign);
 		ShiroFunc.getUser().setSign(sign);
 		
+		return baseVO;
+	}
+
+	@Override
+	public UploadFileVO updateHeadByOSS(HttpServletRequest request,String formFileName) {
+		return updateHeadByOSS(request, formFileName, 0);
+	}
+
+	@Override
+	public UploadFileVO updateHeadByOSS(HttpServletRequest request,
+			String formFileName, int maxWidth) {
+		UploadFileVO uploadFileVO = new UploadFileVO();
+		MultipartFile multipartFile = null;
+		if (request instanceof MultipartHttpServletRequest) {
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
+			List<MultipartFile> imageList = multipartRequest.getFiles(formFileName);  
+			if(imageList.size() == 0){
+				logger.debug("上传头像时，未发现头像 ------"+Global.getLanguage("user_uploadHeadImageNotFind"));
+				uploadFileVO.setResult(UploadFileVO.NOTFILE);
+				uploadFileVO.setInfo(Global.getLanguage("user_uploadHeadImageNotFind"));
+				return uploadFileVO;
+			}else{
+				logger.debug("上传头像，已发现头像的multipartFile");
+				multipartFile = imageList.get(0);
+			}
+	    }
+		
+		if(multipartFile == null || multipartFile.isEmpty()){
+			uploadFileVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_uploadHeadImageNotFind"));
+			logger.debug("上传头像的multipartFile为空，不存在上传的头像 ------"+Global.getLanguage("user_uploadHeadImageNotFind"));
+			return uploadFileVO;
+		}
+		
+		User user = ShiroFunc.getUser();
+		String fileSuffix = "png";
+		fileSuffix = Lang.findFileSuffix(multipartFile.getOriginalFilename());
+		logger.debug("上传头像，获得上传的图片的后缀名："+fileSuffix);
+		String newHead = user.getId()+"."+fileSuffix;
+		try {
+			InputStream is = null;
+			if(maxWidth == 0){
+				logger.debug("上传头像，没有开启头像缩放功能");
+				is = multipartFile.getInputStream();
+			}else{
+				logger.debug("上传头像，开启了头像缩放功能，限制最大宽度:"+maxWidth);
+				is = ImageUtil.proportionZoom(multipartFile.getInputStream(), maxWidth, fileSuffix);
+			}
+			PutResult result = OSSUtil.put("image/head/"+newHead, is);
+			logger.info("头像上传,阿里云返回值:"+result);
+			uploadFileVO.setFileName(result.getFileName());
+			uploadFileVO.setPath(result.getPath());
+			uploadFileVO.setUrl(result.getUrl());
+			uploadFileVO.setBaseVO(UploadFileVO.SUCCESS, "上传成功");
+			logger.debug("头像上传执行成功，结果："+uploadFileVO);
+		} catch (IOException e) {
+			e.printStackTrace();
+			uploadFileVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
+			return uploadFileVO;
+		}
+		
+		if(!(user.getHead().equals(newHead))){
+			User u = findById(user.getId());
+			u.setHead(newHead);
+			save(u);
+			ShiroFunc.getUser().setHead(newHead);
+		}
+		logDao.insert("USER_UPDATEHEAD");
+		logger.debug("头像上传函数的返回结果："+uploadFileVO);
+		return uploadFileVO;
+	}
+
+	@Override
+	public BaseVO loginByUserid(HttpServletRequest request, int userid) {
+		BaseVO baseVO = new BaseVO();
+//		if(userid == 0){
+		//请传入要登陆用户的id
+//			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
+//			return baseVO;
+//		}
+		
+		User user = findById(userid);
+		if(user == null){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
+			return baseVO;
+		}
+		
+		//ip检测
+		String ip = IpUtil.getIpAddress(request);
+		if(!(user.getLastip().equals(ip) || user.getRegip().equals(ip))){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneIpFailure"));
+			return baseVO;
+		}
+		
+		//检验此用户状态是否正常，是否被冻结
+		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+			return baseVO;
+		}
+		
+		/*******更改User状态******/
+		user.setLasttime(DateUtil.timeForUnix10());
+		user.setLastip(IpUtil.getIpAddress(request));
+		save(user);
+		
+		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
+        token.setRememberMe(false);
+		Subject currentUser = SecurityUtils.getSubject();  
+		
+		try {  
+			currentUser.login(token);  
+		} catch ( UnknownAccountException uae ) {
+		} catch ( IncorrectCredentialsException ice ) {
+		} catch ( LockedAccountException lae ) {
+		} catch ( ExcessiveAttemptsException eae ) {
+		} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+		}
+		
+		logDao.insert("USER_LOGIN_SUCCESS");
+		baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO loginForUserId(HttpServletRequest request, int userId) {
+		BaseVO baseVO = new BaseVO();
+		User user = findById(userId);
+		if(user == null){
+			logger.debug("用户不存在");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
+			return baseVO;
+		}
+		
+		//检验此用户状态是否正常，是否被冻结
+		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
+			logger.debug("此用户被冻结，无法设置为登陆用户");
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+			return baseVO;
+		}
+		
+		/*******更改User状态******/
+		user.setLasttime(DateUtil.timeForUnix10());
+		user.setLastip(IpUtil.getIpAddress(request));
+		save(user);
+		logger.debug("设置指定userId为登陆用户，设置后得User："+user);
+		
+		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
+        token.setRememberMe(false);
+		Subject currentUser = SecurityUtils.getSubject();  
+		
+		try {  
+			currentUser.login(token);  
+		} catch ( UnknownAccountException uae ) {
+		} catch ( IncorrectCredentialsException ice ) {
+		} catch ( LockedAccountException lae ) {
+		} catch ( ExcessiveAttemptsException eae ) {
+		} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+		}
+		
+		logDao.insert("USER_LOGIN_SUCCESS");
+		baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
 		return baseVO;
 	}
 

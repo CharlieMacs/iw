@@ -82,12 +82,28 @@ public interface UserService {
 	public BaseVO loginByPhoneAndCode(HttpServletRequest request);
 	
 	/**
+	 * 传入一个用户id，使当前登陆的用户为此用户。
+	 * @param request
+	 * @param userid 要登陆的用户的user.id
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO loginByUserid(HttpServletRequest request,int userid);
+	
+	/**
 	 * 手机号登陆，会自动检测上次登陆的ip，若上次登陆的ip跟当前的ip一样，则这个手机用户登陆成功
 	 * @param request {@link HttpServletRequest} 
 	 * 		<br/>登陆时form表单需提交一个参数：phone(手机号)
 	 * @return {@link BaseVO}
 	 */
 	public BaseVO loginByPhone(HttpServletRequest request);
+	
+	/**
+	 * 传入一个 {@link User}.id 让此用户变为当前得登陆用户
+	 * @param request
+	 * @param userId 要登陆得 {@link User}.id
+	 * @return
+	 */
+	public BaseVO loginForUserId(HttpServletRequest request,int userId);
 	
 	/**
 	 * 注册页面初始化数据，注册页面填写表单时先调用此，初始化推荐人相关数据
@@ -137,6 +153,24 @@ public interface UserService {
 	 * @return {@link UploadFileVO}
 	 */
 	public UploadFileVO updateHeadByOSS(MultipartFile head);
+	
+	/**
+	 * 利用OSS上传头像
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO updateHeadByOSS(HttpServletRequest request,String formFileName);
+	
+	/**
+	 * 利用OSS上传头像
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。若未0，则不启用缩放功能
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO updateHeadByOSS(HttpServletRequest request, String formFileName, int maxWidth);
+	
 	
 	/**
 	 * 修改性别
