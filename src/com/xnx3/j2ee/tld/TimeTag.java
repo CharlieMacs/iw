@@ -42,9 +42,8 @@ public class TimeTag extends TagSupport {
 	public int doEndTag() throws JspException {
 		// TODO Auto-generated method stub
 		String date="";
-		DateUtil dateUtil = new DateUtil();
 		try {
-			date = dateUtil.dateFormat(getLinuxTime(), getFormat());
+			date = DateUtil.dateFormat(getLinuxTime(), getFormat());
 		} catch (NotReturnValueException e1) {
 			date = e1.getMessage();
 		}

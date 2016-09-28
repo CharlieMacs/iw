@@ -44,12 +44,13 @@ public class SubString extends TagSupport {
 			more = DEFAULT_MORE;
 		}
 		
-		if(text != null){
-			if(text.length()>maxLength){
+		if(this.text != null){
+			if(this.text.length()>maxLength){
 				content = text.substring(0, maxLength)+more;
+			}else{
+				content = text;
 			}
 		}
-
 		JspWriter writer = pageContext.getOut();
 		try {
 			writer.print(content);
@@ -58,5 +59,4 @@ public class SubString extends TagSupport {
 		}
 		return super.doEndTag();
 	}
-	
 }

@@ -41,6 +41,24 @@
  </tag>
  
  <tag>
+ 	<name>imgUrl</name>
+ 	<tag-class>com.xnx3.j2ee.tld.ImgUrl</tag-class>
+ 	<body-content>jsp</body-content>
+ 	<attribute>
+ 		<name>prefixUrl</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 		<description>如果图片路径img是一个相对路径，则加入此作为网址前缀，拼接为绝对路径</description>
+ 	</attribute>
+ 	<attribute>
+ 		<name>img</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 		<description>图片路径，可传入相对路径与绝对路径</description>
+ 	</attribute>
+ </tag>
+ 
+ <tag>
  	<name>substring</name>
  	<tag-class>com.xnx3.j2ee.tld.SubString</tag-class>
  	<body-content>jsp</body-content>
