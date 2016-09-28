@@ -13,6 +13,7 @@
 		<user_loginSuccess>登陆成功</user_loginSuccess>
 		<user_regSuccess>注册成功</user_regSuccess>
 		<user_regFailure>注册失败</user_regFailure>
+		<user_userNameToLong>用户名请输入20个字符以内的英文或数字</user_userNameToLong>
 		<user_loginUserOrEmailNotNull>用户名/邮箱不能为空</user_loginUserOrEmailNotNull>
 		<user_loginPasswordNotNull>密码不能为空</user_loginPasswordNotNull>
 		<user_loginUserFreeze>您的账号已被冻结！无法登陆</user_loginUserFreeze>
