@@ -15,7 +15,7 @@
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
 	</context:component-scan>
-<!-- 	<context:component-scan base-package="com.iworkware">
+	<!-- <context:component-scan base-package="com.xnx3.selfSite.controller">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
 	</context:component-scan> -->
@@ -70,7 +70,8 @@
 	<mvc:interceptors>
 	<mvc:interceptor>
 		<mvc:mapping path="/**/*.do"/>
-		<bean class="com.xnx3.j2ee.interceptor.SystemInterceptor"></bean>
+		<mvc:exclude-mapping path="/user/logout.do"/>
+		<bean class="com.xnx3.j2ee.system.SystemInterceptor"></bean>
 	</mvc:interceptor>
 	</mvc:interceptors>
 	
