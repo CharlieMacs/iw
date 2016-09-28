@@ -81,7 +81,7 @@ public class BaseGenerate {
 	 * 增加一些常用的js函数
 	 */
 	public void addCommonJsFunction(){
-		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectId){ var content = \"\"; if(selectId==''){ content = content + '<option value=\"\" selected=\"selected\">所有</option>'; }else{ content = content + '<option value=\"\">所有</option>'; } for(var p in "+this.objName+"){ if(p == selectId){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write(content); }";
+		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectId){ writeSelectAllOptionFor"+this.objName+"_(selectId,'所有'); } function writeSelectAllOptionFor"+this.objName+"_(selectId,firstTitle){ var content = \"\"; if(selectId==''){ content = content + '<option value=\"\" selected=\"selected\">'+firstTitle+'</option>'; }else{ content = content + '<option value=\"\">'+firstTitle+'</option>'; } for(var p in "+this.objName+"){ if(p == selectId){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write(content); }";
 	}
 	
 	/**
