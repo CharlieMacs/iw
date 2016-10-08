@@ -1,15 +1,27 @@
 package com.xnx3.j2ee.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.aliyuncs.http.HttpRequest;
+import com.xnx3.QRCodeUtil;
 import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.service.QRCodeService;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.media.ImageUtil;
 
 /**
  * 登录、注册
@@ -23,7 +35,8 @@ public class LoginController_ extends BaseController {
 	private UserService userService;
 	@Resource
 	private SmsLogService smsLogService;
-	
+	@Resource
+	private QRCodeService qRCodeService;
 	/**
 	 * 注册页面 
 	 * @param request {@link HttpServletRequest}
@@ -130,4 +143,9 @@ public class LoginController_ extends BaseController {
 	public String error500(){
 		return "/publicPage/500";
 	}
+	@RequestMapping("test")
+	public void test(HttpServletRequest reuqest, HttpServletResponse response) throws IOException{
+		qRCodeService.showQRCodeForPage("http://www.baidu.com", response);
+	}
+	
 }

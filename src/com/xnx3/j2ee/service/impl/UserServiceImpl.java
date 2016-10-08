@@ -289,6 +289,32 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public BaseVO reg(User user, HttpServletRequest request) {
 		BaseVO baseVO = new BaseVO();
+		
+		//判断用户名、邮箱、手机号是否有其中为空的
+		if(user.getUsername()==null||user.getUsername().equals("")||user.getEmail()==null||user.getEmail().equals("")||user.getPassword()==null||user.getPassword().equals("")){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regDataNotAll"));
+		}
+		
+		//判断用户名、邮箱、手机号是否有其中已经注册了，唯一性
+		if(findByEmail(user.getEmail()).size() > 0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForEmailAlreadyExist"));
+			return baseVO;
+		}
+		
+		//判断用户名唯一性
+		if(findByUsername(user.getUsername()).size() > 0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForUsernameAlreadyExist"));
+			return baseVO;
+		}
+		
+		//判断手机号唯一性
+		if(user.getPhone() != null && user.getPhone().length() > 0){
+			if(findByPhone(user.getUsername()) != null){
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForPhoneAlreadyExist"));
+				return baseVO;
+			}
+		}
+		
 		user.setRegip(IpUtil.getIpAddress(request));
 		user.setLastip(IpUtil.getIpAddress(request));
 		user.setRegtime(DateUtil.timeForUnix10());

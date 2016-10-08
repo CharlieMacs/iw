@@ -13,6 +13,9 @@
 		<user_loginSuccess>登陆成功</user_loginSuccess>
 		<user_regSuccess>注册成功</user_regSuccess>
 		<user_regFailure>注册失败</user_regFailure>
+		<user_regFailureForEmailAlreadyExist>邮箱已存在</user_regFailureForEmailAlreadyExist>
+		<user_regFailureForUsernameAlreadyExist>用户名已存在</user_regFailureForUsernameAlreadyExist>
+		<user_regFailureForPhoneAlreadyExist>手机号已存在</user_regFailureForPhoneAlreadyExist>
 		<user_userNameToLong>用户名请输入20个字符以内的英文或数字</user_userNameToLong>
 		<user_loginUserOrEmailNotNull>用户名/邮箱不能为空</user_loginUserOrEmailNotNull>
 		<user_loginPasswordNotNull>密码不能为空</user_loginPasswordNotNull>
@@ -105,14 +108,18 @@
 	<!-- 英文 -->
 	<english>
 		<!-- 用户相关 -->
-		<user_loginSuccess>login success</user_loginSuccess>
-		<user_regSuccess>reg success</user_regSuccess>
-		<user_regFailure>reg failure</user_regFailure>
-		<user_loginUserOrEmailNotNull>username or email not null</user_loginUserOrEmailNotNull>
-		<user_loginPasswordNotNull>password not null</user_loginPasswordNotNull>
-		<user_loginUserFreeze>account is freeze , not login</user_loginUserFreeze>
-		<user_loginPasswordFailure>password error</user_loginPasswordFailure>
-		<user_loginUserNotFind>user not find</user_loginUserNotFind>
+		<user_loginSuccess>登陆成功</user_loginSuccess>
+		<user_regSuccess>注册成功</user_regSuccess>
+		<user_regFailure>注册失败</user_regFailure>
+		<user_regFailureForEmailAlreadyExist>邮箱已存在</user_regFailureForEmailAlreadyExist>
+		<user_regFailureForUsernameAlreadyExist>用户名已存在</user_regFailureForUsernameAlreadyExist>
+		<user_regFailureForPhoneAlreadyExist>手机号已存在</user_regFailureForPhoneAlreadyExist>
+		<user_userNameToLong>用户名请输入20个字符以内的英文或数字</user_userNameToLong>
+		<user_loginUserOrEmailNotNull>用户名/邮箱不能为空</user_loginUserOrEmailNotNull>
+		<user_loginPasswordNotNull>密码不能为空</user_loginPasswordNotNull>
+		<user_loginUserFreeze>您的账号已被冻结！无法登陆</user_loginUserFreeze>
+		<user_loginPasswordFailure>密码错误</user_loginPasswordFailure>
+		<user_loginUserNotFind>用户不存在</user_loginUserNotFind>
 		<user_regDataNotAll>信息不全！请重新输入</user_regDataNotAll>
 		<user_loginByPhoneAndCodePhoneFailure>请输入正确的手机号</user_loginByPhoneAndCodePhoneFailure>
 		<user_loginByPhoneAndCodeCodeFailure>请输入正确的验证码</user_loginByPhoneAndCodeCodeFailure>
@@ -193,6 +200,5 @@
 		<sms_loginSendCodeText>您的登陆验证码为：${code}</sms_loginSendCodeText>
 		<sms_codeSendYourPhoneSuccess>验证码已发送至您手机</sms_codeSendYourPhoneSuccess>
 		<sms_saveFailure>验证码保存失败</sms_saveFailure>
-		
 	</english>
 </configuration>

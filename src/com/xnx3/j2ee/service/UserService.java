@@ -113,6 +113,8 @@ public interface UserService {
 	
 	/**
 	 * 注册
+	 * <br/>会自动先监测用户名、邮箱、密码是否都有输入。若其中有的没有输入，则拦截返回提示信息
+	 * <br/>自动确认用户名、邮箱、手机号(若填写了)的唯一性，若不是，返回已使用提示信息
 	 * @param user {@link User} 
 	 * 		<br/>表单的用户名(username)、 密码(password)为必填项
 	 * @param request {@link HttpServletRequest}
