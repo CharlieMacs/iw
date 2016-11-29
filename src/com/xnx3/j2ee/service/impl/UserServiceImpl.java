@@ -291,14 +291,17 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 		
 		//判断用户名、邮箱、手机号是否有其中为空的
-		if(user.getUsername()==null||user.getUsername().equals("")||user.getEmail()==null||user.getEmail().equals("")||user.getPassword()==null||user.getPassword().equals("")){
+		if(user.getUsername()==null||user.getUsername().equals("")||user.getPassword()==null||user.getPassword().equals("")){
 			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regDataNotAll"));
 		}
 		
 		//判断用户名、邮箱、手机号是否有其中已经注册了，唯一性
-		if(findByEmail(user.getEmail()).size() > 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForEmailAlreadyExist"));
-			return baseVO;
+		//邮箱的唯一，仅当邮箱设置了之后，才会判断邮箱的唯一性
+		if(user.getEmail() != null && user.getEmail().length() > 0){
+			if(findByEmail(user.getEmail()).size() > 0){
+				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForEmailAlreadyExist"));
+				return baseVO;
+			}
 		}
 		
 		//判断用户名唯一性
@@ -687,7 +690,7 @@ public class UserServiceImpl implements UserService{
 		User user = ShiroFunc.getUser();
 		String fileSuffix = "png";
 		fileSuffix = Lang.findFileSuffix(head.getOriginalFilename());
-		String newHead = user.getId()+"."+fileSuffix;
+		String newHead = Lang.uuid()+"."+fileSuffix;
 		try {
 			PutResult result = OSSUtil.put("image/head/"+newHead, head.getInputStream());
 			uploadFileVO.setFileName(result.getFileName());
@@ -699,12 +702,22 @@ public class UserServiceImpl implements UserService{
 			return uploadFileVO;
 		}
 		
-		if(!(user.getHead().equals(newHead))){
-			User u = findById(user.getId());
-			u.setHead(newHead);
-			save(u);
-			ShiroFunc.getUser().setHead(newHead);
+//		if(!(user.getHead().equals(newHead))){
+//			User u = findById(user.getId());
+//			u.setHead(newHead);
+//			save(u);
+//			ShiroFunc.getUser().setHead(newHead);
+//		}
+		User u = findById(user.getId());
+		//删除之前的头像
+		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
+			OSSUtil.deleteObject("image/head/"+u.getHead());
 		}
+		
+		u.setHead(newHead);
+		save(u);
+		ShiroFunc.getUser().setHead(newHead);
+		
 		logDao.insert("USER_UPDATEHEAD");
 		
 		return uploadFileVO;
@@ -812,38 +825,45 @@ public class UserServiceImpl implements UserService{
 		User user = ShiroFunc.getUser();
 		String fileSuffix = "png";
 		fileSuffix = Lang.findFileSuffix(multipartFile.getOriginalFilename());
-		logger.debug("上传头像，获得上传的图片的后缀名："+fileSuffix);
-		String newHead = user.getId()+"."+fileSuffix;
+		String newHead = Lang.uuid()+"."+fileSuffix;
 		try {
 			InputStream is = null;
 			if(maxWidth == 0){
-				logger.debug("上传头像，没有开启头像缩放功能");
+//				logger.debug("上传头像，没有开启头像缩放功能");
 				is = multipartFile.getInputStream();
 			}else{
-				logger.debug("上传头像，开启了头像缩放功能，限制最大宽度:"+maxWidth);
+//				logger.debug("上传头像，开启了头像缩放功能，限制最大宽度:"+maxWidth);
 				is = ImageUtil.proportionZoom(multipartFile.getInputStream(), maxWidth, fileSuffix);
 			}
 			PutResult result = OSSUtil.put("image/head/"+newHead, is);
-			logger.info("头像上传,阿里云返回值:"+result);
 			uploadFileVO.setFileName(result.getFileName());
 			uploadFileVO.setPath(result.getPath());
 			uploadFileVO.setUrl(result.getUrl());
 			uploadFileVO.setBaseVO(UploadFileVO.SUCCESS, "上传成功");
-			logger.debug("头像上传执行成功，结果："+uploadFileVO);
 		} catch (IOException e) {
 			e.printStackTrace();
 			uploadFileVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
 			return uploadFileVO;
 		}
 		
-		if(!(user.getHead().equals(newHead))){
-			User u = findById(user.getId());
-			u.setHead(newHead);
-			save(u);
-			ShiroFunc.getUser().setHead(newHead);
+//		if(!(user.getHead().equals(newHead))){
+//			User u = findById(user.getId());
+//			u.setHead(newHead);
+//			save(u);
+//			ShiroFunc.getUser().setHead(newHead);
+//		}
+		
+		User u = findById(user.getId());
+		//删除之前的头像
+		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
+			OSSUtil.deleteObject("image/head/"+u.getHead());
 		}
+		
+		u.setHead(newHead);
+		save(u);
+		ShiroFunc.getUser().setHead(newHead);
+		
 		logDao.insert("USER_UPDATEHEAD");
-		logger.debug("头像上传函数的返回结果："+uploadFileVO);
 		return uploadFileVO;
 	}
 
