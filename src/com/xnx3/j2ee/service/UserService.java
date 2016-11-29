@@ -151,6 +151,8 @@ public interface UserService {
 	
 	/**
 	 * 利用OSS上传头像
+	 * <br/>头像所在OSS的路径为 /image/head/下
+	 * <br/>默认的头像名为 default.png，如果用户之前的头像是这个，那么上传新头像后，default.png 默认头像不会被删除，其余的则就会再新的头像上传完毕后，删除原先的头像
 	 * @param head {@link MultipartFile}
 	 * @return {@link UploadFileVO}
 	 */
@@ -158,6 +160,8 @@ public interface UserService {
 	
 	/**
 	 * 利用OSS上传头像
+	 * <br/>头像所在OSS的路径为 /image/head/下
+	 * <br/>默认的头像名为 default.png，如果用户之前的头像是这个，那么上传新头像后，default.png 默认头像不会被删除，其余的则就会再新的头像上传完毕后，删除原先的头像
 	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
 	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
 	 * @return {@link UploadFileVO}
@@ -166,6 +170,8 @@ public interface UserService {
 	
 	/**
 	 * 利用OSS上传头像
+	 * <br/>头像所在OSS的路径为 /image/head/下
+	 * <br/>默认的头像名为 default.png，如果用户之前的头像是这个，那么上传新头像后，default.png 默认头像不会被删除，其余的则就会再新的头像上传完毕后，删除原先的头像
 	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
 	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
 	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。若未0，则不启用缩放功能
