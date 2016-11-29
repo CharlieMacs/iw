@@ -194,6 +194,7 @@
 		
 		<!-- 手机短信相关 -->
 		<sms_sendPhoneLoginCodeNumberFailure>请输入正确的手机号</sms_sendPhoneLoginCodeNumberFailure>
+		<sms_sendSmsPhoneNumberFailure>请输入正确的手机号</sms_sendSmsPhoneNumberFailure>
 		<sms_thisPhoneNumberDayUpperLimit>此手机当天验证码发送已达上限！请明日再进行尝试</sms_thisPhoneNumberDayUpperLimit>
 		<sms_thisIpDayUpperLimit>此IP当天验证码发送已达上限！请明日再进行尝试</sms_thisIpDayUpperLimit>
 		<!-- 手机登陆手机发送的短信验证码内容，其中${code}为动态验证码 -->
