@@ -74,13 +74,17 @@ public class ShiroFunc {
 	 */
 	public static ActiveUser getCurrentActiveUser(){
 		//从shiro的session中取activeUser
-		Subject subject = SecurityUtils.getSubject();
-		//取身份信息
-		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
-		if(activeUser != null){
-			return activeUser;
-		}else{
+		if(SecurityUtils.getSubject() == null){
 			return null;
+		}else{
+			Subject subject = SecurityUtils.getSubject();
+			//取身份信息
+			ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+			if(activeUser != null){
+				return activeUser;
+			}else{
+				return null;
+			}
 		}
 	}
 	
@@ -90,27 +94,40 @@ public class ShiroFunc {
 	 * 			<li>未登陆，返回null
 	 */
 	public static User getUser(){
-		ActiveUser activeUser = getCurrentActiveUser();
-		if(activeUser!=null){
-			return activeUser.getUser();
-		}else{
+		if(getCurrentActiveUser() == null){
 			return null;
+		}else{
+			ActiveUser activeUser = getCurrentActiveUser();
+			if(activeUser!=null){
+				return activeUser.getUser();
+			}else{
+				return null;
+			}
 		}
 	}
 
 	/**
 	 * 设置当前用户是否能使用UEditor编辑器进行图片、文件、视频等上传。若为false，则不能用其进行上传
-	 * @param allow
+	 * @param allow 当前用户是否能使用UEditor编辑器进行图片、文件、视频等上传。若为false，则不能用其进行上传
+	 * @return true:设置成功，false:设置失败
 	 */
-	public static void setUEditorAllowUpload(boolean allow){
+	public static boolean setUEditorAllowUpload(boolean allow){
 		//从shiro的session中取activeUser
-		Subject subject = SecurityUtils.getSubject();
-		//取身份信息
-		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
-		if(activeUser != null){
-			activeUser.setAllowUploadForUEditor(allow);
-//			((ActiveUser)SecurityUtils.getSubject()).setAllowUploadForUEditor(allow);
+		if(SecurityUtils.getSubject() == null){
+			//肯定是设施失败了
+			return false;
+		}else{
+			Subject subject = SecurityUtils.getSubject();
+			//取身份信息
+			ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+			if(activeUser != null){
+				activeUser.setAllowUploadForUEditor(allow);
+				return true;
+			}else{
+				return false;
+			}
 		}
+		
 	}
 	
 	/**
