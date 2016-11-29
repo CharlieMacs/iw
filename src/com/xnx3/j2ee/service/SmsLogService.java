@@ -73,4 +73,32 @@ public interface SmsLogService {
 	 * @return {@link BaseVO}
 	 */
 	public BaseVO sendPhoneLoginCode(HttpServletRequest request);
+	
+	/**
+	 * 向指定手机号发送指定内容的验证码，内容里六位动态验证码用${code}表示
+	 * @param phone 发送至的手机号
+	 * @param content 发送的包含验证码的内容
+	 * @param type 发送类型，位于 {@link SmsLog}，以下几个数已使用,可从10以后开始用。此会计入 {@link SmsLog}.type数据字段
+	 * 				<ul>
+	 * 					<li>1:{@link SmsLog#TYPE_LOGIN}登录 </li>
+	 * 					<li>2:{@link SmsLog#TYPE_FIND_PASSWORD}找回密码 </li>
+	 * 					<li>3:{@link SmsLog#TYPE_BIND_PHONE}绑定手机 </li>
+	 * 				</ul>
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO sendSms(HttpServletRequest request, String phone, String content, Short type);
+	
+	/**
+	 * 输入手机号、动态验证码，验证是否成功
+	 * @param phone 目标手机号
+	 * @param code 六位数动态验证码
+	 * @param type 发送类型，位于 {@link SmsLog}， {@link SmsLog}.type的值
+	 * 				<ul>
+	 * 					<li>1:{@link SmsLog#TYPE_LOGIN}登录 </li>
+	 * 					<li>2:{@link SmsLog#TYPE_FIND_PASSWORD}找回密码 </li>
+	 * 					<li>3:{@link SmsLog#TYPE_BIND_PHONE}绑定手机 </li>
+	 * 				</ul>
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO verifyPhoneAndCode(String phone, String code, Short type);
 }
