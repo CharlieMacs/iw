@@ -157,9 +157,9 @@ public class MessageServiceImpl implements MessageService {
 			if(message!=null){
 				int userId = ShiroFunc.getUser().getId();
 				//查看此信息是此人发的，或者是发送给此人的，此人有权限查看
-				if(userId==message.getRecipientid()||userId==message.getSenderid()){
+				if(userId - message.getRecipientid() == 0 || userId - message.getSenderid() == 0){
 					//检测此信息是否已被删除
-					if(message.getIsdelete() == Message.ISDELETE_DELETE){
+					if(message.getIsdelete() - Message.ISDELETE_DELETE == 0){
 						messageVO.setBaseVO(MessageVO.FAILURE, Global.getLanguage("message_alreadyDelete"));
 					}else{
 						//拿到信息的内容
@@ -167,7 +167,7 @@ public class MessageServiceImpl implements MessageService {
 						messageVO.setContent(messageData.getContent());
 						
 						//如果阅读的人是收信人，且之前没有阅读过，则标注此信息为已阅读
-						if(userId==message.getRecipientid()&&message.getState()==Message.MESSAGE_STATE_UNREAD){
+						if(userId - message.getRecipientid() == 0 && message.getState() - Message.MESSAGE_STATE_UNREAD == 0){
 							message.setState(Message.MESSAGE_STATE_READ);
 							save(message);
 							logDao.insert(message.getId(), "MESSAGE_READ", messageData.getContent());
@@ -178,7 +178,7 @@ public class MessageServiceImpl implements MessageService {
 						User senderUser = userDao.findById(message.getSenderid());
 						
 						//检验目标用户状态是否正常，是否被冻结
-						if(senderUser.getIsfreeze() == User.ISFREEZE_FREEZE){
+						if(senderUser.getIsfreeze() - User.ISFREEZE_FREEZE == 0){
 							messageVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("message_senderUserFreeze"));
 							return messageVO;
 						}
