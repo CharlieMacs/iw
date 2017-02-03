@@ -74,8 +74,32 @@
 		<accessKeySecret>aaaaaaaaaaaaaaaaaaa</accessKeySecret>
 		<!-- Bucket名称 -->
 		<bucketName>xnx3</bucketName>
-		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 -->
-		<url>xnx3.oss-cn-qingdao.aliyuncs.com</url>
+		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 ，若为空则会根据以上配置自动拼接生成url -->
+		<url></url>
+		<roleArn>acs:ram::1080155601964967:role/aaaaaaa</roleArn>
 	</aliyunOSS>
 	
+	<!-- 
+		友盟APP消息推送，需jar包：
+			json-***.jar
+			httpcore-***.jar
+			httpclient-***.jar
+			commons-logging-***.jar
+			commons-codec-***.jar
+			umpush.jar
+	 -->
+	<umengPush>
+		<!-- 友盟推送里面，增加的Android应用的相关信息 -->
+		<android>
+			<appKey>5555555555</appKey>
+			<appMasterSecret>mmmmmmmmmmmmmmmm</appMasterSecret>
+		</android>
+		<!-- 友盟推送里面，增加的iOS应用的相关信息 -->
+		<ios>
+			<appKey></appKey>
+			<appMasterSecret></appMasterSecret>
+		</ios>
+	</umengPush>
+	
+
 </configuration>
