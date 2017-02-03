@@ -525,10 +525,15 @@ public class UserServiceImpl implements UserService{
 			try {  
 				currentUser.login(token);  
 			} catch ( UnknownAccountException uae ) {
+				uae.printStackTrace();
 			} catch ( IncorrectCredentialsException ice ) {
+				ice.printStackTrace();
 			} catch ( LockedAccountException lae ) {
+				lae.printStackTrace();
 			} catch ( ExcessiveAttemptsException eae ) {
-			} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+				eae.printStackTrace();
+			} catch ( org.apache.shiro.authc.AuthenticationException ae ) { 
+				ae.printStackTrace();
 			}
 			
 			logDao.insert("USER_LOGIN_SUCCESS");
@@ -598,10 +603,15 @@ public class UserServiceImpl implements UserService{
 		try {  
 			currentUser.login(token);  
 		} catch ( UnknownAccountException uae ) {
+			uae.printStackTrace();
 		} catch ( IncorrectCredentialsException ice ) {
+			ice.printStackTrace();
 		} catch ( LockedAccountException lae ) {
+			lae.printStackTrace();
 		} catch ( ExcessiveAttemptsException eae ) {
-		} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+			eae.printStackTrace();
+		} catch ( org.apache.shiro.authc.AuthenticationException ae ) { 
+			ae.printStackTrace();
 		}
 		
 		logDao.insert("USER_LOGIN_SUCCESS");
@@ -907,10 +917,15 @@ public class UserServiceImpl implements UserService{
 		try {  
 			currentUser.login(token);  
 		} catch ( UnknownAccountException uae ) {
+			uae.printStackTrace();
 		} catch ( IncorrectCredentialsException ice ) {
+			ice.printStackTrace();
 		} catch ( LockedAccountException lae ) {
+			lae.printStackTrace();
 		} catch ( ExcessiveAttemptsException eae ) {
-		} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+			eae.printStackTrace();
+		} catch ( org.apache.shiro.authc.AuthenticationException ae ) { 
+			ae.printStackTrace();
 		}
 		
 		logDao.insert("USER_LOGIN_SUCCESS");
@@ -948,10 +963,15 @@ public class UserServiceImpl implements UserService{
 		try {  
 			currentUser.login(token);  
 		} catch ( UnknownAccountException uae ) {
+			uae.printStackTrace();
 		} catch ( IncorrectCredentialsException ice ) {
+			ice.printStackTrace();
 		} catch ( LockedAccountException lae ) {
+			lae.printStackTrace();
 		} catch ( ExcessiveAttemptsException eae ) {
-		} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
+			eae.printStackTrace();
+		} catch ( org.apache.shiro.authc.AuthenticationException ae ) { 
+			ae.printStackTrace();
 		}
 		
 		logDao.insert("USER_LOGIN_SUCCESS");
