@@ -107,6 +107,20 @@ public class ShiroFunc {
 	}
 
 	/**
+	 * Session中获取当前登录用户的id
+	 * @return 	<li>登陆了，则返回其id
+	 * 			<li>未登陆，返回 0
+	 */
+	public static int getUserId(){
+		User user = getUser();
+		if(user == null){
+			return 0;
+		}else{
+			return user.getId();
+		}
+	}
+	
+	/**
 	 * 设置当前用户是否能使用UEditor编辑器进行图片、文件、视频等上传。若为false，则不能用其进行上传
 	 * @param allow 当前用户是否能使用UEditor编辑器进行图片、文件、视频等上传。若为false，则不能用其进行上传
 	 * @return true:设置成功，false:设置失败
