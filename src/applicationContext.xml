@@ -42,6 +42,17 @@
 		<property name="password" value="${jdbc.passowrd}"></property>
 		<property name="driverClass" value="${jdbc.driverClass}"></property>
 		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		
+		<!-- 初始化时获取连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize" value="2"></property>  
+		<!-- 连接池中保留的最小连接数，默认为：3 -->
+	    <property name="minPoolSize" value="2"></property>  
+	    <!-- 连接池中保留的最大连接数。默认值: 15 -->
+	    <property name="maxPoolSize" value="20"></property> 
+	    <!-- 最大空闲时间，多少秒内未使用则连接被丢弃。若为0则永不丢弃。默认值: 0 --> 
+	    <property name="maxIdleTime" value="60"></property>  
+	    <!-- 每隔多少秒检查所有连接池中的空闲连接。Default: 0  -->
+		<property name="idleConnectionTestPeriod" value="60"></property>
 	</bean>
 
 	
@@ -285,5 +296,7 @@
 	<bean id="QRCodeService" class="com.xnx3.j2ee.service.impl.QRCodeServiceImpl">
 	</bean>
 	<bean id="TxtFilterService" class="com.xnx3.j2ee.service.impl.TxtFilterServiceImpl">
+	</bean>
+	<bean id="CaptchaService" class="com.xnx3.j2ee.service.impl.CaptchaServiceImpl">
 	</bean>
 </beans>
