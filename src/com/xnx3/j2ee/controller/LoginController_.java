@@ -12,11 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aliyuncs.http.HttpRequest;
 import com.xnx3.QRCodeUtil;
 import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.service.CaptchaService;
 import com.xnx3.j2ee.service.QRCodeService;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.service.UserService;
@@ -37,6 +39,9 @@ public class LoginController_ extends BaseController {
 	private SmsLogService smsLogService;
 	@Resource
 	private QRCodeService qRCodeService;
+	@Resource
+	private CaptchaService captchaService;
+	
 	/**
 	 * 注册页面 
 	 * @param request {@link HttpServletRequest}
@@ -47,6 +52,15 @@ public class LoginController_ extends BaseController {
 		userService.regInit(request);
 		return "iw/login/reg";
 	}
+	
+	/**
+	 * 验证码图片显示，直接访问此地址可查看图片
+	 */
+	@RequestMapping("/captcha")
+	public void captcha(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		captchaService.showImage(request, response);
+	}
+	
 	/**
 	 * 注册相应请求地址
 	 * @param user {@link User}
