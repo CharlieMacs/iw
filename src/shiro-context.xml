@@ -17,7 +17,9 @@
 		<!-- <property name="successUrl" value="/user/info.do"/> -->
 		<property name="unauthorizedUrl" value="/index.jsp" />
 		<property name="filterChainDefinitions">
+			<!-- 首页、根目录不做登陆拦截 -->
 			<value>
+				/=anon
 				/index.jsp = anon
 				/cache/** = anon
 				/*.jsp = anon
@@ -29,6 +31,7 @@
 				/reg*.do = anon
 				/bbs/list.do = anon
 				/bbs/view.do = anon
+				/*.* = anon
 				/** = authc 
 			</value>
 		</property>
