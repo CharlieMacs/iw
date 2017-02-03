@@ -81,4 +81,16 @@
  	</attribute>
  </tag>
  
+ <tag>
+ 	<name>fileSizeToInfo</name>
+ 	<tag-class>com.xnx3.j2ee.tld.FileSizeToInfo</tag-class>
+ 	<body-content>jsp</body-content>
+ 	<attribute>
+ 		<name>size</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 		<description>以b为单位的long类型，会自动转为KB、MB、GB的描述形式</description>
+ 	</attribute>
+ </tag>
+ 
 </taglib>
