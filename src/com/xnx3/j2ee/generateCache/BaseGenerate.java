@@ -2,9 +2,13 @@ package com.xnx3.j2ee.generateCache;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import com.xnx3.DateUtil;
+import com.xnx3.Lang;
+import com.xnx3.StringUtil;
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
 
@@ -51,14 +55,29 @@ public class BaseGenerate {
 		initCacheFolder();
 		String filePath = Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js"; 
 		try {
-			logger.info("create cache js file success ! file path : "+filePath);
+			content = content + " var xnx3_r"+DateUtil.timeForUnix10()+" = '"+getRandomValue()+"';";
 			FileUtil.write(filePath, content,FileUtil.UTF8);
+			logger.info("create cache js file success ! file path : "+filePath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.content=null;
 	}
-
+	
+	/**
+	 * 每个js生成时，会加入一个长度随即的，100个以内字符的随机变量，防止浏览器因字节数一样而缓存数据
+	 * @return 长度不固定的String，100个字符以内
+	 */
+	private String getRandomValue(){
+		Random r = new Random();
+		int ri = r.nextInt(100);
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < ri; i++) {
+			sb.append("1");
+		}
+		return sb.toString();
+	}
+	
 	/**
 	 * 初始化缓存文件夹，若根目录下没有缓存文件夹，自动创建
 	 */
