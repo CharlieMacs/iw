@@ -11,14 +11,25 @@
 	* [多表查询、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160527/949.html)
 	* [多数据表联合查询、搜索、排序、状态码js缓存](http://www.xnx3.com/software/iw/20160527/950.html)
 * 日志
-	* [添加日志记录](http://www.xnx3.com/software/iw/20160527/951.html)
-* 文件上传
-	* [OSS文件上传](http://www.xnx3.com/software/iw/20160601/952.html)
+	* [添加日志示例](http://www.xnx3.com/software/iw/20160527/951.html)
+	* [DOC文档](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/LogService.html)
+* OSS文件上传
+	* [文件上传示例](http://www.xnx3.com/software/iw/20160601/952.html)
+	* [DOC文档](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/OSSService.html)
 * 多语言支持
 	* [中文、英文、...添加减少语言种类自由配置](http://www.xnx3.com/software/iw/20160623/953.html)
+	* [DOC文档](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/LanguageService.html)
 * 数据库操作
 	* [事务](http://www.xnx3.com/software/iw/20160628/954.html)
 	* [乐观锁](http://www.xnx3.com/software/iw/20160628/955.html)
+* 论坛相关
+	* [板块](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/PostClassService.html)
+	* [帖子](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/PostService.html)
+	* [评论](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/PostCommentService.html)
+* [手机验证](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/SmsLogService.html)
+* [Sql操作](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/SqlService.html)	
+* [用户操作](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/UserService.html)
+
 
 <br/>
 <br/>
