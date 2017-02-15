@@ -3,7 +3,8 @@
 整合权限、论坛、会员、日志、消息、系统、数据缓存、短信等功能
 <br/>Spring4、Spring MVC4、Hibernate4、Shiro、<a href="http://github.com/xnx3/xnx3" target="_black">xnx3-2.2</a>
 
-##快速开发示例
+##[快速搭建项目运行Demo，下载后导入运行](https://github.com/xnx3/iw_demo)
+##快速开发代码示例
 * 列表分页
 	* [单数据表、分页示例](http://www.xnx3.com/software/iw/20160527/946.html)
 	* [单数据表、搜索、分页示例](http://www.xnx3.com/software/iw/20160527/947.html)
