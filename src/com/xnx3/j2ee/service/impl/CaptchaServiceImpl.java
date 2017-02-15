@@ -27,6 +27,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 		//将验证码保存到Session中。
 		HttpSession session = request.getSession();
 		session.setAttribute("code", captchaUtil.getCode());
+		session.setAttribute("codeIsUsed", "0");	//标记未被使用
 
 		//禁止图像缓存。
 		response.setHeader("Pragma", "no-cache");
@@ -65,14 +66,23 @@ public class CaptchaServiceImpl implements CaptchaService {
 		}
 		
 		//获取Session记录的验证码
-		Object codeObj = request.getSession().getAttribute("code");
+		HttpSession session = request.getSession();
+		Object codeObj = session.getAttribute("code");
 		if(codeObj == null){
 			vo.setBaseVO(BaseVO.FAILURE, "出错，系统中没有存储您的验证码！");
 			return vo;
 		}
-		String code = (String) codeObj;
-		if(inputCode.equals(code)){
-			return vo;
+		String code = (String) codeObj;	//Session中存储的验证码
+		if(inputCode.equalsIgnoreCase(code)){
+			String codeIsUsed = (String)session.getAttribute("codeIsUsed");	//验证码是否被使用，1:被使用了；0未被使用
+			if(codeIsUsed.equals("1")){
+				vo.setBaseVO(BaseVO.FAILURE, "此验证码已被使用过了！");
+				return vo;
+			}else{
+				//设置验证码已被使用
+				session.setAttribute("codeIsUsed", "1");
+				return vo;
+			}
 		}else{
 			vo.setBaseVO(BaseVO.FAILURE, "验证码出错");
 			return vo;

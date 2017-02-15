@@ -8,7 +8,7 @@ import com.xnx3.media.CaptchaUtil;
 
 
 /**
- * 验证码
+ * 验证码。每个验证码只能使用一次。使用后的验证码将会重新赋值
  * @author 管雷鸣
  *
  */
@@ -32,7 +32,7 @@ public interface CaptchaService {
 	public void showImage(CaptchaUtil captchaUtil, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 	/**
-	 * 用户输入的验证码，与系统存储的进行比较，返回结果
+	 * 用户输入的验证码，与系统存储的进行比较，返回结果。忽略大小写
 	 * @param inputCode 用户输入的验证码
 	 * @param request HttpServletRequest 主要用于从其中获取Session
 	 * @return {@link BaseVO}
