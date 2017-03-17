@@ -72,7 +72,10 @@
         <property name="globalSessionTimeout" value="600000"/>
         <!-- 删除失效的session -->
         <property name="deleteInvalidSessions" value="true"/>
+        <property name="sessionDAO" ref="sessionDAO" />
     </bean>
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO" >
+	</bean>
 
 	<!-- rememberMeManager管理器，写cookie，取出cookie生成用户信息 -->
 	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">

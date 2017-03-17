@@ -46,6 +46,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<shiro:hasPermission name="adminSystem"> 
 			<li class="sub-menu"><a href="<%=basePath %>/admin/system/index.do"><i class="fa fa-book"></i><span>系统管理</span></a>
 			    <ul class="sub">
+			    	<li><a href="<%=basePath %>/admin/user/onlineUserlist.do">当前在线会员</a></li>
 			        <li><a href="<%=basePath %>/admin/system/index.do">首页</a></li>
 			        <li><a href="<%=basePath %>/admin/system/generateAllCache.do">立即刷新所有缓存</a></li>
 			    </ul>

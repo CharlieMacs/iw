@@ -1,11 +1,18 @@
 package com.xnx3.j2ee.controller.admin;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +23,7 @@ import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.UserService;
+import com.xnx3.j2ee.shiro.ActiveUser;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
@@ -34,7 +42,8 @@ public class UserAdminController_ extends BaseController {
 	
 	@Resource
 	private SqlService sqlService;
-	
+	@Autowired
+	private SessionDAO sessionDAO;
 	/**
 	 * 删除用户
 	 * @param id 用户id，User.id
@@ -131,5 +140,34 @@ public class UserAdminController_ extends BaseController {
 		}else{
 			return error(model, "操作失败！");
 		}
+	}
+	
+	/**
+	 * 用户列表
+	 * @param request {@link HttpServletRequest}
+	 * @param model {@link Model}
+	 * @return View
+	 */
+	@RequiresPermissions("adminOnlineUserList")
+	@RequestMapping("onlineUserList")
+	public String onlineUserlist(HttpServletRequest request,Model model){
+		Collection<Session> sessions = sessionDAO.getActiveSessions();
+		List<User> userList = new ArrayList<User>();
+		Iterator it = sessions.iterator();
+		while(it.hasNext()){
+			Session session = (Session) it.next();
+			SimplePrincipalCollection s = (SimplePrincipalCollection) session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY");
+			if(s == null){
+				System.out.println("s == null ! session : "+ session);
+			}else{
+				ActiveUser activityUser = (ActiveUser) s.getPrimaryPrincipal();
+				if(activityUser != null){
+					userList.add(activityUser.getUser());
+				}
+			}
+		}
+		
+		model.addAttribute("list", userList);
+		return "iw/admin/user/onlineUserList";
 	}
 }
