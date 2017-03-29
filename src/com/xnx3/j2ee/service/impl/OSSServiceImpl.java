@@ -84,7 +84,7 @@ public class OSSServiceImpl implements OSSService {
 		String[] ia = Global.ossFileUploadImageSuffixList.split("\\|");
 		for (int j = 0; j < ia.length; j++) {
 			if(ia[j].length()>0){
-				if(ia[j].equals(fileSuffix)){
+				if(ia[j].equalsIgnoreCase(fileSuffix)){
 					find = true;
 					break;
 				}
