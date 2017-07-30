@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -78,21 +79,26 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 		
 		//语言
 		//如果是第一次访问，先设定默认语言
-		if(request.getSession().getAttribute("language_default") == null){
-			String language_default = null;
-			CookieUtil cookieUtil = new CookieUtil(request, response);
-			if(cookieUtil.getCookie("language_default") != null){
-				language_default = cookieUtil.getCookie("language_default").getValue();
+		HttpSession session = request.getSession();
+		//判断其是否有Session
+		if(session != null){
+			if(request.getSession().getAttribute("language_default") == null){
+				String language_default = null;
+				CookieUtil cookieUtil = new CookieUtil(request, response);
+				if(cookieUtil.getCookie("language_default") != null){
+					language_default = cookieUtil.getCookie("language_default").getValue();
+				}
+				if(language_default == null){
+					language_default = Global.language_default;
+				}
+				
+				if(Global.language.get(language_default) != null){
+					Global.language_default = language_default;
+				}
+				request.getSession().setAttribute("language_default", Global.language_default);
 			}
-			if(language_default == null){
-				language_default = Global.language_default;
-			}
-			
-			if(Global.language.get(language_default) != null){
-				Global.language_default = language_default;
-			}
-			request.getSession().setAttribute("language_default", Global.language_default);
 		}
+		
 		
 		if(useExecuteTime){
 			long startTime = (Long)request.getAttribute("startTime");  

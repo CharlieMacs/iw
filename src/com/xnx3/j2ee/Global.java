@@ -152,6 +152,10 @@ public class Global {
 		return value;
 	}
 	
+	/**
+	 * 获取当前项目所在的绝对路径。以废弃，可以直接使用 Global.projectPath 。此参数会在servlet中初始化
+	 * @deprecated
+	 */
 	public static String getProjectPath(){
 		if(projectPath == null){
 			String path = new Global().getClass().getResource("/").getPath();

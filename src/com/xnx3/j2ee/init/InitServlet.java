@@ -36,6 +36,9 @@ public class InitServlet extends HttpServlet {
 	
 	@Override
 	public void init(ServletConfig servletContext) throws ServletException {
+		//获取当前项目的所在路径
+		Global.projectPath = servletContext.getServletContext().getRealPath("/");
+		
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext.getServletContext());
 		postClassService = ctx.getBean("postClassService", PostClassService.class);
 		systemService = ctx.getBean("systemService", SystemService.class);

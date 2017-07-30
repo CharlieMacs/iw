@@ -979,4 +979,20 @@ public class UserServiceImpl implements UserService{
 		return baseVO;
 	}
 
+	@Override
+	public BaseVO updatePassword(int userid, String newPassword) {
+		BaseVO baseVO = new BaseVO();
+		if(!(userid > 0)){
+			baseVO.setBaseVO(BaseVO.FAILURE, "userid is null");
+		}
+		User user=findById(userid);
+		
+		String md5Password = new Md5Hash(newPassword, user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
+		user.setPassword(md5Password);
+		save(user);
+		
+		logDao.insert("USER_UPDATEPASSWORD");
+		return baseVO;
+	}
+
 }

@@ -198,4 +198,11 @@ public interface UserService {
 	 * @param request GET／POST传入如： sign=我是签名  允许为空。字符限制0～40个汉字或英文
 	 */
 	public BaseVO updateSign(HttpServletRequest request);
+	
+	/**
+	 * 修改密码
+	 * @param userid 要修改密码的用户id，user.id
+	 * @param newPassword 更改后的新密码
+	 */
+	public BaseVO updatePassword(int userid, String newPassword);
 }
