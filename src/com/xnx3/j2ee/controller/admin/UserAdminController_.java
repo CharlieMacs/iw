@@ -109,7 +109,8 @@ public class UserAdminController_ extends BaseController {
 		if(user.getReferrerid()==null || user.getReferrerid()==0){
 			model.addAttribute("referrer", "无邀请人");
 		}else{
-			model.addAttribute("referrer", "<a href='view.do?id="+user.getReferrerid()+"'>id:"+user.getReferrerid()+","+user.getNickname()+"</a>");
+			User parentUser = userService.findById(user.getReferrerid());
+			model.addAttribute("referrer", "<a href='view.do?id="+user.getReferrerid()+"'>id:"+user.getReferrerid()+","+parentUser.getUsername()+"</a>");
 		}
 		
 		model.addAttribute("u", user);
