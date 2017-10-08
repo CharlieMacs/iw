@@ -2,21 +2,17 @@ package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
+import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.MessageDataService;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
@@ -26,7 +22,6 @@ import com.xnx3.j2ee.vo.BaseVO;
 /**
  * 信息管理
  * @author 管雷鸣
- *
  */
 @Controller
 @RequestMapping("/admin/message")
@@ -34,15 +29,8 @@ public class MessageAdminController_ extends BaseController {
 
 	@Resource
 	private MessageService messageService;
-	
-	@Resource
-	private MessageDataService messageDataService;
-	
 	@Resource
 	private SqlService sqlService;
-	
-	@Resource
-	private LogService logService;
 	
 	/**
 	 * 信息列表
@@ -65,6 +53,8 @@ public class MessageAdminController_ extends BaseController {
 		sql.setDefaultOrderBy("message.id DESC");
 		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
+		ActionLogCache.insert(request, "总管理后台站内信息列表", "第"+page.getCurrentPageNumber()+"页");
+		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
 		return "/iw/admin/message/list";
@@ -78,11 +68,13 @@ public class MessageAdminController_ extends BaseController {
 	 */
 	@RequiresPermissions("adminMessageDelete")
 	@RequestMapping("delete")
-	public String delete(@RequestParam(value = "id", required = true) int id, Model model){
+	public String delete(@RequestParam(value = "id", required = true) int id, Model model, HttpServletRequest request){
 		BaseVO baseVO = messageService.delete(id);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
+			ActionLogCache.insert(request, "总管理后台删除站内信息");
 			return success(model, "删除成功！");
 		}else{
+			ActionLogCache.insert(request, "总管理后台删除站内信息", "失败："+baseVO.getInfo());
 			return error(model, baseVO.getInfo());
 		}
 	}

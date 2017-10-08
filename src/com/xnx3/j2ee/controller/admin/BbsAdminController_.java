@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.BaseEntity;
@@ -17,12 +18,8 @@ import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
-import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.PostClassService;
-import com.xnx3.j2ee.service.PostCommentService;
-import com.xnx3.j2ee.service.PostDataService;
 import com.xnx3.j2ee.service.PostService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.controller.BaseController;
@@ -41,24 +38,10 @@ public class BbsAdminController_ extends BaseController {
 	
 	@Resource
 	private PostService postService;
-	
-	@Resource
-	private PostDataService postDataService;
-	
-	@Resource
-	private PostCommentService postCommentService;
-	
-	@Resource
-	private PostClassService postClassService;
-	
 	@Resource
 	private UserService userService;
-	
 	@Resource
 	private SqlService sqlService;
-	
-	@Resource
-	private LogService logService;
 
 	/**
 	 * 帖子列表
@@ -69,21 +52,16 @@ public class BbsAdminController_ extends BaseController {
 	@RequiresPermissions("adminBbsPostList")
 	@RequestMapping("postList")
 	public String postList(HttpServletRequest request,Model model){
-//		Sql sql = new Sql();
-//		String[] column = {"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"};
-//		String where = sql.generateWhere(request, column, " isdelete = "+BaseEntity.ISDELETE_NORMAL);
-//		int count = sqlService.count("post", where);
-//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		List<Post> list = sqlService.findBySqlQuery("SELECT * FROM post", where, page,Post.class);
-		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"});
+		sql.appendWhere("isdelete = "+BaseEntity.ISDELETE_NORMAL);
 		int count = sqlService.count("post", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM post", page);
 		sql.setDefaultOrderBy("post.id DESC");
-		List<Post> list = sqlService.findEntityBySql(sql, Post.class);
+		List<Post> list = sqlService.findBySql(sql, Post.class);
 		
+		ActionLogCache.insert(request, "管理后台帖子列表", "第"+ page.getCurrentPageNumber() +"页");
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
@@ -93,19 +71,20 @@ public class BbsAdminController_ extends BaseController {
 	/**
 	 * 新增、修改帖子
 	 * @param id 帖子id，Post.id
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPost")
 	@RequestMapping("post")
-	public String post(@RequestParam(value = "id", defaultValue = "0", required = false) int id,Model model){
+	public String post(@RequestParam(value = "id", defaultValue = "0", required = false) int id,Model model, HttpServletRequest request){
 		if(id > 0){
-			Post post = postService.findById(id);
+			Post post = sqlService.findById(Post.class, id);
 			if(post != null){
-				PostData postData = postDataService.findById(id);
+				PostData postData = sqlService.findById(PostData.class, id);
+				ActionLogCache.insert(request, "管理后台新增或修改帖子", post.getTitle());
+				
 				model.addAttribute("post", post);
 				model.addAttribute("postData", postData);
 			}else{
+				ActionLogCache.insert(request, "管理后台新增或修改帖子页面", "失败：帖子不存在");
 				return error(model, "帖子不存在！");
 			}
 		}
@@ -118,45 +97,36 @@ public class BbsAdminController_ extends BaseController {
 	 * @param classid 分类id
 	 * @param title 帖子标题
 	 * @param text 帖子内容
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPost")
 	@RequestMapping("savePost")
 	public String savePost(HttpServletRequest request,Model model){
 		BaseVO baseVO = postService.savePost(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
+			ActionLogCache.insert(request, "管理后台新增或修改帖子保存");
 			return success(model, "操作成功！", "admin/bbs/postList.do?classid="+request.getParameter("classid"));
 		}else{
+			ActionLogCache.insert(request, "管理后台新增或修改帖子保存", "失败："+baseVO.getInfo());
 			return error(model, baseVO.getInfo());
 		}
 	}
 
 	/**
 	 * 板块列表
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsClassList")
 	@RequestMapping("classList")
 	public String classList(HttpServletRequest request,Model model){
-//		Sql sql = new Sql();
-//		String[] column = {"id=","name"};
-//		String where = sql.generateWhere(request, column, null);
-//		int count = sqlService.count("post_class", where);
-//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		where = sql.generateWhere(request, column, null);
-//		List<PostClass> list = sqlService.findBySqlQuery("SELECT * FROM post_class", where, page,PostClass.class);
-		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"id=","name"});
+		sql.appendWhere("isdelete = "+PostClass.ISDELETE_NORMAL);
 		int count = sqlService.count("post_class", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM post_class", page);
 		sql.setDefaultOrderBy("post_class.id DESC");
-		List<PostClass> list = sqlService.findEntityBySql(sql, PostClass.class);
+		List<PostClass> list = sqlService.findBySql(sql, PostClass.class);
 		
+		ActionLogCache.insert(request, "管理后台板块列表", "第"+page.getCurrentPageNumber()+"页");
 		
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
@@ -167,30 +137,19 @@ public class BbsAdminController_ extends BaseController {
 	/**
 	 * 删除帖子
 	 * @param id 帖子id，Post.id
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsDeletePost")
 	@RequestMapping("deletePost")
-	public String deletePost(@RequestParam(value = "id", required = true) int id, Model model){
+	@ResponseBody
+	public BaseVO deletePost(@RequestParam(value = "id", required = true) int id, Model model, HttpServletRequest request){
 		BaseVO baseVO = postService.deletePost(id);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
-			return success(model, "删除成功");
+			ActionLogCache.insert(request, "管理后台删除帖子");
 		}else{
-			return error(model, baseVO.getInfo());
+			ActionLogCache.insert(request, "管理后台删除帖子", "失败："+baseVO.getInfo());
 		}
+		return baseVO;
 	}
-	
-	/**
-	 * 添加板块页面
-	 * @return View
-	 */
-	@RequiresPermissions("adminBbsAddClass")
-	@RequestMapping("addClass")
-	public String addClass(){
-		return "iw/admin/bbs/class";
-	}
-	
 	
 	/**
 	 * 添加／修改板块提交页面
@@ -198,37 +157,43 @@ public class BbsAdminController_ extends BaseController {
 	 * @param model {@link Model}
 	 * @return View
 	 */
-	@RequiresPermissions("adminBbsSaveClass")
+	@RequiresPermissions("adminBbsClass")
 	@RequestMapping("saveClass")
-	public String saveClass(HttpServletRequest request, Model model){
-		BaseVO baseVO = postClassService.savePostClass(request);
+	@ResponseBody
+	public BaseVO saveClass(HttpServletRequest request, Model model){
+		BaseVO baseVO = postService.savePostClass(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
-			return success(model, "操作成功","admin/bbs/classList.do");
+			ActionLogCache.insert(request, "管理后台添加论坛板块保存");
 		}else{
-			return error(model, baseVO.getInfo());
+			ActionLogCache.insert(request, "管理后台添加论坛板块保存", "失败："+baseVO.getInfo());
 		}
+		
+		return baseVO;
 	}
 
 	/**
 	 * 编辑板块
 	 * @param id 板块id，PostClass.id
-	 * @param model {@link Model}
-	 * @return View
 	 */
-	@RequiresPermissions("adminBbsEditClass")
-	@RequestMapping("editClass")
-	public String editClass(@RequestParam(value = "id", required = true) int id,Model model){
+	@RequiresPermissions("adminBbsClass")
+	@RequestMapping("class")
+	public String editClass(@RequestParam(value = "id", required = false, defaultValue="0") int id,Model model, HttpServletRequest request){
 		if(id>0){
-			PostClass postClass = postClassService.findById(id);
+			//修改
+			PostClass postClass = sqlService.findById(PostClass.class, id);
 			if(postClass!=null){
 				model.addAttribute("postClass", postClass);
-				return "iw/admin/bbs/class";
+				ActionLogCache.insert(request, id, "管理后台编辑论坛板块页面");
 			}else{
+				ActionLogCache.insert(request, id, "管理后台编辑论坛板块页面", "出错：板块不存在");
 				return "板块不存在";
 			}
 		}else{
-			return error(model, "传入的参数不正确");
+			//新增
+			ActionLogCache.insert(request, "管理后台添加论坛板块页面");
 		}
+		
+		return "iw/admin/bbs/class";
 	}
 	
 
@@ -240,13 +205,16 @@ public class BbsAdminController_ extends BaseController {
 	 */
 	@RequiresPermissions("adminBbsDeleteClass")
 	@RequestMapping("deleteClass")
-	public String deleteClass(@RequestParam(value = "id", required = true) int id, Model model){
-		BaseVO baseVO = postClassService.deletePostClass(id);
+	@ResponseBody
+	public BaseVO deleteClass(@RequestParam(value = "id", required = true) int id, Model model, HttpServletRequest request){
+		BaseVO baseVO = postService.deletePostClass(id);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
-			return error(model, "删除成功");
+			ActionLogCache.insert(request, "管理后台删除论坛板块");
 		}else{
-			return error(model, baseVO.getInfo());
+			ActionLogCache.insert(request, "管理后台删除论坛板块", "出错："+baseVO.getInfo());
 		}
+		
+		return baseVO;
 	}
 	
 
@@ -259,20 +227,16 @@ public class BbsAdminController_ extends BaseController {
 	@RequiresPermissions("adminBbsPostCommentList")
 	@RequestMapping("commentList")
 	public String commentList(HttpServletRequest request,Model model){
-//		Sql sql = new Sql();
-//		String[] column = {"postid=","userid="};
-//		String where = sql.generateWhere(request, column, null);
-//		int count = sqlService.count("post_comment", where);
-//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		List<Post> list = sqlService.findBySqlQuery("SELECT * FROM post_comment", where+" ORDER BY id DESC", page,PostComment.class);
-		
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"postid=","userid="});
+		sql.appendWhere("isdelete = "+BaseEntity.ISDELETE_NORMAL);
 		int count = sqlService.count("post_comment", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM post_comment", page);
 		sql.setDefaultOrderBy("post_comment.id DESC");
-		List<PostComment> list = sqlService.findEntityBySql(sql, PostComment.class);
+		List<PostComment> list = sqlService.findBySql(sql, PostComment.class);
+		
+		ActionLogCache.insert(request, "管理后台评论列表", "第"+page.getCurrentPageNumber()+"页");
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
@@ -283,18 +247,18 @@ public class BbsAdminController_ extends BaseController {
 	/**
 	 * 删除帖子评论
 	 * @param id 帖子评论的id，PostComment.id
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsDeletePostComment")
 	@RequestMapping("deleteComment")
-	public String deleteComment(@RequestParam(value = "id", required = true) int id, Model model){
-		BaseVO baseVO = postCommentService.deleteComment(id);
+	@ResponseBody
+	public BaseVO deleteComment(@RequestParam(value = "id", required = true) int id, Model model, HttpServletRequest request){
+		BaseVO baseVO = postService.deleteComment(id);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
-			return success(model, "删除成功");
+			ActionLogCache.insert(request, "管理后台删除帖子评论");
 		}else{
-			return error(model, baseVO.getInfo());
+			ActionLogCache.insert(request, "管理后台删除帖子评论", "失败："+baseVO.getInfo());
 		}
+		return baseVO;
 	}
 	
 }

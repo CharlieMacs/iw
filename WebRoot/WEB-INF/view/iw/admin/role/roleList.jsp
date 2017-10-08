@@ -5,122 +5,92 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="权限列表"/>
-    </jsp:include>
-    <script type="text/javascript">
-    	//根据板块id删除帖子
-    	function deleteRole(roleId){
-    		//要用ajax
-    		window.location="deleteRole.do?id="+roleId;
-    	}
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="角色列表"/>
+</jsp:include>
+<script type="text/javascript">
+	//根据角色id删除指定角色
+	function deleteRole(roleId){
+		//要用ajax
+		window.location="deleteRole.do?id="+roleId;
+	}
+</script>
 
-    </script>
-</head>
+<table class="layui-table iw_table">
+  <thead>
+    <tr>
+		<th>ID</th>
+        <th>角色名</th>
+        <th>描述</th>
+        <th>操作</th>
+    </tr> 
+  </thead>
+  <tbody>
+  	<c:forEach items="${list}" var="role">
+	   	<tr>
+	        <td style="width:55px;">${role.id }</td>
+	        <td>${role.name }</td>
+	        <td>${role.description }</td>
+	        <td style="width:140px;">
+	        	<botton class="layui-btn layui-btn-small" onclick="property('${role.name }', '${role.id }');" style="margin-left: 3px;"><i class="layui-icon">&#xe614;</i></botton>
+	        	<a class="layui-btn layui-btn-small" href="editRolePermission.do?roleId=${role.id }" style="margin-left: 3px;"><i class="layui-icon">&#xe642;</i></a>
+	        	<botton class="layui-btn layui-btn-small" onclick="deleteRole('${role.name }', '${role.id }');" style="margin-left: 3px;"><i class="layui-icon">&#xe640;</i></botton>
+	        </td>
+	    </tr>
+	</c:forEach>
+  </tbody>
+</table>
+<div style="padding:15px;">
+	<button class="layui-btn" onclick="property('', 0);" style="margin-left: 10px;margin-bottom: 20px;"><i class="layui-icon" style="padding-right:8px; font-size: 22px;">&#xe608;</i>添加角色</button>
+</div>
+<div style="padding-right:35px; text-align: right;margin-top: -66px;">
+	提示：&nbsp;&nbsp;&nbsp;
+	<botton class=""><i class="layui-icon">&#xe614;</i></botton><span style="padding-left:12px;padding-right: 30px;">属性设置</span>
+	<botton class=""><i class="layui-icon">&#xe642;</i></botton><span style="padding-left:12px;padding-right: 30px;">编辑权限</span>
+	<botton class=""><i class="layui-icon">&#xe640;</i></botton><span style="padding-left:12px;padding-right: 30px;">删除角色</span>
+</div>
 
-<body>
+<jsp:include page="../../common/weui.jsp"></jsp:include>
+<script type="text/javascript">
+/**
+ * 编辑角色属性／新增角色
+ * name 角色名，若是新增，传入空字符串
+ * id 角色的id，若是新增，传入0
+ */
+function property(name, id){
+	layer.open({
+		type: 2, 
+		title: id>0? '修改角色：'+name:'新增角色',
+		area: ['460px', '330px'],
+		shadeClose: true, //开启遮罩关闭
+		content: 'role.do?id='+id
+	});
+}
 
-<section id="container" >
-<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
-    </div>
-</aside>
-    <!--main content start-->
-    <section id="main-content">
-        <section class="wrapper">
-        <!-- page start-->
+/**
+ * 删除角色
+ * name 角色名
+ * id 角色的id
+ */
+function deleteRole(name, id){
+	$.confirm("您确定要删除\""+name+"\"吗?", "确认删除?", function() {
+		$.showLoading('删除中...');
+		$.getJSON('deleteRole.do?id='+id,function(obj){
+			$.hideLoading();
+			if(obj.result == '1'){
+				$.toast("删除成功", function() {
+					window.location.reload();	//刷新当前页
+				});
+	     	}else if(obj.result == '0'){
+	     		 $.toast(obj.info, "cancel", function(toast) {});
+	     	}else{
+	     		alert(obj.result);
+	     	}
+		});
+	}, function() {
+		//取消操作
+	});
+}
 
-        <div class="row">
-            <div class="col-sm-12">
-                <section class="panel">
-                    <header class="panel-heading tab-bg-dark-navy-blue">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a data-toggle="tab" href="">角色列表</a>
-                            </li>
-                        </ul>
-                    </header>
-                    <div class="panel-body">
-                    <div class="space15"></div>
-                    <div class="col-xs-12" style="padding:0;" >
-                       <!-- <div class="btn-group" style="float: left;">
-                            <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">10<span class="caret"></span></button>
-                            <ul role="menu" class="dropdown-menu">
-                                <li><a href="#">20</a></li>
-                                <li><a href="#">30</a></li>
-                                <li><a href="#">40</a></li>
-                                <li class="divider"></li>
-                                <li><a href="all">全部</a></li>
-                            </ul>
-                        </div>
-                        <span style="float:left;line-height:34px;margin-left:10px;">板块名：</span>
-                        <div class="input-group m-bot15 " style="width:40%;float: left;">
-                            <input type="text" name="querytext" class="form-control" value="请输入板块名" onfocus="javascript:if(this.value=='请输入帖子标题')this.value='';" onblur="if(!value) {value='请输入帖子额标题'; this.type='text';}">
-                            <span class="input-group-btn">
-                            <button class="btn btn-success" type="submit">
-                            <i class="fa fa-search"></i>
-                            </button>
-                            </span>
-                        </div> -->
-                        <div style="float: right">
-                            <a type="button" class="btn btn-primary" style="float: left;margin-right: 10px" href="addRole.do">
-                                <i class="fa fa-plus"></i>
-                            </a>
-                        </div>
-                    </div>
-                        <section id="unseen">
-                            <table class="table table-bordered table-striped table-condensed">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th class="numeric">角色名</th>
-                                    <th class="numeric">描述</th>
-                                    <th class="numeric">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                <c:forEach items="${list}" var="role">
-                                	<tr>
-	                                    <td>${role.id }</td>
-	                                    <td class="numeric">${role.name }</td>
-	                                    <td class="numeric">${role.description }</td>
-	                                    <td class="numeric">
-	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="editRole.do?id=${role.id }">
-	                                    		<i class="fa fa-pencil"></i>
-	                                    	</a>
-	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="editRolePermission.do?roleId=${role.id }">
-	                                    		权限
-	                                    	</a>
-	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deleteRole(${role.id });">
-	                                    		<i class="fa fa-trash-o"></i>
-	                                    	</button>
-	                                    </td>
-	                                </tr>
-                                </c:forEach>
-                               
-                                </tbody>
-                            </table>
-                        </section>
-                    </div>
-                </section>
-                
-            </div>
-        </div>
-        <!-- page end-->
-        </section>
-    </section>
-    <!--main content end-->
-
-</section>
-<!--right sidebar start-->
-
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
-
+</script>
+<jsp:include page="../../common/foot.jsp"></jsp:include>

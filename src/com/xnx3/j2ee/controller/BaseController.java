@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.shiro.ActiveUser;
+import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.net.ossbean.PutResult;
 
 /**
@@ -154,7 +155,7 @@ public class BaseController {
 
 		model.addAttribute("redirectUrl", redirectUrl);
 		
-		return "/publicPage/prompt";
+		return "/iw/prompt";
 	}
 	
 	/**
@@ -174,4 +175,34 @@ public class BaseController {
 		}
 	}
 
+	/**
+	 * 错误提示，返回JSON
+	 * @param info 错误信息
+	 * @return {@link BaseVO}
+	 */
+	public BaseVO error(String info){
+		BaseVO baseVO = new BaseVO();
+		baseVO.setBaseVO(BaseVO.FAILURE, info);
+		return baseVO;
+	}
+	
+	/**
+	 * 成功提示，返回JSON
+	 * @return
+	 */
+	public BaseVO success(){
+		return new BaseVO();
+	}
+	
+	/**
+	 * 成功提示，返回JSON
+	 * @param info
+	 * @return
+	 */
+	public BaseVO success(String info){
+		BaseVO vo = new BaseVO();
+		vo.setInfo(info);
+		return vo;
+	}
+	
 }

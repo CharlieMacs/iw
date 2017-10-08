@@ -9,17 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.RolePermission;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.entity.UserRole;
-import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.PermissionService;
-import com.xnx3.j2ee.service.RolePermissionService;
+import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.service.RoleService;
-import com.xnx3.j2ee.service.UserRoleService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.Lang;
 import com.xnx3.j2ee.bean.PermissionTree;
@@ -28,11 +26,11 @@ import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
+import com.xnx3.j2ee.vo.BaseVO;
 
 /**
  * 权限管理
  * @author 管雷鸣
- *
  */
 @Controller
 @RequestMapping("/admin/role")
@@ -41,117 +39,97 @@ public class RoleAdminController_ extends BaseController {
 	@Resource
 	private RoleService roleService;
 	@Resource
-	private PermissionService permissionService;
-	@Resource
-	private RolePermissionService rolePermissionService;
-	@Resource
-	private UserRoleService userRoleService;
-	@Resource
 	private UserService userService;
 	@Resource
 	private SqlService sqlService;
-	@Resource
-	private LogService logService;
+	
+	
 	/**
-	 * 添加角色
-	 * @return View
+	 * 新增、编辑角色
+	 * @param id 要编辑的角色的id, Role.id
 	 */
-	@RequestMapping("addRole")
-	@RequiresPermissions("adminRoleAddRole")
-	public String addRole(){
+	@RequestMapping("role")
+	@RequiresPermissions("adminRoleRole")
+	public String role(@RequestParam(value = "id", required = true) int id,Model model, HttpServletRequest request){
+		if(id>0){
+			//修改
+			Role role = sqlService.findById(Role.class, id);
+			if(role!=null){
+				ActionLogCache.insert(request, role.getId(), "进入编辑角色页面", role.getName()+"，"+role.getDescription());
+				model.addAttribute("role", role);
+			}
+		}else{
+			//新增
+			ActionLogCache.insert(request, "进入添加角色页面");
+		}
 		return "iw/admin/role/role";
 	}
 	
 	/**
-	 * 编辑角色
-	 * @param id 角色的id, Role.id
-	 * @param model {@link Model} 
-	 * @return View
-	 */
-	@RequestMapping("editRole")
-	@RequiresPermissions("adminRoleEditRole")
-	public String editRole(@RequestParam(value = "id", required = true) int id,Model model){
-		if(id>0){
-			Role role = roleService.findById(id);
-			if(role!=null){
-				model.addAttribute("role", role);
-				return "iw/admin/role/role";
-			}
-		}
-		return "redirect:/admin/role/roleList.do";
-	}
-	
-	/**
-	 * 添加角色提交页
+	 * 添加／修改角色提交页
 	 * @param role {@link Role}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequestMapping("saveRole")
-	@RequiresPermissions("adminRoleSaveRole")
-	public String saveRole(Role role,Model model){
-		roleService.save(role);
-		logService.insert(role.getId(), "ADMIN_SYSTEM_ROLE_SAVE", role.getName());
-		return success(model, "保存成功", "admin/role/roleList.do");
+	@RequiresPermissions("adminRoleRole")
+	@ResponseBody
+	public BaseVO saveRole(Role role,Model model, HttpServletRequest request){
+		sqlService.save(role);
+		ActionLogCache.insert(request, role.getId(), "角色保存", role.getName()+"，"+role.getDescription());
+		return success();
 	}
 	
 
 	/**
 	 * 删除角色
-	 * @param id 角色id，Role.id
-	 * @param model {@link Model}
-	 * @return View
+	 * @param id 要删除的角色id，Role.id
 	 */
 	@RequestMapping("deleteRole")
 	@RequiresPermissions("adminRoleDeleteRole")
-	public String deleteRole(@RequestParam(value = "id", required = true) int id, Model model){
+	@ResponseBody
+	public BaseVO deleteRole(@RequestParam(value = "id", required = true) int id, Model model, HttpServletRequest request){
 		if(id>0){
-			Role role = roleService.findById(id);
+			Role role = sqlService.findById(Role.class, id);
 			if(role!=null){
-				roleService.delete(role);
-				logService.insert(role.getId(), "ADMIN_SYSTEM_ROLE_DELETE", role.getName());
-				return success(model, "删除成功", "admin/role/roleList.do");
+				sqlService.delete(role);
+				ActionLogCache.insert(request, role.getId(), "删除角色", role.getName()+"，"+role.getDescription());
+				return success();
 			}
 		}
-		return error(model, "删除失败");
+		return error("删除失败");
 	}
 	
 	/**
 	 * 角色列表
-	 * @param role {@link Role}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequestMapping("roleList")
 	@RequiresPermissions("adminRoleRoleList")
-	public String roleList(Role role,Model model){
-		List<Role> list = roleService.findAll(); 
+	public String roleList(Model model, HttpServletRequest request){
+		List<Role> list = sqlService.findAll(Role.class);
 		
+		ActionLogCache.insert(request, "角色列表");
 		model.addAttribute("list", list);
 		return "iw/admin/role/roleList";
 	}
 	
-
 	/**
-	 * 添加permission
+	 * 添加资源permission
 	 * @param parentId 所添加的资源的所属上级资源。如果是顶级资源，则为0
-	 * @param model {@link Model}
-	 * @return View
 	 */
+	@RequiresPermissions("adminRolePermission")
 	@RequestMapping("addPermission")
-	@RequiresPermissions("adminRoleAddPermission")
 	public String addPermission(
 			@RequestParam(value = "parentId", required = true) int parentId,
-			Model model){
-		Permission parentPermission = permissionService.findById(parentId);
+			Model model, HttpServletRequest request){
+		Permission parentPermission = sqlService.findById(Permission.class, parentId);
 		String parentPermissionDescription = "顶级";
 		if(parentPermission!=null){
-			parentPermissionDescription = parentPermission.getDescription();
+			parentPermissionDescription = parentPermission.getName() +","+ parentPermission.getDescription();
 		}
 		
 		Permission permission = new Permission();
 		permission.setParentId(parentId);
 		
+		ActionLogCache.insert(request, parentId, "进入添加资源Permission页面", "所属上级："+parentPermissionDescription);
 		model.addAttribute("permission", permission);
 		model.addAttribute("parentPermissionDescription", parentPermissionDescription);
 		return "iw/admin/role/permission";
@@ -160,106 +138,100 @@ public class RoleAdminController_ extends BaseController {
 	/**
 	 * 编辑资源
 	 * @param id 资源的id，Permission.id 
-	 * @param model {@link Model}
-	 * @return View
 	 */
+	@RequiresPermissions("adminRolePermission")
 	@RequestMapping("editPermission")
-	@RequiresPermissions("adminRoleEditPermission")
-	public String editPermission(@RequestParam(value = "id", required = true) int id,Model model){
+	public String editPermission(@RequestParam(value = "id", required = true) int id,Model model, HttpServletRequest request){
 		if(id>0){
-			Permission permission = permissionService.findById(id);
+			Permission permission = sqlService.findById(Permission.class, id);
 			if(permission!=null){
 				String parentPermissionDescription="顶级";
 				if(permission.getParentId()>0){
-					Permission parentPermission = permissionService.findById(permission.getParentId());
-					parentPermissionDescription = parentPermission.getDescription();
+					Permission parentPermission = sqlService.findById(Permission.class, permission.getParentId());
+					parentPermissionDescription = parentPermission.getName() +","+ parentPermission.getDescription();
 				}
+				
+				ActionLogCache.insert(request, permission.getId(), "进入修改资源Permission页面", "所属上级："+parentPermissionDescription);
 				
 				model.addAttribute("permission", permission);
 				model.addAttribute("parentPermissionDescription", parentPermissionDescription);
 				return "iw/admin/role/permission";
 			}
 		}
-		return "redirect:/admin/role/permissionList.do";
+		return error(model, "出错，参数错误");
 	}
-	
+
 	/**
 	 * Permission提交保存
-	 * @param permission {@link Permission}
-	 * @param model {@link Model}
-	 * @return View
+	 * @param permission 要保存的{@link Permission}
 	 */
+	@RequiresPermissions("adminRolePermission")
 	@RequestMapping("savePermission")
-	@RequiresPermissions("adminRoleSaveRole")
-	public String savePermission(Permission permission,Model model){
-		permissionService.save(permission);
-		logService.insert(permission.getId(), "ADMIN_SYSTEM_PERMISSION_SAVE", permission.getName());
-		return success(model, "保存成功", "admin/role/permissionList.do");
+	@ResponseBody
+	public BaseVO savePermission(Permission permission,Model model, HttpServletRequest request){
+		sqlService.save(permission);
+		ActionLogCache.insert(request, permission.getId(), "资源Permission保存", permission.getName()+"，"+permission.getDescription());
+		return success();
 	}
-	
+
 	/**
 	 * 删除资源Permission
-	 * @param id 资源的id，Permission.id
-	 * @param model {@link Model}
-	 * @return View
+	 * @param id 要删除的资源的id，Permission.id ，根据此来删除
 	 */
-	@RequestMapping("deletePermission")
 	@RequiresPermissions("adminRoleDeletePermission")
-	public String deletePermission(@RequestParam(value = "id", required = true) int id, Model model){
+	@RequestMapping("deletePermission")
+	@ResponseBody
+	public BaseVO deletePermission(@RequestParam(value = "id", required = true) int id, HttpServletRequest request){
 		if(id>0){
-			Permission permission = permissionService.findById(id);
+			Permission permission = sqlService.findById(Permission.class, id);
 			if(permission!=null){
-				permissionService.delete(permission);
-				logService.insert(permission.getId(), "ADMIN_SYSTEM_PERMISSION_DELETE", permission.getName());
-				return success(model, "删除成功", "admin/role/permissionList.do");
+				sqlService.delete(permission);
+				ActionLogCache.insert(request, permission.getId(), "删除资源Permission", permission.getName()+"，"+permission.getDescription());
+				return success();
 			}
 		}
 		
-		return error(model, "删除失败");
+		return error("删除失败");
 	}
-	
 	
 	/**
 	 * 资源Permission列表
-	 * @param permission {@link Permission}
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminRolePermissionList")
 	@RequestMapping("permissionList")
-	public String permissionList(Permission permission,HttpServletRequest request,Model model){
+	public String permissionList(HttpServletRequest request,Model model){
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"description","url","name","parent_id","percode"});
 		int count = sqlService.count("permission", sql.getWhere());
 		Page page = new Page(count, 1000, request);
 		sql.setSelectFromAndPage("SELECT * FROM permission", page);
 		sql.setDefaultOrderBy("permission.id DESC");
-		List<Permission> list = sqlService.findEntityBySql(sql, Permission.class);
-		
+		List<Permission> list = sqlService.findBySql(sql, Permission.class);
 		List<PermissionTree> permissionTreeList = new ShiroFunc().PermissionToTree(new ArrayList<Permission>(), list);
+		
+		ActionLogCache.insert(request, "资源Permission列表");
+		
 		model.addAttribute("page", page);
 		model.addAttribute("list", permissionTreeList);
 		return "iw/admin/role/permissionList";
 	}
 	
 	/**
-	 * 编辑权限－资源关系
-	 * @param id 角色id，Rold.id
-	 * @param model {@link Model}
-	 * @return View
+	 * 编辑某个权限下拥有的资源
+	 * @param roleId 角色id，Rold.id
 	 */
 	@RequiresPermissions("adminRoleEditRolePermission")
 	@RequestMapping("editRolePermission")
-	public String editRolePermission(@RequestParam(value = "roleId", required = true) int roleId, Model model){
+	public String editRolePermission(@RequestParam(value = "roleId", required = true) int roleId, Model model, HttpServletRequest request){
 		if(roleId>0){
-			List<Permission> myList = rolePermissionService.findPermissionByRoleId(roleId);	//选中的
-			List<Permission> allList = permissionService.findAll();	//所有的
+			List<Permission> myList = roleService.findPermissionByRoleId(roleId);	//选中的
+			List<Permission> allList = sqlService.findAll(Permission.class);
 			//转换为树状集合
 			List<PermissionTree> list = new ShiroFunc().PermissionToTree(myList, allList);	
 			
-			Role role = roleService.findById(roleId);
+			Role role = sqlService.findById(Role.class, roleId);
 			
+			ActionLogCache.insert(request, "资源Permission列表");
 			model.addAttribute("role", role);
 			model.addAttribute("list", list);
 			return "iw/admin/role/rolePermission";
@@ -279,55 +251,14 @@ public class RoleAdminController_ extends BaseController {
 	public String saveRolePermission(
 			@RequestParam(value = "roleId", required = true) int roleId,
 			@RequestParam(value = "permission", required = false) String permission,
-			Model model){
-		
-		if(roleId==0){
-			return error(model, "传入的编号不正确！");
+			Model model, HttpServletRequest request){
+		BaseVO vo = roleService.saveRolePermission(roleId, permission);
+		if(vo.getResult() - BaseVO.SUCCESS == 0){
+			ActionLogCache.insert(request, roleId, "保存角色所管理的资源");
+			return success(model, "保存成功","admin/role/roleList.do");
+		}else{
+			return error(model, "保存失败："+vo.getInfo());
 		}
-		List<RolePermission> myRolePermissionList = rolePermissionService.findByRoleId(roleId);		//此角色原先的权限
-		
-		/***增加资源***/
-		String permissionArray[] = permission.split(",");		//此角色新编辑的权限
-		for (int i = 0; i < permissionArray.length; i++) {
-			int pid = Lang.stringToInt(permissionArray[i], 0);
-			if(pid>0){
-				boolean haveRP=false;	//是否数据库中已经存在了这条资源－角色纪录
-				for (int j = 0; j < myRolePermissionList.size(); j++) {
-					RolePermission myrp=myRolePermissionList.get(j);
-					if(myrp.getPermissionid()==pid){
-						haveRP=true;
-						break;
-					}
-				}
-				
-				if(!haveRP){
-					RolePermission rp = new RolePermission();
-					rp.setRoleid(roleId);
-					rp.setPermissionid(pid);
-					rolePermissionService.save(rp);
-				}
-			}
-		}
-		
-		/***删除资源，删除原先有的，新编辑后没有的***/
-		for (int i = 0; i < myRolePermissionList.size(); i++) {
-			RolePermission myrp=myRolePermissionList.get(i);
-			
-			boolean haveRP=false;	//是否数据库中有这条纪录，但是新提交修改的并没有这条纪录。默认为没有这条纪录
-			for (int j = 0; j < permissionArray.length; j++) {
-				int pid = Lang.stringToInt(permissionArray[j], 0);
-				if(pid>0&&myrp.getPermissionid()==pid){
-					haveRP=true;
-					break;
-				}
-			}
-			
-			if(!haveRP){
-				rolePermissionService.delete(myrp);
-			}
-		}
-		logService.insert(roleId, "ADMIN_SYSTEM_ROLE_PERMISSION_SAVE", roleService.findById(roleId).getName());
-		return success(model, "保存成功","admin/role/roleList.do");
 	}
 	
 
@@ -335,109 +266,39 @@ public class RoleAdminController_ extends BaseController {
 	 * 编辑用户－权限关系
 	 * @param userid 用户id，User.id
 	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditUserRole")
 	@RequestMapping("editUserRole")
-	public String editUserRole(@RequestParam(value = "userid", required = true) int userid, Model model){
-		User user = userService.findById(userid);
-		if(user!=null){
-			List<Role> myList = userRoleService.findRoleByUserId(userid);	//用户自己有哪些角色
-			List<Role> allList = roleService.findAll();	//所用权限
+	public String editUserRole(@RequestParam(value = "userid", required = true) int userid, Model model, HttpServletRequest request){
+		User user = sqlService.findById(User.class, userid);
+		List<RoleMark> list = roleService.getUserRoleMarkList(userid);
+		
+		ActionLogCache.insert(request, "修改用户的角色权限页面");
 			
-			//标记用户当前拥有的角色
-			List<RoleMark> roleMarkList = new ArrayList<RoleMark>();
-			for (int i = 0; i < allList.size(); i++) {
-				Role role = allList.get(i);
-				RoleMark roleMark = new RoleMark();
-				roleMark.setRole(role);
-				
-				for (int j = 0; j < myList.size(); j++) {
-					Role myRole = myList.get(j);
-					if(myRole.getId()==role.getId()){
-						roleMark.setSelected(true);
-						break;
-					}
-				}
-				roleMarkList.add(roleMark);
-			}
-			
-			model.addAttribute("currentUser", user);
-			model.addAttribute("list", roleMarkList);
-			return "iw/admin/role/userRole";
-		}
-		return null;
+		model.addAttribute("currentUser", user);
+		model.addAttribute("list", list);
+		return "iw/admin/role/userRole";
 	}
-
 
 	/**
 	 * 保存用户－角色设置
-	 * @param userid 用户id,User.id
+	 * @param userid 修改的是哪个用户的权限，用户id, User.id
 	 * @param role 权限多选框提交列表，如 1,2,3,4,5
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditUserRole")
 	@RequestMapping("saveUserRole")
-	public String saveUserRole(
+	@ResponseBody
+	public BaseVO saveUserRole(
 			@RequestParam(value = "userid", required = true) int userid,
 			@RequestParam(value = "role", required = false) String role,
-			Model model){
-		
-		if(userid==0){
-			return error(model, "传入的用户id不正确");
+			Model model, HttpServletRequest request){
+		BaseVO vo = roleService.saveUserRole(userid, role);
+		if(vo.getResult() - BaseVO.SUCCESS == 0){
+			ActionLogCache.insert(request, "修改用户的角色权限");
+			return success();
+		}else{
+			return error(vo.getInfo());
 		}
-		User user = userService.findById(userid);
-		if(user == null){
-			return error(model, "用户不存在！");
-		}
-		List<UserRole> myUserRoleList = userRoleService.findByUserId(userid);	//此用户原先的权限
-		
-		/***增加资源***/
-		String roleArray[] = role.split(",");		//此角色新编辑的权限
-		for (int i = 0; i < roleArray.length; i++) {
-			int rid = Lang.stringToInt(roleArray[i], 0);
-			if(rid>0){
-				boolean haveUR=false;	//是否数据库中已经存在了这条资源－角色纪录
-				for (int j = 0; j < myUserRoleList.size(); j++) {
-					UserRole myUR=myUserRoleList.get(j);
-					if(myUR.getRoleid()==rid){
-						haveUR=true;
-						break;
-					}
-				}
-				
-				if(!haveUR){
-					UserRole ur = new UserRole();
-					ur.setRoleid(rid);
-					ur.setUserid(userid);
-					userRoleService.save(ur);
-				}
-			}
-		}
-		
-		/***删除资源，删除原先有的，新编辑后没有的***/
-		for (int i = 0; i < myUserRoleList.size(); i++) {
-			UserRole myUR=myUserRoleList.get(i);
-			
-			boolean haveUR=false;	//是否数据库中有这条纪录，但是新提交修改的并没有这条纪录。默认为没有这条纪录
-			for (int j = 0; j < roleArray.length; j++) {
-				int rid = Lang.stringToInt(roleArray[j], 0);
-				if(rid>0&&myUR.getRoleid()==rid){
-					haveUR=true;
-					break;
-				}
-			}
-			
-			if(!haveUR){
-				userRoleService.delete(myUR);
-			}
-		}
-		
-		user.setAuthority(role);
-		userService.save(user);
-		logService.insert(userid, "ADMIN_SYSTEM_USER_ROLE_SAVE");
-		return success(model, "保存成功", "admin/user/list.do");
 	}
 	
 }

@@ -54,7 +54,11 @@ $(function(){
 <body>
 
 	<article id="container">
-	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
+		
+		<div style="width:100%; height:200px;">
+		
+		
+		</div>
 		
 		<section id="main">
 			<div class="bgBox"></div>
@@ -141,7 +145,6 @@ $(function(){
 					</p>
 				</div>
 			</div>
-			<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 			</section>
 		<footer id="footer"></footer>
 	</article>

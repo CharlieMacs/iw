@@ -1,9 +1,14 @@
 package com.xnx3.j2ee.service.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Table;
+
+import com.xnx3.StringUtil;
 import com.xnx3.j2ee.dao.SqlDAO;
+import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.util.Sql;
 
@@ -25,15 +30,15 @@ public class SqlServiceImpl implements SqlService {
 	}
 
 	@Override
-	public List findEntityBySql(Sql sql, Class entityClass) {
+	public <E> List<E> findBySql(Sql sql, Class<E> entityClass){
 		// TODO Auto-generated method stub
-		return sqlDAO.findEntityBySqlQuery(sql.getSql(), entityClass);
+		return sqlDAO.findBySqlQuery(sql.getSql(), entityClass);
 	}
 
 	@Override
-	public List findEntityBySqlQuery(String sqlQuery, Class entityClass) {
+	public <E> List<E> findBySqlQuery(String sqlQuery, Class<E> entityClass) {
 		// TODO Auto-generated method stub
-		return sqlDAO.findEntityBySqlQuery(sqlQuery, entityClass);
+		return sqlDAO.findBySqlQuery(sqlQuery, entityClass);
 	}
 	
 	
@@ -60,8 +65,7 @@ public class SqlServiceImpl implements SqlService {
 	}
 
 	@Override
-	public Object findById(Class c, int id) {
-		// TODO Auto-generated method stub
+	public <E> E findById(Class<E> c , int id){
 		return sqlDAO.findById(c, id);
 	}
 
@@ -93,9 +97,13 @@ public class SqlServiceImpl implements SqlService {
 	}
 
 	@Override
-	public Object findAloneEntityBySqlQuery(String sqlQuery, Class entityClass) {
+	public Object findAloneBySqlQuery(String sqlQuery, Class entityClass) {
 		// TODO Auto-generated method stub
-		return sqlDAO.findAloneEntityBySqlQuery(sqlQuery, entityClass);
+		return sqlDAO.findAloneBySqlQuery(sqlQuery, entityClass);
 	}
-
+	
+	public <E> List<E> findAll(Class<E> entityClass) {
+		return sqlDAO.findAll(entityClass);
+	}
+	
 }

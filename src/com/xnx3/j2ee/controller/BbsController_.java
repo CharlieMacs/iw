@@ -9,14 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.xnx3.IntegerUtil;
+import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
+import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.PostClassService;
-import com.xnx3.j2ee.service.PostCommentService;
-import com.xnx3.j2ee.service.PostDataService;
 import com.xnx3.j2ee.service.PostService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.util.Page;
@@ -32,44 +31,32 @@ import com.xnx3.j2ee.vo.PostVO;
 @Controller
 @RequestMapping("/bbs")
 public class BbsController_ extends BaseController {
-	
 	@Resource
 	private PostService postService;
-	
 	@Resource
 	private SqlService sqlService;
-	
-	@Resource
-	private LogService logService;
-	
-	@Resource
-	private PostDataService postDataService;
-	
-	@Resource
-	private PostCommentService postCommentService;
-	
-	@Resource
-	private PostClassService postClassService;
-	
 	@Resource
 	private UserService userService;
 	
 	/**
 	 * 发帖
-	 * @param classid 要发表到哪个分类
+	 * @param classid 要发表到哪个分类下(论坛板块)
 	 * @param model {@link Model}
 	 * @return View
 	 */
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPost")
 	public String addPost(
-			@RequestParam(value = "classid", required = false) String classid,
-			Model model){
-		if(classid==null||classid.equals("")||classid.equals("null")){
-			classid=Global.DEFAULT_BBS_CREATEPOST_CLASSID+"";
+			@RequestParam(value = "classid", required = false, defaultValue="0") int classid,
+			Model model, HttpServletRequest request){
+		if(classid==0){
+			classid=Global.getInt("BBS_DEFAULT_PUBLISH_CLASSID");
 		}
 		
-		List<PostClass> postClassList = postClassService.findAll();
+		//缓存优化
+		List<PostClass> postClassList = sqlService.findAll(PostClass.class); 
+		
+		ActionLogCache.insert(request, classid, "进入发帖页面");
 		
 		model.addAttribute("postClassList", postClassList);
 		model.addAttribute("classid", classid);
@@ -79,18 +66,17 @@ public class BbsController_ extends BaseController {
 	
 	/**
 	 * 发帖提交页面
-	 * @param post {@link Post}
 	 * @param text 帖子内容
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPostSubmit")
 	public String addPostSubmit(HttpServletRequest request, Model model){
 		BaseVO baseVO = postService.savePost(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
+			ActionLogCache.insert(request, Lang.stringToInt(baseVO.getInfo(), 0), "帖子发布成功");
 			return success(model, "操作成功！", "bbs/view.do?id="+baseVO.getInfo());
 		}else{
+			ActionLogCache.insert(request, "帖子发布失败", baseVO.getInfo());
 			return error(model, baseVO.getInfo());
 		}
 	}
@@ -118,6 +104,7 @@ public class BbsController_ extends BaseController {
 		sql.setDefaultOrderBy("post.id DESC");
 		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
+		ActionLogCache.insert(request, "查看帖子列表");
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
 		return "iw/bbs/list";
@@ -131,15 +118,18 @@ public class BbsController_ extends BaseController {
 	 */
 	@RequiresPermissions("bbsView")
 	@RequestMapping("/view")
-	public String view(@RequestParam(value = "id", required = true) int id,Model model){
+	public String view(@RequestParam(value = "id", required = true) int id,Model model, HttpServletRequest request){
 		PostVO postVO = postService.read(id);
 		if(postVO.getResult() == PostVO.SUCCESS){
 			//查询回帖
-			List commentList = postCommentService.commentAndUser(postVO.getPost().getId(),10);
+			List commentList = postService.commentAndUser(postVO.getPost().getId(),10);
 			model.addAttribute("postVO", postVO);
 			model.addAttribute("commentList", commentList);
+			
+			ActionLogCache.insert(request, id, "查看帖子详情", postVO.getPost().getTitle());
 			return "iw/bbs/view";
 		}else{
+			ActionLogCache.insert(request, id, "查看帖子详情", "出错："+postVO.getInfo());
 			return error(model, postVO.getInfo());
 		}
 	}
@@ -154,10 +144,12 @@ public class BbsController_ extends BaseController {
 	@RequiresPermissions("bbsAddComment")
 	@RequestMapping("/addCommentSubmit.do")
 	public String commentSubmit(HttpServletRequest request,Model model){
-		BaseVO baseVO = postCommentService.addComment(request);
+		BaseVO baseVO = postService.addComment(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
+			ActionLogCache.insert(request, "回帖");
 			return success(model, "回复成功！","bbs/view.do?id="+request.getParameter("postid"));
 		}else{
+			ActionLogCache.insert(request, "回帖", "出错："+baseVO.getInfo());
 			return error(model, baseVO.getInfo());
 		}
 	}

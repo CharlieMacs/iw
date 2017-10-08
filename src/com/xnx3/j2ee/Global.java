@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
+import com.xnx3.Language;
 import com.xnx3.file.FileUtil;
 
 /**
@@ -15,18 +16,7 @@ import com.xnx3.file.FileUtil;
  *
  */
 public class Global {
-	
-	/**
-	 * 用户可自由切换当前语言，此处为语言库配置，使用哪种。默认根据IP智能判断，若是在中国则使用简体中文，不在中国一律使用英语
-	 * chinese:简体中文
-	 * english:英语
-	 */
-	public static String language_default="chinese";
-	/**
-	 * language.get("chinese").get("collect_notCollectOneself")
-	 */
-	public static Map<String, Map<String, String>> language; 
-	
+
 	/****站内信****/
 	public static boolean MESSAGE_USED = true;			//是否使用站内信息功能，若开启，则访问任何页面都会提前读数据库判断是否有新的未读信息 	systemConfig.xml
 	public static int MESSAGE_CONTENT_MINLENGTH = 2;		//发送站内信时短信内容允许的最小字符	systemConfig.xml
@@ -42,8 +32,24 @@ public class Global {
 	public static String projectPath=null;	//当前项目再硬盘的路径，绝对路径
 	
 	/***** system表的参数,name-value ******/
-	public static Map<String, String> system = new HashMap<String, String>();
+	public static Map<String, String> system = new HashMap<String, String>();	//value：String字符串，此数据会在应用启动起来后，自动从数据库中将system表的全部数据取出来放到这里。
+	/**
+	 * 同上system，
+	 * 只不过这里的value是Integer
+	 * 取这里的数据时，会先判断这个map中是否有数据
+	 * 	<ul>
+	 * 		<li>若有，直接取出</li>
+	 * 		<li>若没有，再找上面的system的map中是否有这个值
+	 * 			<ul>
+	 * 				<li>若有，则将其转换位int，并缓存到这个map里，下次再取这个值的时候就直接从这里就能取</li>
+	 * 				<li>若没有，返回 null （不返回0，因为如果返回null，开发程序的时候就会报错，就能直接定位到问题所在）</li>
+	 * 			</ul>
+	 * 		</li>
+	 * 	</ul>
+	 */
+	public static Map<String, Integer> systemForInteger = new HashMap<String, Integer>();	//同上system，只不过这里的value是Integer，取这里的数据时，会先判断这map中是否有数据，若没有，再找system中是否有，若有，则将其转换位int，并缓存到这个map里，下次取的时候就直接从这里取
 
+	
 	/**********固定参数**********/
 	public final static int USER_PASSWORD_SALT_NUMBER=2;	//密码散列几次，2即可,需要跟配置文件的散列次数一致
 	public final static int PROMPT_STATE_SUCCESS=1;			//中专提示页面prompt.jsp的成功提示状态
@@ -64,6 +70,10 @@ public class Global {
 	/**** 文件上传 *****/
 	public static String ossFileUploadImageSuffixList = ""; //图片文件，允许上传的图片的后缀名，多个以|分割，如 "png|jpg|gif"
 	
+	/***** 权限相关 *****/
+	public static int roleId_admin = 9;	//超级管理员的角色id
+	public static int roleId_user = 1;		//普通用户的角色id
+	
 	static{
 		/****站内信****/
 		MESSAGE_USED = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.used").equals("true");
@@ -83,52 +93,8 @@ public class Global {
 		
 		/****图片文件上传 ****/
 		ossFileUploadImageSuffixList = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("OSS.imageSuffixList");
-		
-		/*****语言包*****/
-		language_default = ConfigManagerUtil.getSingleton("language.xml").getValue("defaultLanguage");
-		loadLanguagePackage();
 	}
 	
-	/**
-	 * 从language.xml中获取语言包的名字
-	 * 
-	 */
-	private static void loadLanguagePackage(){
-		language = new HashMap<String, Map<String,String>>();
-		
-		ConfigManagerUtil config = ConfigManagerUtil.getSingleton("language.xml");
-		Iterator englishIt = config.getFileConfiguration().getKeys();
-		Map<String, String> languageMap = new HashMap<String, String>();
-		while(englishIt.hasNext()){
-			String key = (String) englishIt.next();
-			if(key.indexOf(".")>-1){
-				String[] l = key.split("\\.");
-				languageMap.put(l[0], l[0]);
-			}
-		}
-		
-		Iterator<Map.Entry<String, String>> it = languageMap.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, String> entry = it.next();
-			loadLanguagePackage(entry.getKey());
-		}
-	}
-	
-	/**
-	 * 从language.xml加载语言包
-	 * @param languageName 语言名，如chinese、english等
-	 */
-	private static void loadLanguagePackage(String languageName){
-		ConfigManagerUtil config = ConfigManagerUtil.getSingleton("language.xml");
-		Iterator englishIt = config.getFileConfiguration().getKeys(languageName);
-		Map<String, String> englishMap = new HashMap<String, String>();
-		while(englishIt.hasNext()){
-			String key = (String) englishIt.next();
-			String value = config.getValue(key);
-			englishMap.put(key.replace(languageName+".", ""), value);
-		}
-		language.put(languageName, englishMap);
-	}
 	
 	/**
 	 * 返回 system 表的值
@@ -140,17 +106,23 @@ public class Global {
 	}
 	
 	/**
-	 * 获取语言包language.xml中的描述文字。如果没有找到返回空字符""
-	 * @param key
-	 * @return
+	 * 返回 system 表的值（int型的，此取的数据源来源于 {@link #get(String)}，只不过针对Integer进行了二次缓存 ）
+	 * @param systemName 要获取的值的变量名
+	 * @return 变量的值。注意，若没有，会返回0
 	 */
-	public static String getLanguage(String key){
-		String value = language.get(language_default).get(key);
-		if(value == null){
-			value = "";
+	public static int getInt(String systemName){
+		Integer i = systemForInteger.get(systemName);
+		if(i == null){
+			//没有这个值，那么从system这个原始map中找找
+			String s = system.get(systemName);
+			if(s != null){
+				i = Integer.parseInt(s);
+				systemForInteger.put(systemName, i);
+			}
 		}
-		return value;
+		return i==null? 0:i;
 	}
+	
 	
 	/**
 	 * 获取当前项目所在的绝对路径。以废弃，可以直接使用 Global.projectPath 。此参数会在servlet中初始化
@@ -166,6 +138,14 @@ public class Global {
 	
 	public static void main(String[] args) {
 		System.out.println(getProjectPath());
-		System.out.println(FileUtil.exists("/Library/Tomcat8/webapps/iw"));
 	}
+	
+	/**
+	 * 获取语言包language.xml中的描述文字。如果没有找到返回空字符""
+	 * @param key
+	 * @return
+	 */
+//	public static String getLanguage(String key){
+//		return Language.show(null, key);
+//	}
 }

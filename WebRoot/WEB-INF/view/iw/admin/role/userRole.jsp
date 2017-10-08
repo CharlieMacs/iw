@@ -4,86 +4,76 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="编辑用户[${currentUser.nickname }]权限"/>
-    </jsp:include>
-</head>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="编辑用户[${currentUser.nickname }]权限"/>
+</jsp:include>
 
-<body>
+<form class="layui-form">
+	<input type="hidden" id="userid" value="${currentUser.id }" name="userid" />
+	
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<c:forEach items="${list}" var="roleMark">
+				<input type="radio" name="role" value="${roleMark.role.id }" title="${roleMark.role.name }" <c:if test="${roleMark.selected==true }"> checked</c:if>>
+				<br/>
+			</c:forEach>
+		</div>
+	</div>
+	
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn" lay-submit="" lay-filter="demo1">保存</button>
+		</div>
+	</div>
+	<br/>
+</form>
 
-<section id="container" >
-<!--header start-->
-	<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
-		<!-- sidebar menu end-->
-    </div>
-</aside>
-<!--sidebar end-->
-    <!--main content start-->
-<!--main content start-->
-    <section id="main-content" >
-        <section class="wrapper">
+<jsp:include page="../../common/weui.jsp" />
+<script type="text/javascript">
+//自适应弹出层大小
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+parent.layer.iframeAuto(index);
 
+layui.use(['form', 'layedit', 'laydate'], function(){
+	var form = layui.form;
+	
+	//监听提交
+  	form.on('submit(demo1)', function(data){
+		$.showLoading('保存中');
+		var userid = document.getElementById("userid").value;
+		
+		var roleObj;
+	    roleObj=document.getElementsByName('role');
+	    var roleValue = '';	//权限的值，如 1,2,3
+	    if(roleObj!=null){
+	        var i;
+	        for(i=0;i<roleObj.length;i++){
+	            if(roleObj[i].checked){
+	                if(roleValue == ''){
+	                	roleValue = roleObj[i].value;
+	                }else{
+	                	roleValue = roleValue + ',' + roleObj[i].value;
+	                }    
+	            }
+	        }
+	    }
+    
+		$.getJSON('saveUserRole.do?userid='+userid+'&role='+roleValue,function(obj){
+			$.hideLoading();
+			if(obj.result == '1'){
+				parent.location.reload();	//刷新父窗口
+				parent.layer.msg('操作成功', {time:1000});
+				parent.layer.close(index);
+	     	}else if(obj.result == '0'){
+	     		 $.toast(obj.info, "cancel", function(toast) {});
+	     	}else{
+	     		alert(obj.result);
+	     	}
+		});
+		
+		return false;
+	});	
+});
+</script>
 
-            <div class="row">
-
-            <div class="col-lg-12">
-            <!--tab nav start-->
-            <section class="panel">
-                <header class="panel-heading tab-bg-dark-navy-blue ">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a data-toggle="tab" href="">编辑用户[${currentUser.nickname }]权限</a>
-                        </li>
-                    </ul>
-                </header>
-                <div class="panel-body">
-                    <div class="tab-content">
-                        <div id="" class="tab-pane active">
-                        <form action="saveUserRole.do" method="post" class="form-horizontal">
-                        	<input type="hidden" value="${currentUser.id }" name="userid" />
-                        		<div class="form-group">
-	                                <div class="col-sm-9 icheck ">
-										<c:forEach items="${list}" var="roleMark">
-		                                    <div class="minimal-purple single-row">
-		                                        <div class="checkbox ">
-		                                        	<input type="checkbox" id="subcheck" name="role" <c:if test="${roleMark.selected==true }"> checked</c:if> value="${roleMark.role.id }"/>
-		                                            <label>${roleMark.role.name }</label>
-		                                        </div>
-		                                    </div>
-										</c:forEach>
-	                                </div>
-	                            </div>
-                        	
-                        	
-                            <div class="panel-body news-btn">
-                            	<input type="submit" value="保存" class="btn btn-primary" />
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            </div>
-
-            </div>
-
-
-        </section>
-    </section>
-    <!--main content end-->
-
-</section>
-
-<!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
+<jsp:include page="../../common/foot.jsp"></jsp:include>

@@ -7,154 +7,105 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="查看用户资料"/>
-    </jsp:include>
-    <script src="<%=basePath+Global.CACHE_FILE %>Role_role.js"></script>
-    <script src="<%=basePath+Global.CACHE_FILE %>User_isfreeze.js"></script>
-</head>
-<body>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="会员资料信息"/>
+</jsp:include>
+<script src="<%=basePath+Global.CACHE_FILE %>Role_role.js"></script>
+<script src="<%=basePath+Global.CACHE_FILE %>User_isfreeze.js"></script>
 
-<section id="container" >
-<!--header start-->
-	<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
-		<!-- sidebar menu end-->
-    </div>
-</aside>
-<!--sidebar end-->
-    <!--main content start-->
-    <section id="main-content" >
-        <section class="wrapper">
+<table class="layui-table iw_table">
+	<tbody>
+		<tr>
+			<td class="iw_table_td_view_name">用户id</td>
+			<td>${u.id }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">用户名</td>
+			<td>${u.username }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">昵称</td>
+			<td>${u.nickname }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">邮箱</td>
+			<td>${u.email }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">手机号</td>
+			<td>${u.phone }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">权限</td>
+			<td>
+	           	<script type="text/javascript">writeName('${u.authority }');</script>
+	           	<botton class="layui-btn layui-btn-small" onclick="editRole();" style="margin-left: 3px;"><i class="layui-icon">&#xe642;</i></botton>
+			</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">ta的推荐人</td>
+			<td>${referrer }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">注册时间</td>
+			<td><x:time linuxTime="${u.regtime }"></x:time></td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">注册ip</td>
+			<td>${u.regip }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">最后登陆时间</td>
+			<td><x:time linuxTime="${u.lasttime }"></x:time></td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">最后登陆ip</td>
+			<td>${u.lastip }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">用户状态</td>
+			<td>
+				当前<script type="text/javascript">document.write(isfreeze['${u.isfreeze }']);</script>
+				&nbsp;&nbsp;
+				<c:choose>
+					<c:when test="${u.isfreeze == 0}">
+						<a class="layui-btn layui-btn-small" href="<%=basePath %>/admin/user/updateFreeze.do?id=${u.id }&isfreeze=<%=User.ISFREEZE_FREEZE %>" style="margin-left: 3px;">冻结账户</a>
+					</c:when>
+					<c:otherwise>
+						<a class="layui-btn layui-btn-small" href="<%=basePath %>/admin/user/updateFreeze.do?id=${u.id }&isfreeze=<%=User.ISFREEZE_NORMAL %>" style="margin-left: 3px;">解除冻结</a>
+					</c:otherwise>
+				</c:choose>
+			</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">账户余额</td>
+			<td>${u.money }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name">冻结金额</td>
+			<td>${u.freezemoney }</td>
+		</tr>
+		<tr>
+			<td class="iw_table_td_view_name"><%=Global.get("CURRENCY_NAME") %></td>
+			<td>${u.currency }</td>
+		</tr>
+	</tbody>
+</table>
 
+<script type="text/javascript">
+//自适应弹出层大小
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+parent.layer.iframeAuto(index);
 
-            <div class="row">
-
-            <div class="col-lg-12">
-            <!--tab nav start-->
-            <section class="panel">
-                <header class="panel-heading tab-bg-dark-navy-blue ">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                        	<a data-toggle="tab" href="">
-                            	查看用户资料
-                            </a>
-                        </li>
-                    </ul>
-                </header>
-                <div class="panel-body">
-                    <div class="tab-content">
-                        <div id="" class="tab-pane active">
-                        	
-                        	<table class="table table-bordered table-striped table-condensed" style="font-size:14px;">
-                                <tbody>
-	                                <tr>
-	                                    <td width="150">用户id</td>
-	                                    <td>${u.id }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>用户名</td>
-	                                    <td>${u.username }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>昵称</td>
-	                                    <td>${u.nickname }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>邮箱</td>
-	                                    <td>${u.email }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>手机号</td>
-	                                    <td>${u.phone }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>权限</td>
-	                                    <td>
-	                                    	<script type="text/javascript">writeName('${u.authority }');</script>
-	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" href="<%=basePath %>/admin/role/editUserRole.do?userid=${u.id }">
-	                                    		编辑权限
-	                                    	</a>
-	                                    </td>
-	                                </tr>
-	                                <tr>
-	                                    <td>ta的推荐人</td>
-	                                    <td>${referrer }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>注册时间</td>
-	                                    <td><x:time linuxTime="${u.regtime }"></x:time></td>
-	                                </tr>
-	                                <tr>
-	                                    <td>注册ip</td>
-	                                    <td>${u.regip }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>最后登陆时间</td>
-	                                    <td><x:time linuxTime="${u.lasttime }"></x:time></td>
-	                                </tr>
-	                                <tr>
-	                                    <td>最后登陆ip</td>
-	                                    <td>${u.lastip }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>冻结状态</td>
-	                                    <td>
-	                                    	当前<script type="text/javascript">document.write(isfreeze['${u.isfreeze }']);</script>
-		                                    &nbsp;&nbsp;
-	                                    	<c:choose>
-										       <c:when test="${u.isfreeze == 0}">
-										             <a type="button" class="btn btn-success btn-sm" data-toggle="modal" href="<%=basePath %>/admin/user/updateFreeze.do?id=${u.id }&isfreeze=<%=User.ISFREEZE_FREEZE %>">
-										             	冻结账户
-										             </a>
-										       </c:when>
-										       <c:otherwise>
-										            <a type="button" class="btn btn-success btn-sm" data-toggle="modal" href="<%=basePath %>/admin/user/updateFreeze.do?id=${u.id }&isfreeze=<%=User.ISFREEZE_NORMAL %>">
-										             	解除冻结 
-										             </a>
-										       </c:otherwise>
-											</c:choose>
-	                                    </td>
-	                                </tr>
-	                                <tr>
-	                                    <td>账户余额</td>
-	                                    <td>${u.money }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td>冻结金额</td>
-	                                    <td>${u.freezemoney }</td>
-	                                </tr>
-	                                <tr>
-	                                    <td><%=Global.get("CURRENCY_NAME") %></td>
-	                                    <td>${u.currency }</td>
-	                                </tr>
-                                </tbody>
-                            </table>
-                        	
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            </div>
-
-            </div>
-
-
-        </section>
-    </section>
-    <!--main content end-->
-
-</section>
-
-<!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
+//修改权限
+function editRole(){
+	layer.open({
+		type: 2, 
+		title:'修改&nbsp;[&nbsp;${u.username}&nbsp;]&nbsp;权限', 
+		area: ['auto', 'auto'],
+		shadeClose: true, //开启遮罩关闭
+		content: '<%=basePath %>admin/role/editUserRole.do?userid=${u.id}'
+	});
+}
+</script>
+<jsp:include page="../../common/foot.jsp"></jsp:include>

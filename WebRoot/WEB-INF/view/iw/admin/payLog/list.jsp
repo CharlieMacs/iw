@@ -6,100 +6,71 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="支付日志列表"/>
-    </jsp:include>
-    <script src="<%=basePath+Global.CACHE_FILE %>PayLog_channel.js"></script>
-</head>
-<body>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="在线支付列表"/>
+</jsp:include>
+<script src="<%=basePath+Global.CACHE_FILE %>PayLog_channel.js"></script>
 
-<section id="container" >
-<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>   
-    </div>
-</aside>
-    <!--main content start-->
-    <section id="main-content">
-        <section class="wrapper">
-        <div class="row">
-            <div class="col-sm-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        支付日志管理
-                    </header>
-                    <div class="panel-body">
-                    <div class="space15"></div>
-                    <div class="col-xs-12" style="padding:0;">
-                       <form method="get">
-	                        <span style="float:left;line-height:34px;margin-left:10px;">会员ID：</span>
-	                        <div class="input-group m-bot15 " style="width: 16%;float: left;">
-	                            <input type="text" name="userid" class="form-control" value="<%=request.getParameter("userid")==null? "":request.getParameter("userid")  %>">
-	                        </div>
-	                        <span style="float:left;line-height:34px;margin-left:10px;">订单号：</span>
-	                        <div class="input-group m-bot15 " style="width: 16%;float: left;">
-	                            <input type="text" name="orderno" class="form-control" value="<%=request.getParameter("orderno")==null? "":request.getParameter("orderno")  %>">
-	                        </div>
-	                        <span style="float:left;line-height:34px;margin-left:10px;">支付方式：</span>
-	                        <div class="input-group m-bot15 " style="width: 16%;float: left;"> 
-	                        	<select name="channel" class="form-control">
-	                        		<script type="text/javascript">writeSelectAllOptionForchannel('<%=request.getParameter("channel") %>');</script>
-	                        	</select>
-	                        </div>
-	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
-	                            <span class="input-group-btn">
-	                            <input class="btn btn-success" type="submit" value="搜索">
-	                            <i class="fa fa-search"></i>
-	                            </span>
-	                        </div>
-                        </form>  
-                    </div>
-                        <section id="unseen">
-                            <table class="table table-bordered table-striped table-condensed">
-                                <thead>
-                                <tr>
-                                    <th>编号</th>
-                                    <th>用户昵称</th>
-                                    <th class="numeric">支付金额</th>
-                                    <th class="numeric">订单号</th>
-                                    <th class="numeric">支付方式</th>
-                                    <th class="numeric">操作时间</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-	                                <c:forEach items="${list}" var="payLog">
-	                                	<tr>
-		                                    <td>${payLog['id'] }</td>
-		                                    <td>${payLog['nickname'] }(ID:${payLog['userid'] })</td>
-		                                    <td>${payLog['money'] }</td>
-		                                    <td>${payLog['orderno'] }</td>
-		                                    <td><script type="text/javascript">document.write(channel['${payLog['channel']}']);</script></td>
-		                                    <td>
-		                                    	<x:time linuxTime="${payLog['addtime'] }"></x:time>
-		                                    </td>
-		                                </tr>
-	                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </section>
-                        <!-- 通用分页跳转 -->
-                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
-                        	<jsp:param name="page" value="${page }"/>
-                        </jsp:include>
-                    </div>
-                </section>
-            </div>
-        </div>
-        </section>
-    </section>
-    <!--main content end-->
-</section>
+<jsp:include page="../../common/list/formSearch_formStart.jsp" ></jsp:include>
+	<jsp:include page="../../common/list/formSearch_input.jsp">
+		<jsp:param name="iw_label" value="会员ID"/>
+		<jsp:param name="iw_name" value="userid"/>
+	</jsp:include>
+	
+    <jsp:include page="../../common/list/formSearch_input.jsp">
+		<jsp:param name="iw_label" value="订单号"/>
+		<jsp:param name="iw_name" value="orderno"/>
+	</jsp:include>
+    
+    <jsp:include page="../../common/list/formSearch_input.jsp">
+		<jsp:param name="iw_label" value="支付方式"/>
+		<jsp:param name="iw_name" value="channel"/>
+		<jsp:param name="iw_type" value="select"/>
+	</jsp:include>
+    
+    <input class="layui-btn iw_list_search_submit" type="submit" value="搜索" />
+    
+</form>
 
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
 
+<table class="layui-table iw_table">
+  <thead>
+    <tr>
+		<th>编号</th>
+        <th>用户昵称</th>
+        <th>支付金额</th>
+        <th>订单号</th>
+        <th>支付方式</th>
+        <th>操作时间</th>
+    </tr> 
+  </thead>
+  <tbody>
+  	<c:forEach items="${list}" var="payLog">
+       	<tr>
+            <td style="width:55px;">${payLog['id'] }</td>
+            <td style="cursor: pointer;" onclick="userView(${payLog['userid'] });">${payLog['nickname'] }(ID:${payLog['userid'] })</td>
+            <td>${payLog['money'] }</td>
+            <td>${payLog['orderno'] }</td>
+            <td><script type="text/javascript">document.write(channel['${payLog['channel']}']);</script></td>
+            <td style="width:100px;"><x:time linuxTime="${payLog['addtime'] }" format="yy-MM-dd HH:mm"></x:time></td>
+        </tr>
+    </c:forEach>
+  </tbody>
+</table>
+<!-- 通用分页跳转 -->
+<jsp:include page="../../common/page.jsp"></jsp:include>
+
+<script type="text/javascript">
+//查看用户详情信息
+function userView(id){
+	layer.open({
+		type: 2, 
+		title:'查看用户信息', 
+		area: ['460px', '630px'],
+		shadeClose: true, //开启遮罩关闭
+		content: '<%=basePath %>admin/user/view.do?id='+id
+	});
+}
+</script>
+
+<jsp:include page="../../common/foot.jsp"></jsp:include>

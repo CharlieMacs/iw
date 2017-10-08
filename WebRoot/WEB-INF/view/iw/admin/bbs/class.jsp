@@ -4,73 +4,61 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="编辑板块"/>
-    </jsp:include>
-</head>
-<body>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="编辑分类板块"/>
+</jsp:include>
 
-<section id="container" >
-<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
-    </div>
-</aside>
-    <!--main content start-->
-    <section id="main-content" >
-        <section class="wrapper">
-            <div class="row">
-            <div class="col-lg-12">
-            <!--tab nav start-->
-            <section class="panel">
-                <header class="panel-heading tab-bg-dark-navy-blue ">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                        	<a data-toggle="tab" href="">
-                            	<c:choose>
-							       <c:when test="${postClass.id > 0}">
-							             编辑板块：${postClass.name } 
-							       </c:when>
-							       <c:otherwise>
-							             板块添加
-							       </c:otherwise>
-								</c:choose>
-                            </a>
-                        </li>
-                    </ul>
-                </header>
-                <div class="panel-body">
-                    <div class="tab-content">
-                        <div id="" class="tab-pane active">
-                        <form action="saveClass.do" class="form-horizontal">
-                        	<input type="hidden" value="${postClass.id }" name="id" />
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">板块名称</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" name="name" value="${postClass.name }">
-                                </div>
-                            </div>
-                            
-                            <div class="panel-body news-btn">
-                            	<input type="submit" class="btn btn-primary" value="确认添加" />
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            </div>
-            </div>
-        </section>
-    </section>
-    <!--main content end-->
+<form class="layui-form" style="padding-top:35px; margin-bottom: 10px; padding-right:35px;">
+	<input type="hidden" value="${postClass.id }" name="id" />
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label" id="label_columnName">板块名称</label>
+		<div class="layui-input-block">
+			<input type="text" name="name"  required lay-verify="required" autocomplete="off" placeholder="起个板块分类的名字吧" class="layui-input" value="${postClass.name }">
+		</div>
+	</div>
+    
+   	<div class="layui-form-item" style="padding-top:15px;">
+		<div class="layui-input-block">
+			<button class="layui-btn" lay-submit="" lay-filter="demo1">保存</button>
+		</div>
+	</div>
+</form>
+<div>&nbsp;</div>
 
-</section>
+<jsp:include page="../../common/weui.jsp"></jsp:include>
+<script>
+//自适应弹出层大小
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+parent.layer.iframeAuto(index);
 
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(demo1)', function(data){
+  	  $.showLoading('保存中');
+		var d=$("form").serialize();
+        $.post("<%=basePath %>admin/bbs/saveClass.do", d, function (result) { 
+        	$.hideLoading();
+        	var obj = JSON.parse(result);
+        	if(obj.result == '1'){
+        		$.toast("操作成功", function() {
+        			parent.location.reload();	//刷新父窗口
+        			parent.layer.close(index);
+				});
+        		parent.layer.msg('操作成功', {shade: 0.3, time:1.4});
+        	}else if(obj.result == '0'){
+        		parent.layer.msg(obj.info, {shade: 0.3})
+        	}else{
+        		parent.layer.msg(result, {shade: 0.3})
+        	}
+         }, "text");
+		
+    return false;
+  });
+  
+});  
+</script>
+
+<jsp:include page="../../common/foot.jsp"></jsp:include> 

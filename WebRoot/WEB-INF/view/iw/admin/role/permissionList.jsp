@@ -5,150 +5,138 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="资源列表"/>
-    </jsp:include>
-    <script type="text/javascript">
-    	//根据板块id删除帖子
-    	function deletePermission(permissionId){
-    		//要用ajax
-    		window.location="deletePermission.do?id="+permissionId;
-    	}
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="资源列表"/>
+</jsp:include>
+<style>
+.iw_table tbody tr td .titleIcon{
+	padding-right:10px;
+}
+</style>
+<jsp:include page="../../common/list/formSearch_formStart.jsp" ></jsp:include>
+	<jsp:include page="../../common/list/formSearch_input.jsp">
+		<jsp:param name="iw_label" value="名字"/>
+		<jsp:param name="iw_name" value="name"/>
+	</jsp:include>
+	
+    <jsp:include page="../../common/list/formSearch_input.jsp">
+		<jsp:param name="iw_label" value="percode"/>
+		<jsp:param name="iw_name" value="percode"/>
+	</jsp:include>
+    
+    <jsp:include page="../../common/list/formSearch_input.jsp">
+		<jsp:param name="iw_label" value="描述"/>
+		<jsp:param name="iw_name" value="description"/>
+	</jsp:include>
+    
+    <input class="layui-btn iw_list_search_submit" type="submit" value="搜索" />
+	<a href="javascript:permission(0,0);" id="add_first_permission_aTag" class="layui-btn layui-btn-normal" style="float: right; margin-right:10px;"><i class="layui-icon">&#xe654;</i>&nbsp;顶级资源</a>
+</form>
 
-    </script>
-</head>
-<body>
+<table class="layui-table iw_table">
+  <thead>
+    <tr>
+        <th>菜单名称</th>
+        <th>描述</th>
+        <th>percode</th>
+        <th>操作</th>    
+    </tr> 
+  </thead>
+  <tbody>
+  	<c:forEach items="${list}" var="permissionTree">
+       	<tr style="font-weight: bold; color:#123252; background-color:#fbfbfb;">
+            <td style="width:180px;"><i class="layui-icon titleIcon">&#xe625;</i>${permissionTree.permissionMark.permission.name }</td>
+            <td><x:substring maxLength="20" text="${permissionTree.permissionMark.permission.description }"></x:substring> </td>
+            <!-- <td class="numeric">${permissionTree.permissionMark.permission.url }</td> -->
+            <td>${permissionTree.permissionMark.permission.percode }</td>
+            <td style="width:138px;">
+            	<botton class="layui-btn layui-btn-small" onclick="permission(${permissionTree.permissionMark.permission.id },0);" style="margin-left: 3px;"><i class="layui-icon">&#xe642;</i></botton>
+            	<botton class="layui-btn layui-btn-small" onclick="deletePermission('${permissionTree.permissionMark.permission.name }', ${permissionTree.permissionMark.permission.id });" style="margin-left: 3px;"><i class="layui-icon">&#xe640;</i></botton>
+            	<botton class="layui-btn layui-btn-small" onclick="permission(0,${permissionTree.permissionMark.permission.id });" style="margin-left: 3px;"><i class="layui-icon">&#xe654;</i></botton>
+            </td>
+        </tr>
+        
+        <!--二级菜单权限 -->
+        <c:forEach items="${permissionTree.list }" var="permissionMark">
+        	<tr>
+				<td style="padding-left:41px;">${permissionMark.permission.name }</td>
+				<td>${permissionMark.permission.description }</td>
+				<!-- <td class="numeric">${permissionMark.permission.url }</td> -->
+				<td>${permissionMark.permission.percode }</td>
+				<td>
+					<botton class="layui-btn layui-btn-small" onclick="permission(${permissionMark.permission.id },0);" style="margin-left: 3px;"><i class="layui-icon">&#xe642;</i></botton>
+					<botton class="layui-btn layui-btn-small" onclick="deletePermission('${permissionMark.permission.name }', ${permissionMark.permission.id });" style="margin-left: 3px;"><i class="layui-icon">&#xe640;</i></botton>
+				</td>
+			</tr>
+		</c:forEach>
+     </c:forEach>
+  </tbody>
+</table>
+<!-- 通用分页跳转 -->
+<jsp:include page="../../common/page.jsp"></jsp:include>
 
-<section id="container" >
-<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>     
-    </div>
-</aside>
-    <!--main content start-->
-    <section id="main-content">
-        <section class="wrapper">
-        <div class="row">
-            <div class="col-sm-12">
-                <section class="panel">
-                    <header class="panel-heading tab-bg-dark-navy-blue">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a data-toggle="tab" href="">资源列表</a>
-                            </li>
-                        </ul>
-                    </header>
-                    <div class="panel-body">
-                    <div class="space15"></div>
-                    <div class="col-xs-12" style="padding:0;" >
-                        <form method="get">
-                        	<input type="hidden" name="orderBy" value="<%=request.getParameter("orderBy") %>" />
-	                        <span style="float:left;line-height:34px;margin-left:10px;">名字：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
-	                            <input type="text" name="name" class="form-control" value="<%=request.getParameter("name")==null? "":request.getParameter("name")  %>">
-	                        </div>
-	                        <span style="float:left;line-height:34px;margin-left:10px;">percode：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;"> 
-	                            <input type="text" name="percode" class="form-control" value="<%=request.getParameter("percode")==null? "":request.getParameter("percode")  %>">
-	                        </div>
-	                        <span style="float:left;line-height:34px;margin-left:10px;">描述：</span>
-	                        <div class="input-group m-bot15 " style="width: 20%;float: left;">
-	                            <input type="text" name="description" class="form-control" value="<%=request.getParameter("description")==null? "":request.getParameter("description")  %>">
-	                        </div>
-	                        
-	                        <div class="input-group m-bot15 " style="width: 100px; float: left;">
-	                            <span class="input-group-btn">
-	                            <input class="btn btn-success" type="submit" value="搜索">
-	                            <i class="fa fa-search"></i>
-	                            </span>
-	                        </div>
-                        </form>   
-                        
-                        <div style="float: right">
-                            <a type="button" class="btn btn-primary" style="float: left;margin-right: 10px" href="addPermission.do?parentId=0">
-                                <i class="fa fa-plus"></i>
-                            </a>
-                        </div>
-                    </div>
-                        <section id="unseen">
-                            <table class="table table-bordered table-striped table-condensed">
-                                <thead>
-                                <tr>
-                                    <th class="numeric">顶级的</th>
-                                    <th class="numeric">菜单名称</th>
-                                    <th class="numeric">描述</th>
-                                    <!-- <th class="numeric">URL</th> -->
-                                    <th class="numeric">percode</th>
-                                    <th class="numeric">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+<div style="padding: 20px;color: gray;">
+	<div>操作按钮提示:</div>
+	<div><i class="layui-icon">&#xe642;</i> &nbsp;：编辑操作，进行修改</div>
+	<div><i class="layui-icon">&#xe640;</i> &nbsp;：删除操作，删除某项</div>
+	<div><i class="layui-icon">&#xe654;</i> &nbsp;：新增操作，可以在某个顶级资源分类下进行新增其下级的资源</div>
+</div>
 
-                                <c:forEach items="${list}" var="permissionTree">
-                                	<tr style="font-weight: bold;color: blue;">
-	                                    <td>+/-</td>
-	                                    <td class="numeric">${permissionTree.permissionMark.permission.name }</td>
-	                                    <td class="numeric">${permissionTree.permissionMark.permission.description }</td>
-	                                    <%-- <td class="numeric">${permissionTree.permissionMark.permission.url }</td> --%>
-	                                    <td class="numeric">${permissionTree.permissionMark.permission.percode }</td>
-	                                    <td class="numeric">
-	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="addPermission.do?parentId=${permissionTree.permissionMark.permission.id }">
-	                                    		+
-	                                    	</a>
-	                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="editPermission.do?id=${permissionTree.permissionMark.permission.id }">
-	                                    		<i class="fa fa-pencil"></i>
-	                                    	</a>
-	                                    	
-	                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deletePermission(${permissionTree.permissionMark.permission.id });">
-	                                    		<i class="fa fa-trash-o"></i>
-	                                    	</button>
-	                                    </td>
-	                                </tr>
-	                                
-	                                <!--二级菜单权限 -->
-	                                <c:forEach items="${permissionTree.list }" var="permissionMark">
-	                                	<tr>
-		                                    <td>&nbsp;</td>
-		                                    <td class="numeric">${permissionMark.permission.name }</td>
-		                                    <td class="numeric">${permissionMark.permission.description }</td>
-		                                    <%-- <td class="numeric">${permissionMark.permission.url }</td> --%>
-		                                    <td class="numeric">${permissionMark.permission.percode }</td>
-		                                    <td class="numeric">
-		                                    	<a type="button" class="btn btn-success btn-sm" data-toggle="modal" target="_black" href="editPermission.do?id=${permissionMark.permission.id }">
-		                                    		<i class="fa fa-pencil"></i>
-		                                    	</a>
-		                                    	<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" href="" onclick="deletePermission(${permissionMark.permission.id });">
-		                                    		<i class="fa fa-trash-o"></i>
-		                                    	</button>
-		                                    </td>
-		                                </tr>
-									</c:forEach>
-	                                
-                                </c:forEach>
-                               
-                                </tbody>
-                            </table>
-                        </section>
-                        <!-- 通用分页跳转 -->
-                        <jsp:include page="../../../publicPage/adminCommon/page.jsp">
-                        	<jsp:param name="page" value="${page }"/>
-                        </jsp:include>
-                    </div>
-                </section>
-                
-            </div>
-        </div>
-        </section>
-    </section>
-    <!--main content end-->
+<jsp:include page="../../common/weui.jsp"></jsp:include>
+<script type="text/javascript">
+//鼠标跟随提示
+$(function(){
+	//最右上方的添加顶级资源
+	var add_first_permission_aTag_index = 0;
+	$("#add_first_permission_aTag").hover(function(){
+		add_first_permission_aTag_index = layer.tips('添加顶级资源，而下方的&nbsp;<i class="layui-icon">&#xe654;</i>&nbsp;只是添加某个顶级资源下的子资源 ', '#add_first_permission_aTag', {
+			tips: [2, '#0FA6A8'], //还可配置颜色
+			time:0,
+			tipsMore: true,
+			area : ['310px' , 'auto']
+		});
+	},function(){
+		layer.close(add_first_permission_aTag_index);
+	})
+});
 
-</section>
+//根据资源的id删除
+function deletePermission(name, permissionId){
+	//要用ajax
+	$.confirm("您确定要删除\""+name+"\"吗?", "确认删除?", function() {
+		$.showLoading('正在删除');
+		$.getJSON('deletePermission.do?id='+permissionId,function(obj){
+			$.hideLoading();
+			if(obj.result == '1'){
+				$.toast("删除成功", function() {
+					window.location.reload();	//刷新当前页
+				});
+	     	}else if(obj.result == '0'){
+	     		 $.toast(obj.info, "cancel", function(toast) {});
+	     	}else{
+	     		alert(obj.result);
+	     	}
+		});
+	}, function() {
+		//取消操作
+	});
+}
 
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
-
+/**
+ * 添加/修改资源
+ * id 要修改的资源id， permission.id ，若是<1 则是添加
+ * parentId 要添加的资源的父id，修改时此参数无效。若是0则是添加顶级资源
+ */
+function permission(id, parentId){
+	var url = id<1 ? 'addPermission.do?parentId='+parentId : 'editPermission.do?id='+id;
+	console.log(url);
+	layer.open({
+		type: 2, 
+		title: id<1 ? '添加资源':'修改资源', 
+		area: ['460px', '469px'],
+		shadeClose: true, //开启遮罩关闭
+		content: url
+	});
+}
+</script>
+<jsp:include page="../../common/foot.jsp"></jsp:include>

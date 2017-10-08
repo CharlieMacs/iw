@@ -8,14 +8,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML>
 <html>
 <head>
-	<jsp:include page="../../publicPage/common/head.jsp">
+	<jsp:include page="../common/head.jsp">
     	<jsp:param name="title" value="帖子列表"/>
     </jsp:include>
 	<link href="<%=basePath %>style/user/css/forum.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<article id="container">
-		<jsp:include page="../../publicPage/common/head.jsp"></jsp:include>
+		<jsp:include page="../common/head.jsp"></jsp:include>
 		<section id="main">
 			<div class="bgBox"></div>
 			<h2>
@@ -62,13 +62,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</ul>
 					
 				    <!-- 通用分页跳转 -->
-                    <jsp:include page="../../publicPage/common/page.jsp">
+                    <jsp:include page="../common/page.jsp">
                     	<jsp:param name="page" value="${page }"/>
                     </jsp:include>
 				</div>
 			</div>
-			<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
-			</section>
 		<footer id="footer"></footer>
 	</article>
 </body>

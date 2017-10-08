@@ -24,7 +24,7 @@
 		<!-- mail.smtp.host -->
 		<host>smtp.163.com</host>
 		<!-- 邮箱登陆的用户名、邮箱名、邮箱地址，如xnx3@163.com -->
-		<username>xnx3_cs123@163.com</username>
+		<username>xnx3123@163.com</username>
 		<!-- 登陆密码 -->
 		<password>123456</password>
 		<!-- 是否开启调试日志 -->
@@ -76,7 +76,7 @@
 		<bucketName>xnx3</bucketName>
 		<!-- OSS外网域名，文件上传成功时会加上此域名拼接出文件的访问完整URL。位于Bucket概览－OSS域名 ，若为空则会根据以上配置自动拼接生成url -->
 		<url></url>
-		<roleArn>acs:ram::1080155601964967:role/aaaaaaa</roleArn>
+		<roleArn>acs:ram::10801556019647:role/aaaaaaa</roleArn>
 	</aliyunOSS>
 	
 	<!-- 

@@ -17,10 +17,8 @@ import org.apache.shiro.util.ByteSource;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.PermissionService;
-import com.xnx3.j2ee.service.SmsLogService;
-import com.xnx3.j2ee.service.UserService;
+import com.xnx3.j2ee.service.RoleService;
+import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.DateUtil;
 import com.xnx3.j2ee.bean.PermissionTree;
 
@@ -31,13 +29,9 @@ import com.xnx3.j2ee.bean.PermissionTree;
  */
 public class CustomRealm extends AuthorizingRealm {
 	@Resource
-	private UserService userService;
+	private RoleService roleService;
 	@Resource
-	private PermissionService permissionService;
-	@Resource
-	private LogService logService;
-	@Resource
-	private SmsLogService smsLogService;
+	private SqlService sqlService;
 	
 	@Override
 	public void setName(String name) {
@@ -51,11 +45,11 @@ public class CustomRealm extends AuthorizingRealm {
 		// 第一步从token中取出用户名
 		String username = (String) token.getPrincipal();
     	User user = null;
-		List<User> l = userService.findByUsername(username);
+		List<User> l = sqlService.findByProperty(User.class, "username", username);
 		if(l!=null){
 			user = l.get(0);
 			user.setLasttime(DateUtil.timeForUnix10());
-			userService.save(user);
+			sqlService.save(user);
 		}
 		
         if (user != null) {  
@@ -63,7 +57,8 @@ public class CustomRealm extends AuthorizingRealm {
 	    	activeUser.setUser(user);
    
             //根据用户id查询权限url
-    		List<Permission> permissions = permissionService.getPermissionByUserId(user.getId());
+    		List<Permission> permissions = roleService.findPermissionByUser(user);
+    		System.out.println(permissions.size());
     		activeUser.setPermissions(permissions);
     		
 			//转换为树状集合

@@ -62,42 +62,42 @@ public class SystemInterceptor extends HandlerInterceptorAdapter {
 				User user=activeUser.getUser();
 				
 				//站内信
-				if(useMessage){
-					Message messageWhere=new Message();
-					messageWhere.setRecipientid(user.getId());
-					messageWhere.setState(Message.MESSAGE_STATE_UNREAD);
-					List<Message> list = messageService.findByExample(messageWhere);
-					
-					if(modelAndView!=null){
-						modelAndView.addObject("user", user);
-						modelAndView.addObject("messageList", list);
-						modelAndView.addObject("unreadMessage", list.size());
-					}
-				}
+//				if(useMessage){
+//					Message messageWhere=new Message();
+//					messageWhere.setRecipientid(user.getId());
+//					messageWhere.setState(Message.MESSAGE_STATE_UNREAD);
+//					List<Message> list = messageService.findByExample(messageWhere);
+//					
+//					if(modelAndView!=null){
+//						modelAndView.addObject("user", user);
+//						modelAndView.addObject("messageList", list);
+//						modelAndView.addObject("unreadMessage", list.size());
+//					}
+//				}
 			}
 		}
 		
 		//语言
-		//如果是第一次访问，先设定默认语言
-		HttpSession session = request.getSession();
-		//判断其是否有Session
-		if(session != null){
-			if(request.getSession().getAttribute("language_default") == null){
-				String language_default = null;
-				CookieUtil cookieUtil = new CookieUtil(request, response);
-				if(cookieUtil.getCookie("language_default") != null){
-					language_default = cookieUtil.getCookie("language_default").getValue();
-				}
-				if(language_default == null){
-					language_default = Global.language_default;
-				}
-				
-				if(Global.language.get(language_default) != null){
-					Global.language_default = language_default;
-				}
-				request.getSession().setAttribute("language_default", Global.language_default);
-			}
-		}
+//		//如果是第一次访问，先设定默认语言
+//		HttpSession session = request.getSession();
+//		//判断其是否有Session
+//		if(session != null){
+//			if(request.getSession().getAttribute("language_default") == null){
+//				String language_default = null;
+//				CookieUtil cookieUtil = new CookieUtil(request, response);
+//				if(cookieUtil.getCookie("language_default") != null){
+//					language_default = cookieUtil.getCookie("language_default").getValue();
+//				}
+//				if(language_default == null){
+//					language_default = Global.language_default;
+//				}
+//				
+//				if(Global.language.get(language_default) != null){
+//					Global.language_default = language_default;
+//				}
+//				request.getSession().setAttribute("language_default", Global.language_default);
+//			}
+//		}
 		
 		
 		if(useExecuteTime){

@@ -4,109 +4,87 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="编辑资源"/>
-    </jsp:include>
-</head>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="编辑资源"/>
+</jsp:include>
 
-<body>
-<section id="container" >
-<!--header start-->
-	<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
-		<!-- sidebar menu end-->
-    </div>
-</aside>
-<!--sidebar end-->
-    <!--main content start-->
-    <section id="main-content" >
-        <section class="wrapper">
+<form id="form" class="layui-form" action="" style="padding:20px; padding-top:35px; margin-bottom: 10px;">
+	<input type="hidden" value="${permission.id }" name="id">
+	<input type="hidden" class="form-control" value="${permission.parentId }" name="parentId">
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label" id="label_columnName">所属上级</label>
+		<div class="layui-input-block">
+			<input type="text" class="layui-input" value="${parentPermissionDescription }" disabled>
+		</div>
+	</div>
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label" id="label_columnName">资源名称</label>
+		<div class="layui-input-block">
+			<input type="text" name="name" required autocomplete="off" placeholder="给这个资源(权限)起个名吧，限8个汉字以内" class="layui-input" value="${permission.name }">
+		</div>
+	</div>
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label" id="label_columnName">percode</label>
+		<div class="layui-input-block">
+			<input type="text" name="percode" required autocomplete="off" placeholder="资源代码，可以代表此资源的唯一编码，用于程序中标注此资源作用于哪些方法" class="layui-input" value="${permission.percode }">
+		</div>
+	</div>
+	
+	<div class="layui-form-item">
+		<label class="layui-form-label" id="label_columnName">URL</label>
+		<div class="layui-input-block">
+			<input type="text" name="url" autocomplete="off" placeholder="该资源的访问URL，可以用于自定义动态显示相关权限菜单使用" class="layui-input" value="${permission.url }">
+		</div>
+	</div>
+	
+	<div class="layui-form-item layui-form-text">
+	    <label class="layui-form-label">备注描述</label>
+	    <div class="layui-input-block">
+	      <textarea name=description placeholder="备注，方便日后快速理解此资源的作用，无实际意义" class="layui-textarea">${permission.description }</textarea>
+	    </div>
+	</div>
+	
+	<div class="layui-form-item">
+	    <div class="layui-input-block">
+			<button class="layui-btn" lay-submit lay-filter="formSubmit">立即保存</button>
+			<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	</div>
+</form>
 
+<jsp:include page="../../common/weui.jsp"></jsp:include>
+<script>
+//自适应弹出层大小
+var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+parent.layer.iframeAuto(index);
 
-            <div class="row">
+layui.use(['form', 'layedit', 'laydate'], function(){
+	var form = layui.form;
+	
+	//监听提交
+	form.on('submit(formSubmit)', function(data){
+		$.showLoading('保存中...');
+		var d=$("form").serialize();
+        $.post("savePermission.do", d, function (result) {
+        	$.hideLoading();
+        	var obj = JSON.parse(result);
+        	if(obj.result == '1'){
+        		parent.layer.msg('操作成功', {shade: 0.3});
+        		parent.location.reload();	//刷新父窗口
+        		parent.layer.close(index);
+        	}else if(obj.result == '0'){
+        		parent.layer.msg(obj.info, {shade: 0.3})
+        	}else{
+        		parent.layer.msg(result, {shade: 0.3})
+        	}
+         }, "text");
+		return false;
+	});
+	
+});
+</script>
 
-            <div class="col-lg-12">
-            <!--tab nav start-->
-            <section class="panel">
-                <header class="panel-heading tab-bg-dark-navy-blue ">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <c:choose>
-						       <c:when test="${permission.id > 0}">
-						              编辑资源：${permission.name } 
-						       </c:when>
-						       <c:otherwise>
-						              资源添加
-						       </c:otherwise>
-							</c:choose>
-                        </li>
-                    </ul>
-                </header>
-                <div class="panel-body">
-                    <div class="tab-content">
-                        <div id="" class="tab-pane active">
-                        <form action="savePermission.do" class="form-horizontal">
-                        	<input type="hidden" value="${permission.id }" name="id">
-                        	<div class="form-group">
-                                <label class="col-sm-2 control-label">所属上级资源</label>
-                                <div class="col-sm-6">
-                                	${parentPermissionDescription }
-                                    <input type="hidden" class="form-control" value="${permission.parentId }" name="parentId">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">资源菜单名称</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="${permission.name }" name="name">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">描述备注</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="${permission.description }" name="description">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">percode</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="${permission.percode }" name="percode">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">URL</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="${permission.url }" name="url">
-                                </div>
-                            </div>
-                            
-                            <div class="panel-body news-btn">
-                            	<input type="submit" class="btn btn-primary" value="保存" />
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            </div>
-
-            </div>
-
-
-        </section>
-    </section>
-    <!--main content end-->
-
-</section>
-
-<!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
+<jsp:include page="../../common/foot.jsp"></jsp:include>

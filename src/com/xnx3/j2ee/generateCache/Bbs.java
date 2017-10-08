@@ -23,7 +23,7 @@ public class Bbs extends BaseGenerate {
 	 * @param list 传入如：postClassService.findAll()
 	 */
 	public void postClass(List<PostClass> list){
-		createCacheObject("postClass");
+		createCacheObject("classid");
 		for (int i = 0; i < list.size(); i++) {
 			PostClass pc = list.get(i);
 			cacheAdd(pc.getId(), pc.getName());

@@ -4,92 +4,26 @@ import java.util.List;
 
 import com.xnx3.DateUtil;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.dao.CollectDAO;
-import com.xnx3.j2ee.dao.LogDAO;
-import com.xnx3.j2ee.dao.UserDAO;
+import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.entity.Collect;
 import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.func.Language;
 import com.xnx3.j2ee.service.CollectService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.vo.BaseVO;
 
 public class CollectServiceImpl implements CollectService {
 	
-	private CollectDAO collectDAO;
-	private LogDAO logDAO;
-	private UserDAO userDAO;
-	
-	public CollectDAO getCollectDAO() {
-		return collectDAO;
+	private SqlDAO sqlDAO;
+
+	public SqlDAO getSqlDAO() {
+		return sqlDAO;
 	}
 
-	public void setCollectDAO(CollectDAO collectDAO) {
-		this.collectDAO = collectDAO;
+	public void setSqlDAO(SqlDAO sqlDAO) {
+		this.sqlDAO = sqlDAO;
 	}
 
-	public LogDAO getLogDAO() {
-		return logDAO;
-	}
-
-	public void setLogDAO(LogDAO logDAO) {
-		this.logDAO = logDAO;
-	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	@Override
-	public void save(Collect transientInstance) {
-		// TODO Auto-generated method stub
-		collectDAO.save(transientInstance);
-	}
-
-	@Override
-	public void delete(Collect persistentInstance) {
-		// TODO Auto-generated method stub
-		collectDAO.delete(persistentInstance);
-	}
-
-	@Override
-	public Collect findById(Integer id) {
-		// TODO Auto-generated method stub
-		return collectDAO.findById(id);
-	}
-
-	@Override
-	public List<Collect> findByExample(Collect instance) {
-		// TODO Auto-generated method stub
-		return collectDAO.findByExample(instance);
-	}
-
-	@Override
-	public List findByProperty(String propertyName, Object value) {
-		// TODO Auto-generated method stub
-		return collectDAO.findByProperty(propertyName, value);
-	}
-
-	@Override
-	public List<Collect> findByUserid(Object userid) {
-		// TODO Auto-generated method stub
-		return collectDAO.findByUserid(userid);
-	}
-
-	@Override
-	public List<Collect> findByOthersid(Object othersid) {
-		// TODO Auto-generated method stub
-		return collectDAO.findByOthersid(othersid);
-	}
-
-	@Override
-	public List findAll() {
-		// TODO Auto-generated method stub
-		return collectDAO.findAll();
-	}
 	
 	/**
 	 * 增加关注
@@ -100,33 +34,32 @@ public class CollectServiceImpl implements CollectService {
 		BaseVO baseVO = new BaseVO();
 		
 		if(ShiroFunc.getUser().getId() == userid){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_notCollectOneself"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("collect_notCollectOneself"));
 			return baseVO;
 		}
 		
-		User user = userDAO.findById(userid);
+		User user = sqlDAO.findById(User.class, userid);
 		if(user == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_null"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("collect_null"));
 			return baseVO;
 		}
 		
 		Collect collect = new Collect();
 		collect.setOthersid(userid);
 		collect.setUserid(ShiroFunc.getUser().getId());
-		List<Collect> list = findByExample(collect);;
+		List<Collect> list = sqlDAO.findByExample(collect);
 		if(list.size()>0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_already"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("collect_already"));
 			return baseVO;
 		}
 		
 		collect.setAddtime(DateUtil.timeForUnix10());
-		save(collect);
+		sqlDAO.save(collect);
 		if(collect.getId()>0){
-			logDAO.insert(collect.getId(), "COLLECT_ADD");
 			baseVO.setBaseVO(BaseVO.SUCCESS, collect.getId()+"");
 			return baseVO;
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_saveFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("collect_saveFailure"));
 			return baseVO;
 		}
 	}
@@ -138,14 +71,13 @@ public class CollectServiceImpl implements CollectService {
 		Collect collect = new Collect();
 		collect.setOthersid(userid);
 		collect.setUserid(ShiroFunc.getUser().getId());
-		List<Collect> list = findByExample(collect);
+		List<Collect> list = sqlDAO.findByExample(collect);
 		if(list.size()==0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("collect_notCollectSoNotCancel"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("collect_notCollectSoNotCancel"));
 			return baseVO;
 		}
 		Collect c = list.get(0);
-		delete(c);
-		logDAO.insert(c.getOthersid(), "COLLECT_DELETE",userid+"");
+		sqlDAO.delete(c);
 		
 		return baseVO;
 	}
@@ -164,11 +96,12 @@ public class CollectServiceImpl implements CollectService {
 		Collect c = new Collect();
 		c.setUserid(user.getId());
 		c.setOthersid(othersid);
-		List<Collect> list = findByExample(c);
+		List<Collect> list = sqlDAO.findByExample(c);
 		if(list.size()>0){
 			return list.get(0);
 		}else{
 			return null;
 		}
 	}
+
 }

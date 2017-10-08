@@ -1,20 +1,19 @@
 package com.xnx3.j2ee.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.authc.ExcessiveAttemptsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.hibernate.Query;
 
 import com.xnx3.DateUtil;
+import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.dao.SmsLogDAO;
+import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.entity.SmsLog;
+import com.xnx3.j2ee.func.Language;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
@@ -22,123 +21,29 @@ import com.xnx3.net.AliyunSMSUtil;
 import com.xnx3.net.SMSUtil;
 
 public class SmsLogServiceImpl implements SmsLogService {
-	private SmsLogDAO smsLogDAO;
-	public SmsLogDAO getSmsLogDAO() {
-		return smsLogDAO;
-	}
-	public void setSmsLogDAO(SmsLogDAO smsLogDAO) {
-		this.smsLogDAO = smsLogDAO;
+	private SqlDAO sqlDAO;
+	
+	public SqlDAO getSqlDAO() {
+		return sqlDAO;
 	}
 
-	@Override
-	public void save(SmsLog transientInstance) {
-		// TODO Auto-generated method stub
-		smsLogDAO.save(transientInstance);
+	public void setSqlDAO(SqlDAO sqlDAO) {
+		this.sqlDAO = sqlDAO;
 	}
-
-	@Override
-	public void delete(SmsLog persistentInstance) {
-		// TODO Auto-generated method stub
-		smsLogDAO.delete(persistentInstance);
-	}
-
-	@Override
-	public SmsLog findById(Integer id) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findById(id);
-	}
-
-	@Override
-	public List<SmsLog> findByExample(SmsLog instance) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByExample(instance);
-	}
-
-	@Override
-	public List findByProperty(String propertyName, Object value) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByProperty(propertyName, value);
-	}
-
-	@Override
-	public List<SmsLog> findByCode(Object code) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByCode(code);
-	}
-
-	@Override
-	public List<SmsLog> findByUserid(Object userid) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByUserid(userid);
-	}
-
-	@Override
-	public List<SmsLog> findByUsed(Object used) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByUsed(used);
-	}
-
-	@Override
-	public List<SmsLog> findByType(Object type) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByType(type);
-	}
-
-	@Override
-	public List<SmsLog> findByAddtime(Object addtime) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByAddtime(addtime);
-	}
-
-	@Override
-	public List findAll() {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findAll();
-	}
-
-	@Override
-	public SmsLog merge(SmsLog detachedInstance) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.merge(detachedInstance);
-	}
-
-	@Override
-	public List<SmsLog> findByPhone(Object phone) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByPhone(phone);
-	}
-
+	
 	@Override
 	public int findByPhoneNum(String phone,Short type) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByPhoneNum(phone, type);
+		int weeHours = DateUtil.dateToInt10(DateUtil.weeHours(new Date()));
+		return sqlDAO.count("sms_log", "WHERE addtime > "+weeHours + " AND phone = '"+phone+"' AND type = "+type);
 	}
 
-	@Override
-	public List<SmsLog> findByIp(Object ip) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByIp(ip);
-	}
 
 	@Override
 	public int findByIpNum(String ip,Short type) {
-		// TODO Auto-generated method stub
-		return smsLogDAO.findByIpNum(ip, type);
+		int weeHours = DateUtil.dateToInt10(DateUtil.weeHours(new Date()));
+		return sqlDAO.count("sms_log", "WHERE addtime > "+weeHours + " AND ip = '"+ip+"' AND type = "+type);
 	}
 	
-	/**
-	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表
-	 * @param phone 手机号
-	 * @param addtime 添加使用，即发送时间，查询数据的时间大于此时间
-	 * @param used 是否使用，如 {@link SmsLog#USED_FALSE}
-	 * @param type 短信验证码类型，如 {@link SmsLog#TYPE_LOGIN}
-	 * @param code 短信验证码
-	 * @return
-	 */
-	public List findByPhoneAddtimeUsedType(String phone,int addtime,Short used,Short type,String code){
-		return smsLogDAO.findByPhoneAddtimeUsedType(phone, addtime, used, type,code);
-	}
-
 	/**
 	 * 发送手机号登录的验证码
 	 * @param request {@link HttpServletRequest}
@@ -147,15 +52,15 @@ public class SmsLogServiceImpl implements SmsLogService {
 	 */
 	@Override
 	public BaseVO sendPhoneLoginCode(HttpServletRequest request) {
-		String phone = request.getParameter("phone");
+		String phone = StringUtil.filterXss(request.getParameter("phone"));
 		BaseVO baseVO = sendSMS(request, phone, SmsLog.TYPE_LOGIN);
 		if(baseVO.getResult() - BaseVO.SUCCESS == 0){
 			//发送短信
-			String result = SMSUtil.send(phone, Global.getLanguage("sms_loginSendCodeText").replaceAll("\\$\\{code\\}", baseVO.getInfo()+""));
+			String result = SMSUtil.send(phone, Language.show("sms_loginSendCodeText").replaceAll("\\$\\{code\\}", baseVO.getInfo()+""));
 			if(result == null){
-				baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("sms_codeSendYourPhoneSuccess"));
+				baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("sms_codeSendYourPhoneSuccess"));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_saveFailure")+"-"+result);
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_saveFailure")+"-"+result);
 			}
 		}
 		return baseVO;
@@ -168,61 +73,61 @@ public class SmsLogServiceImpl implements SmsLogService {
 			//发送短信
 			String result = SMSUtil.send(phone, content.replaceAll("\\$\\{code\\}", baseVO.getInfo()+""));
 			if(result == null){
-				baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("sms_codeSendYourPhoneSuccess"));
+				baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("sms_codeSendYourPhoneSuccess"));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_saveFailure")+"-"+result);
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_saveFailure")+"-"+result);
 			}
 		}
 		return baseVO;
 	}
 
 	/**
-	 * 输入手机号、动态验证码，验证是否成功
+	 * 通用手机验证码验证方法。输入手机号、动态验证码，验证是否成功
 	 * @param phone 目标手机号
 	 * @param code 六位数动态验证码
 	 * @param type 发送类型，位于 {@link SmsLog}， {@link SmsLog}.type的值
 	 * 				<ul>
-	 * 					<li>1:{@link SmsLog#TYPE_LOGIN}登录 </li>
+	 * 					<li>1:{@link SmsLog#TYPE_LOGIN}登录 </li>，若是使用此类型，则后面的overdue过期时间无用
 	 * 					<li>2:{@link SmsLog#TYPE_FIND_PASSWORD}找回密码 </li>
 	 * 					<li>3:{@link SmsLog#TYPE_BIND_PHONE}绑定手机 </li>
 	 * 				</ul>
+	 * @param overdue 验证码过期时间，单位为秒。除了type为{@link SmsLog#TYPE_LOGIN}以外都有效
 	 * @return {@link BaseVO}
 	 */
 	@Override
-	public BaseVO verifyPhoneAndCode(String phone, String code, Short type) {
+	public BaseVO verifyPhoneAndCode(String phone, String code, Short type, int overdue) {
 		BaseVO baseVO = new BaseVO();
 		if(phone==null || phone.length() != 11){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_sendSmsPhoneNumberFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_sendSmsPhoneNumberFailure"));
 			return baseVO;
 		}
 		if(code==null || code.length() != 6){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeCodeFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneAndCodeCodeFailure"));
 			return baseVO;
 		}
 		
-    	List<SmsLog> smsLogList;
-    	if(SmsLog.codeValidity == 0){
-    		SmsLog smsLogSearch = new SmsLog();
-        	smsLogSearch.setType(type);
-        	smsLogSearch.setUsed(SmsLog.USED_FALSE);
-        	smsLogSearch.setCode(code);
-    		smsLogList = smsLogDAO.findByExample(smsLogSearch);
-    	}else{
-    		int currentTime = DateUtil.timeForUnix10();
-    		smsLogList = smsLogDAO.findByPhoneAddtimeUsedType(phone, currentTime-SmsLog.codeValidity, SmsLog.USED_FALSE, type,code);
-    	}
-    	if(smsLogList.size()>0){
-    		SmsLog smsLog = smsLogList.get(0);
-    		
+		int queryAddtime = 0;
+		if(type - SmsLog.TYPE_LOGIN ==0){
+			//登录，传入的过期时间无效，使用xml中配置的登录的过期时间
+			overdue = SmsLog.codeValidity;
+		}
+		if(overdue > 0){
+			int currentTime = DateUtil.timeForUnix10();
+			queryAddtime = currentTime-overdue;
+		}
+		
+		SmsLog smsLog = findByPhoneAddtimeUsedTypeCode(phone, queryAddtime, SmsLog.USED_FALSE, type, code);
+    	
+    	if(smsLog != null){
     		/****更改SmsLog状态*****/
     		smsLog.setUserid(0);
     		smsLog.setUsed(SmsLog.USED_TRUE);
-    		smsLogDAO.save(smsLog);
+    		sqlDAO.save(smsLog);
     		
 			baseVO.setResult(BaseVO.SUCCESS);
 			return baseVO;
     	}else{
-    		baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeCodeNotFind"));
+    		baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneAndCodeCodeNotFind"));
     		return baseVO;
     	}
 	}
@@ -268,7 +173,7 @@ public class SmsLogServiceImpl implements SmsLogService {
 	private BaseVO sendSMS(HttpServletRequest request, String phone, Short type){
 		BaseVO baseVO = new BaseVO();
 		if(phone==null || phone.length() != 11){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_sendSmsPhoneNumberFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_sendSmsPhoneNumberFailure"));
 			return baseVO;
 		}else{
 			//查询当前手机号是否达到当天发送短信的限额
@@ -276,7 +181,7 @@ public class SmsLogServiceImpl implements SmsLogService {
 				int phoneNum = findByPhoneNum(phone, type);
 				if(phoneNum<SmsLog.everyDayPhoneNum){
 				}else{
-					baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_thisPhoneNumberDayUpperLimit"));
+					baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_thisPhoneNumberDayUpperLimit"));
 					return baseVO;
 				}
 			}
@@ -286,7 +191,7 @@ public class SmsLogServiceImpl implements SmsLogService {
 				int ipNum = findByIpNum(IpUtil.getIpAddress(request), type);
 				if(ipNum<SmsLog.everyDayIpNum){
 				}else{
-					baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_thisIpDayUpperLimit"));
+					baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_thisIpDayUpperLimit"));
 					return baseVO;
 				}
 			}
@@ -303,21 +208,53 @@ public class SmsLogServiceImpl implements SmsLogService {
 			smsLog.setType(type);
 			smsLog.setUsed(SmsLog.USED_FALSE);
 			smsLog.setUserid(0);
-			save(smsLog);
+			sqlDAO.save(smsLog);
 			
 			if(smsLog.getId()>0){
 				baseVO.setBaseVO(BaseVO.SUCCESS, code);
 				return baseVO;
 //					String result = SMSUtil.send(phone, content.replaceAll("\\$\\{code\\}", code+""));
 //					if(result == null){
-//						baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("sms_codeSendYourPhoneSuccess"));
+//						baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("sms_codeSendYourPhoneSuccess"));
 //					}else{
-//						baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_saveFailure")+"-"+result);
+//						baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_saveFailure")+"-"+result);
 //					}
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("sms_saveFailure"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("sms_saveFailure"));
 				return baseVO;
 			}
 		}
 	}
+	
+
+	/**
+	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表，即查询验证码是否存在
+	 * @param phone 手机号
+	 * @param addtime 添加使用，即发送时间，查询数据的时间大于此时间
+	 * @param used 是否使用，如 {@link SmsLog#USED_FALSE}
+	 * @param type 短信验证码类型，如 {@link SmsLog#TYPE_LOGIN}
+	 * @param code 短信验证码
+	 * @return 若查询到验证码存在，返回 {@link SmsLog}，若查询不到，返回null，即验证码不存在
+	 */
+	public SmsLog findByPhoneAddtimeUsedTypeCode(String phone,int addtime,Short used,Short type,String code){
+		sqlDAO.findBySqlQuery("SELECT * FROM sms_log WHERE addtime", SmsLog.class);
+		try {
+			String queryString = "from SmsLog as model where model.phone= :phone and model.addtime > :addtime and model.used = :used and model.type = :type and model.code = :code";
+			Query queryObject = sqlDAO.getCurrentSession().createQuery(queryString);
+			queryObject.setParameter("phone", phone);
+			queryObject.setParameter("addtime", addtime);
+			queryObject.setParameter("used", used);
+			queryObject.setParameter("type", type);
+			queryObject.setParameter("code", code);
+			
+			List<SmsLog> list = queryObject.list();
+			if(list.size() > 0){
+				return list.get(0);
+			}
+		} catch (RuntimeException re) {
+			throw re;
+		}
+		return null;
+	}
+
 }

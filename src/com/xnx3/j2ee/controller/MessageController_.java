@@ -2,22 +2,18 @@ package com.xnx3.j2ee.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Message;
 import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.j2ee.service.LogService;
-import com.xnx3.j2ee.service.MessageDataService;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.util.Page;
@@ -36,18 +32,10 @@ public class MessageController_ extends BaseController {
 	
 	@Resource
 	private MessageService messageService;
-	
-	@Resource
-	private MessageDataService messageDataService;
-	
 	@Resource
 	private UserService userService;
-	
 	@Resource
 	private SqlService sqlService;
-
-	@Resource
-	private LogService logService;
 	
 	/**
 	 * 填写信息页面
@@ -55,7 +43,8 @@ public class MessageController_ extends BaseController {
 	 */
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/add")
-	public String add(){
+	public String add(HttpServletRequest request){
+		ActionLogCache.insert(request, "写信息");
 		return "iw/message/add";
 	}
 	
@@ -71,8 +60,10 @@ public class MessageController_ extends BaseController {
 	public String send(HttpServletRequest request,Model model){
 		BaseVO baseVO = messageService.sendMessage(request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
+			ActionLogCache.insert(request, "发送信息", "成功");
 			return success(model, "信息发送成功！","message/list.do");
 		}else{
+			ActionLogCache.insert(request, "发送信息", "失败："+baseVO.getInfo());
 			return error(model, baseVO.getInfo());
 		}
 	}
@@ -85,12 +76,15 @@ public class MessageController_ extends BaseController {
 	 */
 	@RequiresPermissions("messageView")
 	@RequestMapping("/view")
-	public String view(@RequestParam(value = "id", defaultValue = "0") int id,Model model){
+	public String view(@RequestParam(value = "id", defaultValue = "0") int id,Model model, HttpServletRequest request){
 		MessageVO messageVO = messageService.read(id);
 		if(messageVO.getResult() == MessageVO.SUCCESS){
+			ActionLogCache.insert(request, "阅读信息", messageVO.getContent());
+			
 			model.addAttribute("messageVO", messageVO);
 			return "iw/message/view";
 		}else{
+			ActionLogCache.insert(request, "阅读信息", "失败："+messageVO.getInfo());
 			return error(model, messageVO.getInfo());
 		}
 	}
@@ -127,6 +121,7 @@ public class MessageController_ extends BaseController {
 		sql.setGroupBy("message.id");
 		List<Map<String, Object>> list = sqlService.findMapBySql(sql);
 		
+		ActionLogCache.insert(request, "信息列表", "第"+page.getCurrentPageNumber()+"页");
 		model.addAttribute("list", list);
 		model.addAttribute("page", page);
 		return "iw/message/list";

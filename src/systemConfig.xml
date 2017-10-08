@@ -1,69 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	
-	<!-- 站内信功能 -->
-	<message>
-		<!-- 是否使用站内信息功能，若开启，则访问任何页面都会提前读数据库判断是否有新的未读信息 -->
-		<used>true</used>
-		<!-- 发送站内信时短信内容允许的最小字符 -->
-		<content_minlength>2</content_minlength>
-		<!-- 发送站内信时短信内容允许的最大字符，英文或者汉字 -->
-		<content_maxlength>100</content_maxlength>
-	</message>
-	
-	<!-- 日志表 Log 里面，type字段的值，每个值代表一个功能记录 -->
-	<logTypeList>
-		<!-- <type>程序内调用的名字#写入数据库的数值#此分类的描述</type> -->
-		<type>USER_LOGOUT#10#用户注销登录</type>
-		<type>USER_LOGIN_SUCCESS#11#用户登录</type>
-		<type>USER_UPDATEHEAD#12#修改头像</type>
-		<type>USER_UPDATEPASSWORD#13#修改密码</type>
-		<type>USER_EMAIL_INVITE#14#邮件邀请注册</type>
-		<type>USER_UPDATE_NICKNAME#15#修改昵称</type>
-		<type>USER_INVITEREG_AWARD#16#邀请注册增加站内货币奖励</type>
-		<type>USER_REGISTER_SUCCESS#17#用户注册</type>
-		<type>USER_UPDATE_SEX#18#修改性别</type>
-		<type>USER_UPDATE_NICKNAME#19#修改昵称</type>
-		<type>USER_UPDATE_SIGN#20#修改签名</type>
-		<type>BBS_POST_ADD#21#发表帖子</type>
-		<type>BBS_POST_COMMENT_ADD#22#发表帖子评论</type>
-		<type>BBS_POST_VIEW#23#查看帖子</type>
-		<type>BBS_POST_DELETE_COMMENT#24#删除回帖</type>
-		<type>BBS_POST_UPDATE#25#修改帖子</type>
-		<type>FRIEND_ADD#31#添加好友</type>
-		<type>FRIEND_DELETE#32#删除好友</type>
-		<type>MESSAGE_READ#41#查看未读信息</type>
-		<type>MESSAGE_DELETE#42#删除信息</type>
-		<type>MESSAGE_SEND#43#发送信息</type>
-		<type>ADMIN_SYSTEM_GENERATEALLCACHE#71#刷新所有缓存数据（系统设置）</type>
-		<type>ADMIN_SYSTEM_REG_ROLE#72#修改用户注册后的权限</type>
-		<type>ADMIN_SYSTEM_EDITSYSTEM#73#修改系统参数设置</type>
-		<type>ADMIN_SYSTEM_ROLE_SAVE#81#添加或修改角色</type>
-		<type>ADMIN_SYSTEM_ROLE_DELETE#82#删除角色</type>
-		<type>ADMIN_SYSTEM_PERMISSION_SAVE#91#添加或修改资源permission</type>
-		<type>ADMIN_SYSTEM_PERMISSION_DELETE#92#删除资源permission</type>
-		<type>ADMIN_SYSTEM_ROLE_PERMISSION_SAVE#101#编辑角色所属的资源permission</type>
-		<type>ADMIN_SYSTEM_USER_ROLE_SAVE#111#编辑角色所属的资源permission</type>
-		<type>ADMIN_SYSTEM_MESSAGE_DELETE#121#后台删除站内信息</type>
-		<type>ADMIN_SYSTEM_BBS_POST_DELETE#131#后台删除帖子</type>
-		<type>ADMIN_SYSTEM_BBS_CLASS_SAVE#141#修改论坛板块</type>
-		<type>ADMIN_SYSTEM_BBS_CLASS_DELETE#142#删除论坛板块</type>
-		<type>ADMIN_SYSTEM_BBS_CLASS_ADD#143#添加论坛板块</type>
-		<type>COLLECT_ADD#201#添加用户关注</type>
-		<type>COLLECT_DELETE#202#取消用户关注</type>
-		<!-- 	
-		<type>PAINT_ADD#51#创建图表</type>
-		<type>PAINT_COMMENT_ADD#52#添加图表评论</type>
-		<type>PROJECT_ADD#61#添加项目组</type>
-		<type>PROJECT_DELETE#62#删除项目组</type>
-		<type>PROJECT_ADD_MEMBER#63#项目组添加成员</type>
-		 -->
-	</logTypeList>
+	<log>
+		<!-- logService 动作日志记录的相关参数配置 -->
+		<logService>
+			<!-- 服务入口，如cn-hangzhou.log.aliyuncs.com ，具体参考 https://help.aliyun.com/document_detail/29008.html -->
+			<endpoint>cn-hangzhou.log.aliyuncs.com</endpoint>
+			<!-- 阿里云的 AccessKeys 查看 -->
+			<accessKeyId>qejwhjakhsdjkahdjkh</accessKeyId>
+			<accessKeySecret>hasdjkhakjhsdkjahkdnahjsdhaksd</accessKeySecret>
+			<!-- 日志服务的Project -->
+			<project>huadong1project</project>
+			<!-- 上面project下的Logstore -->
+			<logstore>testlogstore</logstore>
+			
+			<!-- 缓存日志的最大时间，单位为秒。超过这个时间后，将会自动提交日志。即每隔多长时间就自动提交日志，然后清空（ {@link #logGroup} ）重新开始累计 -->
+			<log_cache_max_time>600</log_cache_max_time>
+			<!-- 缓存日志的最大条数。当达到这个条数后，将自动提交日志。 -->
+			<log_cache_max_number>100</log_cache_max_number>
+		</logService>
+		
+	</log>
 	
 	<!-- 短信验证码相关 -->
 	<sms>
 		<!-- 短信同一手机号，某个功能每天发送的条数限制，超过这个条数，这个功能便无法再次发送短信了。 -->
-		<!-- 如登录功能，这个功能今天18453663367这个手机号发送了5次短信，再次发送时，便会失败，今天不能再发送了 -->
+		<!-- 如登录功能，这个功能今天17076012262这个手机号发送了5次短信，再次发送时，便会失败，今天不能再发送了 -->
 		<!-- 0为不限制 -->
 		<everyDayPhoneNum>10</everyDayPhoneNum>
 		<!-- 同上，只不过这个是针对ip。介于一个wifi有很多终端，都是同一个ip，这个数值可能比较大 -->
@@ -136,8 +98,8 @@
 		<recordTime>1</recordTime>
 	</ExecuteTime>
 	
-	<!-- 阿里云，阿里绿网的文本过滤服务 -->
-	<aliyunTxtFilter>
+	<!-- 阿里云，阿里绿网的文本过滤服务,检测用户自己输入的文本是否合法，比如用户发表帖子，则可以用这个自动来识别帖子的内容是否合法 -->
+	<aliyunTextFilter>
 		<!-- 哪个区，如 cn-hangzhou、cn-qingdao等 -->
 		<regionId>cn-qingdao</regionId>
 		<!-- 阿里云的 AccessKeys 查看 -->
@@ -145,6 +107,7 @@
 		<accessKeySecret>asdasdasdasd</accessKeySecret>
 		<!-- 若是发现违规，同一Session下出现第一次违规跟第五次违规时，会发送一条邮件提醒，这里是提醒者的邮箱 -->
 		<receiveEmail>3333@qq.com</receiveEmail>
-	</aliyunTxtFilter>
+	</aliyunTextFilter>
+	
 	
 </configuration>

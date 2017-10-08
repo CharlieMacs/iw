@@ -2,18 +2,14 @@ package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.j2ee.service.PayLogService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.util.Page;
 import com.xnx3.j2ee.util.Sql;
@@ -21,23 +17,15 @@ import com.xnx3.j2ee.util.Sql;
 /**
  * 在线支付日志管理
  * @author 管雷鸣
- *
  */
 @Controller
 @RequestMapping("/admin/payLog")
 public class PayLogAdminController_ extends BaseController{
-
-	@Resource
-	private PayLogService payLogService;
-	
 	@Resource
 	private SqlService sqlService;
 	
 	/**
 	 * 日志列表
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminPayLogList")
 	@RequestMapping("list")

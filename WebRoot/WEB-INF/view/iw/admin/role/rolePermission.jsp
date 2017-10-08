@@ -4,92 +4,100 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="编辑角色对应资源"/>
-    </jsp:include>
-</head>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="编辑角色对应资源的授权"/>
+</jsp:include>
+<style>
+.iw_table tbody tr td div{
+	margin-top:3px; 
+	margin-bottom: 3px;
+} 
+</style>
+<script src="http://res.weiunity.com/js/jquery-2.1.4.js"></script>
 
-<body>
+<form action="saveRolePermission.do" method="post" class="layui-form">
+	<input type="hidden" value="${role.id }" name="roleId" />
+	
+	<div style="padding:16px; padding-left:130px; font-size:19px;">
+		编辑&nbsp; <b>${role.name }</b> &nbsp;所拥有的权限
+	</div>
+	
+	<table class="layui-table iw_table">
+	  <thead>
+	    <tr>
+			<th>一级权限(功能模块)</th>
+	        <th>二级权限(具体功能点)</th>
+	    </tr> 
+	  </thead>
+	  <tbody>
+	  	<c:forEach items="${list}" var="permissionTree">
+	  		<tr>
+				<td style="width:150px;">
+					<span id="pid${permissionTree.permissionMark.permission.id }">
+						<input type="checkbox" lay-skin="primary" name="permission" value="${permissionTree.permissionMark.permission.id }" title="${permissionTree.permissionMark.permission.name }" <c:if test="${permissionTree.permissionMark.selected==true }"> checked</c:if>>
+		        	</span>
+		        	<script>
+						//鼠标跟随提示
+						$(function(){
+							var pid${permissionTree.permissionMark.permission.id }_index = 0;
+							$("#pid${permissionTree.permissionMark.permission.id }").hover(function(){
+								pid${permissionTree.permissionMark.permission.id }_index = layer.tips('percode&nbsp;:&nbsp;${permissionTree.permissionMark.permission.percode }<br/>${permissionTree.permissionMark.permission.description }', '#pid${permissionTree.permissionMark.permission.id }', {
+									tips: [2, '#0FA6A8'], //还可配置颜色
+									time:0,
+									tipsMore: true,
+									area : ['280px' , 'auto']
+								});
+							},function(){
+								layer.close(pid${permissionTree.permissionMark.permission.id }_index);
+							})
+						});	
+					</script>
+				</td>
+		        <td>
+		        	<c:forEach items="${permissionTree.list }" var="permissionMark">
+		        		<span id="pid${permissionMark.permission.id }">
+							<input type="checkbox" name="permission" title="${permissionMark.permission.name }" <c:if test="${permissionMark.selected==true }"> checked</c:if> value="${permissionMark.permission.id }">
+						</span>
+						<script>
+							//鼠标跟随提示
+							$(function(){
+								//栏目名称
+								var pid${permissionMark.permission.id }_index = 0;
+								$("#pid${permissionMark.permission.id }").hover(function(){
+									pid${permissionMark.permission.id }_index = layer.tips('percode&nbsp;:&nbsp;${permissionMark.permission.percode }<br/>${permissionMark.permission.description }', '#pid${permissionMark.permission.id }', {
+										tips: [2, '#0FA6A8'], //还可配置颜色
+										time:0,
+										tipsMore: true,
+										area : ['280px' , 'auto']
+									});
+								},function(){
+									layer.close(pid${permissionMark.permission.id }_index);
+								})
+							});	
+						</script>
+					</c:forEach>
+		        </td>
+		    </tr>
+		</c:forEach>
+	  </tbody>
+	</table>
+	<br/>
+	<div class="layui-form-item">
+	    <div class="layui-input-block" style="padding-left:100px;">
+	      <button class="layui-btn" lay-submit lay-filter="formDemo" style="margin-right:50px;">保存</button>
+	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	</div>
+</form>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    return true;
+  });
+});
+</script>
 
-<section id="container" >
-<!--header start-->
-	<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<!--header end-->
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        	<jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
-		<!-- sidebar menu end-->
-    </div>
-</aside>
-<!--sidebar end-->
-    <!--main content start-->
-<!--main content start-->
-    <section id="main-content" >
-        <section class="wrapper">
-
-
-            <div class="row">
-
-            <div class="col-lg-12">
-            <!--tab nav start-->
-            <section class="panel">
-                <header class="panel-heading tab-bg-dark-navy-blue ">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a data-toggle="tab" href="">编辑权限：${role.name }</a>
-                        </li>
-                    </ul>
-                </header>
-                <div class="panel-body">
-                    <div class="tab-content">
-                        <div id="" class="tab-pane active">
-                        <form action="saveRolePermission.do" method="post" class="form-horizontal">
-                        	<input type="hidden" value="${role.id }" name="roleId" />
-                        	<c:forEach items="${list}" var="permissionTree">
-                        		<div class="form-group">
-	                                <label class="col-sm-1 control-label" style="width:180px; text-align: left; font-size: 16px; font-weight: bold;">
-	                                	<input type="checkbox" id="subcheck" name="permission" <c:if test="${permissionTree.permissionMark.selected==true }"> checked</c:if> value="${permissionTree.permissionMark.permission.id }"/>
-	                                	${permissionTree.permissionMark.permission.name }
-	                                </label>
-	                                <div class="col-sm-9 icheck ">
-										<c:forEach items="${permissionTree.list }" var="permissionMark">
-		                                    <div class="minimal-purple single-row">
-		                                        <div class="checkbox ">
-		                                        	<input type="checkbox" id="subcheck" name="permission" <c:if test="${permissionMark.selected==true }"> checked</c:if> value="${permissionMark.permission.id }"/>
-		                                            <label>${permissionMark.permission.name }</label>
-		                                        </div>
-		                                    </div>
-										</c:forEach>
-	                                </div>
-	                            </div>
-                               </c:forEach>
-                        	
-                        	
-                            <div class="panel-body news-btn">
-                            	<input type="submit" value="保存" class="btn btn-primary" />
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            </div>
-
-            </div>
-
-
-        </section>
-    </section>
-    <!--main content end-->
-
-</section>
-
-<!-- Placed js at the end of the document so the pages load faster -->
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
+<jsp:include page="../../common/foot.jsp"></jsp:include>

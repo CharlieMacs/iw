@@ -19,7 +19,7 @@ public class ActiveUser {
 	private boolean allowUploadForUEditor;	//百度UEditor编辑器允许上传文件
 	private List<Permission> permissions;// 拥有的权限
 	private List<PermissionTree> permissionTreeList;	//入口列表菜单树
-	
+	private String languagePackageName;	//当前使用哪个语言包
 	
 	/**
 	 * 入口列表菜单树
@@ -78,6 +78,13 @@ public class ActiveUser {
 	 */
 	public void setUeUploadParam1(String ueUploadParam1) {
 		this.ueUploadParam1 = ueUploadParam1;
+	}
+	
+	public String getLanguagePackageName() {
+		return languagePackageName;
+	}
+	public void setLanguagePackageName(String languagePackageName) {
+		this.languagePackageName = languagePackageName;
 	}
 	@Override
 	public String toString() {

@@ -1,10 +1,12 @@
 package com.xnx3.j2ee.service;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.util.Sql;
 
@@ -18,34 +20,34 @@ public interface SqlService {
 	/**
 	 * 获取查询的信息条数
 	 * @param tableName 表名,多个表名中间用,分割，如: "user,message,log"。同样如果是多个表，where参数需要增加关联条件
-	 * @param appendWhere {@link Sql#getWhere(HttpServletRequest, String[], String)} 或者直接传入字符串如："WHERE userid = 2"
-	 * @return
+	 * @param where 查询条件，传入如“WHERE id > 1”
+	 * @return 统计条数
 	 */
 	public int count(String tableName,String where);
 
 	/**
-	 * 查询列表，配合 {@link Sql} 一块使用
+	 * 查询列表，通过 {@link Sql} 自动生成查询语句查询信息列表,返回List实体类。通常用于分页列表
 	 * @param sql 组合好的查询{@link Sql}
-	 * @param entityClass 转化为什么实体类
-	 * @return List<Map<String,String>>
+	 * @param entityClass 转化为什么实体类返回
+	 * @return List 实体类列表
 	 */
-	public List findEntityBySql(Sql sql,Class entityClass);
+	public <E> List<E> findBySql(Sql sql, Class<E> entityClass);
 	
 	/**
-	 * 查询数据列表
-	 * @param sqlQuery 查询语句，如: SELECT * FROM user WHERE id < 10
-	 * @param entityClass 转化为什么实体类
-	 * @return List<entity>
+	 * 通过原生SQL语句查询,返回List实体类
+	 * @param sql 原生SQL查询语句
+	 * @param entityClass 转化为什么实体类输出
+	 * @return List 实体类列表
 	 */
-	public List findEntityBySqlQuery(String sqlQuery, Class entityClass);
+	public <E> List<E> findBySqlQuery(String sqlQuery, Class<E> entityClass);
 	
 	/**
-	 * 根据SQL语句查询一条实体类。 会自动在末尾添加 LIMIT 0,1组合查询语句
+	 * 传入原生SQL语句，查询返回一个实体类。 会自动在原生SQL语句末尾添加 LIMIT 0,1 进行组合查询语句
 	 * @param sqlQuery 查询语句，如 SELECT * FROM user WHERE username = 'xnx3'
-	 * @param entityClass 实体类
+	 * @param entityClass 要转换为什么实体类返回，如 User.class
 	 * @return 若查询到，返回查询到的对象(需强制转化为想要的实体类)，若查询不到，返回null
 	 */
-	public Object findAloneEntityBySqlQuery(String sqlQuery,Class entityClass);
+	public <E> E findAloneBySqlQuery(String sqlQuery,Class<E> entityClass);
 	
 	/**
 	 * 传入 {@link Sql} 查询List列表
@@ -77,30 +79,30 @@ public interface SqlService {
 	 * 根据主键查记录
 	 * @param entity 实体类，如 {@link User}.class
 	 * @param id 主键id
-	 * @return Object 可直接转换为实体类
+	 * @return 实体类
 	 */
-	public Object findById(Class c , int id);
+	public <E> E findById(Class<E> c , int id);
 	
 	/**
 	 * 根据实体类对象的赋值查纪录列表
 	 * @param obj 实体类
-	 * @return {@link List}
+	 * @return List 实体类
 	 */
-	public List findByExample(Object entity);
+	public <E> List<E> findByExample(Object entity);
 	
 	/**
 	 * 根据字段名查值
 	 * @param c {@link Class} 实体类，如 {@link User}.class
-	 * @param propertyName 数据表字段名
-	 * @param value  值
-	 * @return {@link List}
+	 * @param propertyName 数据表字段名(Hibernate 语句的字段名)
+	 * @param value 值
+	 * @return {@link List} 实体类
 	 */
-	public List findByProperty(Class c,String propertyName, Object value);
+	public <E> List<E> findByProperty(Class<E> c,String propertyName, Object value);
 	
 	/**
-	 * 执行SQL语句
+	 * 执行原生SQL语句
 	 * @param sql 要执行的SQL语句
-	 * @return
+	 * @return query.executeUpdate()的返回值
 	 */
 	public int executeSql(String sql);
 	
@@ -119,4 +121,13 @@ public interface SqlService {
 	 * @param where 条件，如 id=5
 	 */
 	public void subtractOne(String tableName,String fieldName,String where);
+
+	/**
+	 * 查询某个数据表的所有信息, 返回实体类列表 List<Entity> 
+	 * <br/>相当于 SELECT * FROM tableName
+	 * @param entityClass 从哪个实体类关联的数据表取数据，转化为什么实体类。如，传入 User.class
+	 * @return List<Entity>
+	 */
+	public <E> List<E> findAll(Class<E> entityClass);
+	
 }

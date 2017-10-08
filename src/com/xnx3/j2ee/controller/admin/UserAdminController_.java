@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
@@ -17,9 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.UserService;
@@ -36,57 +33,45 @@ import com.xnx3.j2ee.vo.BaseVO;
 @Controller
 @RequestMapping("/admin/user")
 public class UserAdminController_ extends BaseController {
-	
 	@Resource
 	private UserService userService;
-	
 	@Resource
 	private SqlService sqlService;
 	@Autowired
 	private SessionDAO sessionDAO;
+	
 	/**
 	 * 删除用户
-	 * @param id 用户id，User.id
-	 * @return View
+	 * @param id 要删除的用户id，User.id
 	 */
 	@RequiresPermissions("adminUserDelete")
 	@RequestMapping("deleteUser")
-	public String deleteUser(@RequestParam(value = "id", required = true) int id){
+	@ResponseBody
+	public BaseVO deleteUser(@RequestParam(value = "id", required = true) int id){
 		if(id>0){
-			User u = userService.findById(id);
+			User u = sqlService.findById(User.class, id);
 			if(u!=null){
-				userService.delete(u);
+				sqlService.delete(u);
+				return success();
 			}
 		}
 		
-		return "redirect:/admin/user/list.do";
+		return error("删除失败");
 	}
 	
 	/**
 	 * 用户列表
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminUserList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model){
-//		Sql sql = new Sql();
-//		String[] column = {"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"};
-//		String where = sql.generateWhere(request, column, null);
-//		int count = sqlService.count("user", where);
-//		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
-//		page.setDefaultOrderBy("id_DESC");
-//		List<User> list = sqlService.findBySqlQuery("SELECT * FROM user", where, page,User.class);
-
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"});
 		int count = sqlService.count("user", sql.getWhere());
 		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
 		sql.setSelectFromAndPage("SELECT * FROM user", page);
 		sql.setDefaultOrderBy("user.id DESC");
-		List<User> list = sqlService.findEntityBySql(sql, User.class);
-		
+		List<User> list = sqlService.findBySql(sql, User.class);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("list", list);
@@ -95,13 +80,12 @@ public class UserAdminController_ extends BaseController {
 	
 	/**
 	 * 用户详情
-	 * @param id
-	 * @return
+	 * @param id 要查看详情的用户的id, 对应 user.id
 	 */
 	@RequiresPermissions("adminUserView")
 	@RequestMapping("view")
 	public String view(@RequestParam(value = "id", required = true) int id,Model model){
-		User user = userService.findById(id);
+		User user = sqlService.findById(User.class, id);
 		if(user == null){
 			return error(model, "要查看的用户不存在");
 		}
@@ -109,7 +93,7 @@ public class UserAdminController_ extends BaseController {
 		if(user.getReferrerid()==null || user.getReferrerid()==0){
 			model.addAttribute("referrer", "无邀请人");
 		}else{
-			User parentUser = userService.findById(user.getReferrerid());
+			User parentUser = sqlService.findById(User.class, user.getReferrerid());
 			model.addAttribute("referrer", "<a href='view.do?id="+user.getReferrerid()+"'>id:"+user.getReferrerid()+","+parentUser.getUsername()+"</a>");
 		}
 		
@@ -144,23 +128,18 @@ public class UserAdminController_ extends BaseController {
 	}
 	
 	/**
-	 * 用户列表
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
+	 * 当前在线用户列表
 	 */
 	@RequiresPermissions("adminOnlineUserList")
 	@RequestMapping("onlineUserList")
 	public String onlineUserlist(HttpServletRequest request,Model model){
 		Collection<Session> sessions = sessionDAO.getActiveSessions();
 		List<User> userList = new ArrayList<User>();
-		Iterator it = sessions.iterator();
+		Iterator<Session> it = sessions.iterator();
 		while(it.hasNext()){
 			Session session = (Session) it.next();
 			SimplePrincipalCollection s = (SimplePrincipalCollection) session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY");
-			if(s == null){
-				System.out.println("s == null ! session : "+ session);
-			}else{
+			if(s != null){
 				ActiveUser activityUser = (ActiveUser) s.getPrimaryPrincipal();
 				if(activityUser != null){
 					userList.add(activityUser.getUser());

@@ -2,10 +2,8 @@ package com.xnx3.j2ee.shiro;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.bean.PermissionMark;

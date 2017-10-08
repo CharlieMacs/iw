@@ -7,22 +7,6 @@ import com.xnx3.j2ee.vo.BaseVO;
 
 public interface CollectService {
 
-	public abstract void save(Collect transientInstance);
-
-	public abstract void delete(Collect persistentInstance);
-
-	public abstract Collect findById(java.lang.Integer id);
-
-	public abstract List<Collect> findByExample(Collect instance);
-
-	public abstract List findByProperty(String propertyName, Object value);
-
-	public abstract List<Collect> findByUserid(Object userid);
-
-	public abstract List<Collect> findByOthersid(Object othersid);
-
-	public abstract List findAll();
-
 	/**
 	 * 增加关注
 	 * @param userid 要关注的用户的id

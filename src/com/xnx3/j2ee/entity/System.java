@@ -29,7 +29,7 @@ public class System implements java.io.Serializable {
 	private String description;
 	private String name;
 	private String value;
-	private Short listshow;
+	private Integer lasttime;	//最后修改时间
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -84,27 +84,12 @@ public class System implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	/**
-	 * 是否会在系统管理列表里会显示出来
-	 * 		<ul>
-	 * 			<li> {@link System#LISTSHOW_SHOW}：显示 </li>
-	 * 			<li> {@link System#LISTSHOW_SHOW}：不显示 </li>
-	 * 		</ul>
-	 * @return
-	 */
-	public Short getListshow() {
-		return listshow;
+	
+	public Integer getLasttime() {
+		return lasttime;
 	}
-	/**
-	 * 是否会在系统管理列表里会显示出来
-	 * 		<ul>
-	 * 			<li> {@link System#LISTSHOW_SHOW}：显示 </li>
-	 * 			<li> {@link System#LISTSHOW_SHOW}：不显示 </li>
-	 * 		</ul>
-	 * @param listshow
-	 */
-	public void setListshow(Short listshow) {
-		this.listshow = listshow;
+	public void setLasttime(Integer lasttime) {
+		this.lasttime = lasttime;
 	}
 	
 }

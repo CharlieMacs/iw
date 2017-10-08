@@ -16,6 +16,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
+import org.hibernate.Query;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -23,16 +24,14 @@ import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.dao.LogDAO;
-import com.xnx3.j2ee.dao.SmsLogDAO;
-import com.xnx3.j2ee.dao.UserDAO;
-import com.xnx3.j2ee.dao.UserRoleDAO;
+import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.IpUtil;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.j2ee.entity.*;
+import com.xnx3.j2ee.func.Language;
 import com.xnx3.media.ImageUtil;
 import com.xnx3.net.OSSUtil;
 import com.xnx3.net.ossbean.PutResult;
@@ -40,167 +39,19 @@ import com.xnx3.net.ossbean.PutResult;
 public class UserServiceImpl implements UserService{
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);  
 
-	private UserDAO userDao;
-	private LogDAO logDao;
-	private UserRoleDAO userRoleDAO;
-	private SmsLogDAO smsLogDAO;
-	
-	public UserDAO getUserDao() {
-		return userDao;
+	private SqlDAO sqlDAO;
+
+	public SqlDAO getSqlDAO() {
+		return sqlDAO;
 	}
 
-	public void setUserDao(UserDAO userDao) {
-		this.userDao = userDao;
+	public void setSqlDAO(SqlDAO sqlDAO) {
+		this.sqlDAO = sqlDAO;
 	}
 
-	public LogDAO getLogDao() {
-		return logDao;
-	}
-
-	public void setLogDao(LogDAO logDao) {
-		this.logDao = logDao;
-	}
-
-	public UserRoleDAO getUserRoleDAO() {
-		return userRoleDAO;
-	}
-
-	public void setUserRoleDAO(UserRoleDAO userRoleDAO) {
-		this.userRoleDAO = userRoleDAO;
-	}
-
-	public SmsLogDAO getSmsLogDAO() {
-		return smsLogDAO;
-	}
-
-	public void setSmsLogDAO(SmsLogDAO smsLogDAO) {
-		this.smsLogDAO = smsLogDAO;
-	}
-
-	@Override
-	public void save(User user) {
-		// TODO Auto-generated method stub
-		userDao.save(user);
-	}
-
-	@Override
-	public void delete(User persistentInstance) {
-		// TODO Auto-generated method stub
-		userDao.delete(persistentInstance);
-		
-	}
-
-	@Override
-	public User findById(Integer id) {
-		// TODO Auto-generated method stub
-		return userDao.findById(id);
-	}
-
-	@Override
-	public List<User> findByExample(User instance) {
-		// TODO Auto-generated method stub
-		return userDao.findByExample(instance);
-	}
-
-	@Override
-	public List findByProperty(String propertyName, Object value) {
-		// TODO Auto-generated method stub
-		return userDao.findByProperty(propertyName, value);
-	}
-
-	@Override
-	public List<User> findByUsername(Object username) {
-		// TODO Auto-generated method stub
-		return userDao.findByUsername(username);
-	}
-
-	@Override
-	public List<User> findByEmail(Object email) {
-		// TODO Auto-generated method stub
-		return userDao.findByEmail(email);
-	}
-
-	@Override
-	public List<User> findByPassword(Object password) {
-		// TODO Auto-generated method stub
-		return userDao.findByPassword(password);
-	}
-
-	@Override
-	public List<User> findByHead(Object head) {
-		// TODO Auto-generated method stub
-		return userDao.findByHead(head);
-	}
-
-	@Override
-	public List<User> findByNickname(Object nickname) {
-		// TODO Auto-generated method stub
-		return userDao.findByNickname(nickname);
-	}
-
-	@Override
-	public List<User> findByRegtime(Object regtime) {
-		// TODO Auto-generated method stub
-		return userDao.findByRegtime(regtime);
-	}
-
-	@Override
-	public List<User> findByLasttime(Object lasttime) {
-		// TODO Auto-generated method stub
-		return userDao.findByLasttime(lasttime);
-	}
-
-	@Override
-	public List<User> findByRegip(Object regip) {
-		// TODO Auto-generated method stub
-		return userDao.findByRegip(regip);
-	}
-
-	@Override
-	public List<User> findByLastip(Object lastip) {
-		// TODO Auto-generated method stub
-		return userDao.findByLastip(lastip);
-	}
-
-	@Override
-	public List findAll() {
-		// TODO Auto-generated method stub
-		return userDao.findAll();
-	}
-
-	@Override
-	public User merge(User detachedInstance) {
-		// TODO Auto-generated method stub
-		return userDao.merge(detachedInstance);
-	}
-
-	@Override
-	public void attachDirty(User instance) {
-		// TODO Auto-generated method stub
-		userDao.attachDirty(instance);
-	}
-
-	@Override
-	public void attachClean(User instance) {
-		// TODO Auto-generated method stub
-		userDao.attachClean(instance);
-	}
-
-	@Override
-	public int findRecordNumber() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void findByReferrerid(Object referrerid) {
-		// TODO Auto-generated method stub
-		userDao.findByReferrerid(referrerid);
-	}
-	
 	@Override
 	public User findByPhone(Object phone){
-		List<User> list = userDao.findByPhone(phone);
+		List<User> list = sqlDAO.findByProperty(User.class, "phone", phone);
 		if(list.size()>0){
 			return list.get(0);
 		}else{
@@ -220,20 +71,17 @@ public class UserServiceImpl implements UserService{
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		if(username==null || username.length() == 0 ){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserOrEmailNotNull"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserOrEmailNotNull"));
 			return baseVO;
 		}
 		if(password==null || password.length() == 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginPasswordNotNull"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginPasswordNotNull"));
 			return baseVO;
 		}
 		
-		List<User> l = null;
-		if(username.indexOf("@")>-1){		//判断是用户名还是邮箱登陆的
-			l = findByEmail(username);
-		}else{
-			l = findByUsername(username);
-		}
+		//判断是用户名还是邮箱登陆的，进而查询邮箱或者用户名，进行登录
+		List<User> l = sqlDAO.findByProperty(User.class, username.indexOf("@")>-1? "email":"username", username);
+		
 		if(l!=null && l.size()>0){
 			User user = l.get(0);
 			
@@ -242,13 +90,13 @@ public class UserServiceImpl implements UserService{
 			if(md5Password.equals(user.getPassword())){
 				//检验此用户状态是否正常，是否被冻结
 				if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-					baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+					baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserFreeze"));
 					return baseVO;
 				}
 				
 				user.setLasttime(DateUtil.timeForUnix10());
 				user.setLastip(IpUtil.getIpAddress(request));
-				save(user);
+				sqlDAO.save(user);
 				
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
 		        token.setRememberMe(false);
@@ -267,13 +115,13 @@ public class UserServiceImpl implements UserService{
 				} catch ( org.apache.shiro.authc.AuthenticationException ae ) {  
 					java.lang.System.out.println("AuthenticationException:"+ae.getMessage());
 				}
-				logDao.insert("USER_LOGIN_SUCCESS");
-				baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
+//				logDao.insert("USER_LOGIN_SUCCESS");
+				baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_loginSuccess"));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginPasswordFailure"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginPasswordFailure"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserNotFind"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserNotFind"));
 		}
 		
 		return baseVO;
@@ -289,31 +137,35 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public BaseVO reg(User user, HttpServletRequest request) {
 		BaseVO baseVO = new BaseVO();
+		user.setEmail(StringUtil.filterXss(user.getEmail()));
+		user.setNickname(StringUtil.filterXss(user.getNickname()));
+		user.setPhone(StringUtil.filterXss(user.getPhone()));
+		user.setUsername(StringUtil.filterXss(user.getUsername()));
 		
 		//判断用户名、邮箱、手机号是否有其中为空的
 		if(user.getUsername()==null||user.getUsername().equals("")||user.getPassword()==null||user.getPassword().equals("")){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regDataNotAll"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regDataNotAll"));
 		}
 		
 		//判断用户名、邮箱、手机号是否有其中已经注册了，唯一性
 		//邮箱的唯一，仅当邮箱设置了之后，才会判断邮箱的唯一性
 		if(user.getEmail() != null && user.getEmail().length() > 0){
-			if(findByEmail(user.getEmail()).size() > 0){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForEmailAlreadyExist"));
+			if(sqlDAO.findByProperty(User.class, "email", user.getEmail()).size() > 0){
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regFailureForEmailAlreadyExist"));
 				return baseVO;
 			}
 		}
 		
 		//判断用户名唯一性
-		if(findByUsername(user.getUsername()).size() > 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForUsernameAlreadyExist"));
+		if(sqlDAO.findByProperty(User.class, "username", user.getUsername()).size() > 0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regFailureForUsernameAlreadyExist"));
 			return baseVO;
 		}
 		
 		//判断手机号唯一性
 		if(user.getPhone() != null && user.getPhone().length() > 0){
 			if(findByPhone(user.getUsername()) != null){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailureForPhoneAlreadyExist"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regFailureForPhoneAlreadyExist"));
 				return baseVO;
 			}
 		}
@@ -340,17 +192,17 @@ public class UserServiceImpl implements UserService{
 		User referrerUser1 = null;
 		if(inviteid!=null&&inviteid.length()>0){
 			int referrerid = Lang.stringToInt(inviteid, 0);
-			referrerUser1 = findById(referrerid);		//一级下线
+			referrerUser1 = sqlDAO.findById(User.class, referrerid);	//一级下线
 			if(referrerUser1!=null){
 				user.setReferrerid(referrerid);
 			}
 		}
 		
 		if(user.getUsername()==null||user.getUsername().equals("")||user.getEmail()==null||user.getEmail().equals("")||user.getPassword()==null||user.getPassword().equals("")){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regDataNotAll"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regDataNotAll"));
 		}else{
 			if(user.getUsername().length() > 20){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_userNameToLong"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_userNameToLong"));
 			}
 			
 			Random random = new Random();
@@ -358,7 +210,7 @@ public class UserServiceImpl implements UserService{
 	        String md5Password = new Md5Hash(user.getPassword(), user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
 			user.setPassword(md5Password);
 			
-			save(user);
+			sqlDAO.save(user);
 			if(user.getId()>0){
 				//已注册成功，自动登录成用户
 				UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
@@ -378,24 +230,24 @@ public class UserServiceImpl implements UserService{
 				UserRole userRole = new UserRole();
 				userRole.setRoleid(Lang.stringToInt(Global.system.get("USER_REG_ROLE"), 0));
 				userRole.setUserid(user.getId());
-				userRoleDAO.save(userRole);
+				sqlDAO.save(userRole);
 				
 				//推荐人增加奖励
 				if(user.getReferrerid()>0){	//是否有直接推荐人
 					referrerAddAward(referrerUser1, Global.system.get("INVITEREG_AWARD_ONE"), user);
 					
 					if(referrerUser1.getReferrerid()>0){	//一级下线有上级推荐人，拿到二级下线
-						User referrerUser2 = findById(referrerUser1.getReferrerid());
+						User referrerUser2 = sqlDAO.findById(User.class, referrerUser1.getReferrerid());
 						if(referrerUser2!=null){
 							referrerAddAward(referrerUser2, Global.system.get("INVITEREG_AWARD_TWO"), user);
 							
 							if(referrerUser2.getReferrerid()>0){	//二级下线有上级推荐人，拿到三级下线
-								User referrerUser3 = findById(referrerUser2.getReferrerid());
+								User referrerUser3 = sqlDAO.findById(User.class, referrerUser2.getReferrerid());
 								if(referrerUser3!=null){
 									referrerAddAward(referrerUser3, Global.system.get("INVITEREG_AWARD_THREE"), user);
 									
 									if(referrerUser3.getReferrerid()>0){	//三级下线有上级推荐人，拿到四级下线
-										User referrerUser4 = findById(referrerUser3.getReferrerid());
+										User referrerUser4 = sqlDAO.findById(User.class, referrerUser3.getReferrerid());
 										if(referrerUser4!=null){
 											referrerAddAward(referrerUser4, Global.system.get("INVITEREG_AWARD_FOUR"), user);
 										}
@@ -406,10 +258,10 @@ public class UserServiceImpl implements UserService{
 					}
 				}
 				
-				logDao.insert("USER_REGISTER_SUCCESS");
-				baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_regSuccess"));
+//				logDao.insert("USER_REGISTER_SUCCESS");
+				baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_regSuccess"));
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_regFailure"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regFailure"));
 			}
 		}
 		
@@ -426,8 +278,8 @@ public class UserServiceImpl implements UserService{
 		int addCurrency = Lang.stringToInt(addCurrency_, 0);
 		if(addCurrency>0){
 			user.setCurrency(user.getCurrency()+addCurrency);
-			save(user);
-			logDao.insert(regUser.getId(), "USER_INVITEREG_AWARD", addCurrency+"");
+			sqlDAO.save(user);
+//			logDao.insert(regUser.getId(), "USER_INVITEREG_AWARD", addCurrency+"");
 		}
 	}
 	
@@ -444,7 +296,7 @@ public class UserServiceImpl implements UserService{
 		if(inviteid_!=null&&inviteid_.length()>0){
 			int inviteid = Lang.stringToInt(inviteid_, 0);
 			
-			User user = findById(inviteid);
+			User user = sqlDAO.findById(User.class, inviteid);
 			if(user!=null){
 				request.getSession().setAttribute("inviteid", inviteid); 	//邀请人id
 			}
@@ -463,27 +315,21 @@ public class UserServiceImpl implements UserService{
 		String phone = request.getParameter("phone");
 		String code = request.getParameter("code");
 		if(phone==null || phone.length() != 11){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodePhoneFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneAndCodePhoneFailure"));
 			return baseVO;
 		}
 		if(code==null || code.length() != 6){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeCodeFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneAndCodeCodeFailure"));
 			return baseVO;
 		}
 		
-    	List<SmsLog> smsLogList;
-    	if(SmsLog.codeValidity == 0){
-    		SmsLog smsLogSearch = new SmsLog();
-        	smsLogSearch.setType(SmsLog.TYPE_LOGIN);
-        	smsLogSearch.setUsed(SmsLog.USED_FALSE);
-        	smsLogSearch.setCode(code);
-    		smsLogList = smsLogDAO.findByExample(smsLogSearch);
-    	}else{
-    		int currentTime = DateUtil.timeForUnix10();
-    		smsLogList = smsLogDAO.findByPhoneAddtimeUsedType(phone, currentTime-SmsLog.codeValidity, SmsLog.USED_FALSE, SmsLog.TYPE_LOGIN,code);
-    	}
-    	if(smsLogList.size()>0){
-    		SmsLog smsLog = smsLogList.get(0);
+		int queryAddtime = 0;
+		if(SmsLog.codeValidity > 0){
+			int currentTime = DateUtil.timeForUnix10();
+			queryAddtime = currentTime-SmsLog.codeValidity;
+		}
+		SmsLog smsLog = findByPhoneAddtimeUsedTypeCode(phone, queryAddtime, SmsLog.USED_FALSE, SmsLog.TYPE_LOGIN,code);
+    	if(smsLog != null){
     		User user = findByPhone(phone);
     		if(user == null){
     			//如果没有用户，则模拟注册一个
@@ -498,25 +344,25 @@ public class UserServiceImpl implements UserService{
     		}
     		user = findByPhone(phone);
     		if(user == null){
-    			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeRegFailure"));
+    			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneAndCodeRegFailure"));
     			return baseVO;
     		}
     		
     		//检验此用户状态是否正常，是否被冻结
 			if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserFreeze"));
 				return baseVO;
 			}
     		
     		/****更改SmsLog状态*****/
     		smsLog.setUserid(user.getId());
     		smsLog.setUsed(SmsLog.USED_TRUE);
-    		smsLogDAO.save(smsLog);
+    		sqlDAO.save(smsLog);
     		
     		/*******更改User状态******/
     		user.setLasttime(DateUtil.timeForUnix10());
     		user.setLastip(IpUtil.getIpAddress(request));
-			save(user);
+    		sqlDAO.save(user);
     		
 			UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
 	        token.setRememberMe(false);
@@ -536,16 +382,47 @@ public class UserServiceImpl implements UserService{
 				ae.printStackTrace();
 			}
 			
-			logDao.insert("USER_LOGIN_SUCCESS");
-			baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
+//			logDao.insert("USER_LOGIN_SUCCESS");
+			baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_loginSuccess"));
 			return baseVO;
     	}else{
-    		baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneAndCodeCodeNotFind"));
+    		baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneAndCodeCodeNotFind"));
     		return baseVO;
     	}
 	}
 	
 
+	/**
+	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表，即查询验证码是否存在
+	 * @param phone 手机号
+	 * @param addtime 添加使用，即发送时间，查询数据的时间大于此时间
+	 * @param used 是否使用，如 {@link SmsLog#USED_FALSE}
+	 * @param type 短信验证码类型，如 {@link SmsLog#TYPE_LOGIN}
+	 * @param code 短信验证码
+	 * @return 若查询到验证码存在，返回 {@link SmsLog}，若查询不到，返回null，即验证码不存在
+	 */
+	private SmsLog findByPhoneAddtimeUsedTypeCode(String phone,int addtime,Short used,Short type,String code){
+		sqlDAO.findBySqlQuery("SELECT * FROM sms_log WHERE addtime", SmsLog.class);
+		try {
+			String queryString = "from SmsLog as model where model.phone= :phone and model.addtime > :addtime and model.used = :used and model.type = :type and model.code = :code";
+			Query queryObject = sqlDAO.getCurrentSession().createQuery(queryString);
+			queryObject.setParameter("phone", phone);
+			queryObject.setParameter("addtime", addtime);
+			queryObject.setParameter("used", used);
+			queryObject.setParameter("type", type);
+			queryObject.setParameter("code", code);
+			
+			List<SmsLog> list = queryObject.list();
+			if(list.size() > 0){
+				return list.get(0);
+			}
+		} catch (RuntimeException re) {
+			throw re;
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * 手机号登陆，会自动检测上次登陆的ip，若上次登陆的ip跟当前的ip一样，则这个手机用户登陆成功
 	 * @param request {@link HttpServletRequest} 
@@ -557,12 +434,12 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 		String phone = request.getParameter("phone");
 		if(phone==null){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhonePhoneFailure"));
 			return baseVO;
 		}else{
 			phone = phone.replaceAll(" ", "");
 			if(phone.length() != 11){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhonePhoneFailure"));
 				return baseVO;
 			}
 		}
@@ -571,7 +448,7 @@ public class UserServiceImpl implements UserService{
 		User user = findByPhone(phone);
 		logger.debug("根据用户手机号查询得到用户得信息,user:"+user);
 		if(user == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneUserNotFind"));
 			return baseVO;
 		}
 		
@@ -579,13 +456,13 @@ public class UserServiceImpl implements UserService{
 		String ip = IpUtil.getIpAddress(request);
 		logger.debug("得到用户请求得IP地址："+ip);
 		if(!(user.getLastip().equals(ip) || user.getRegip().equals(ip))){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneIpFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneIpFailure"));
 			return baseVO;
 		}
 		
 		//检验此用户状态是否正常，是否被冻结
 		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserFreeze"));
 			return baseVO;
 		}
 		logger.debug("检验此用户状态是否正常，是否被冻结，未冻结，正常");
@@ -593,7 +470,7 @@ public class UserServiceImpl implements UserService{
 		/*******更改User状态******/
 		user.setLasttime(DateUtil.timeForUnix10());
 		user.setLastip(IpUtil.getIpAddress(request));
-		save(user);
+		sqlDAO.save(user);
 		logger.debug("更新User状态，更新后的User为："+user);
 		
 		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
@@ -614,8 +491,8 @@ public class UserServiceImpl implements UserService{
 			ae.printStackTrace();
 		}
 		
-		logDao.insert("USER_LOGIN_SUCCESS");
-		baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
+//		logDao.insert("USER_LOGIN_SUCCESS");
+		baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_loginSuccess"));
 		return baseVO;
 	}
 
@@ -623,7 +500,7 @@ public class UserServiceImpl implements UserService{
 	public void logout() {
 		Subject subject = SecurityUtils.getSubject();
 		if (subject.isAuthenticated()) {
-			logDao.insert("USER_LOGOUT");
+//			logDao.insert("USER_LOGOUT");
 			subject.logout(); // session 会销毁，在SessionListener监听session销毁，清理权限缓存
 		}
 	}
@@ -639,17 +516,17 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 		String nickname = request.getParameter("nickname");
 		if(nickname==null){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateNicknameNicknameIsNull"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateNicknameNicknameIsNull"));
 		}else{
-			User uu=findById(ShiroFunc.getUser().getId());
+			User uu=sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
 			String oldNickName = uu.getNickname();
 			uu.setNickname(nickname);
-			save(uu);
+			sqlDAO.save(uu);
 			
 			//更新Session
 			ShiroFunc.getCurrentActiveUser().setUser(uu);
 	        
-			logDao.insert("USER_UPDATE_NICKNAME", oldNickName);
+//			logDao.insert("USER_UPDATE_NICKNAME", oldNickName);
 		}
 		return baseVO;
 	}
@@ -658,15 +535,15 @@ public class UserServiceImpl implements UserService{
 	public BaseVO freezeUser(int id) {
 		BaseVO baseVO = new BaseVO();
 		if(id > 0){
-			User user = findById(id);
+			User user = sqlDAO.findById(User.class, id);
 			if(user == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_freezeUserIsNotFind"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_freezeUserIsNotFind"));
 			}else{
 				user.setIsfreeze(User.ISFREEZE_FREEZE);
-				save(user);
+				sqlDAO.save(user);
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_freezeUserPleaseEntryId"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_freezeUserPleaseEntryId"));
 		}
 		
 		return baseVO;
@@ -676,15 +553,15 @@ public class UserServiceImpl implements UserService{
 	public BaseVO unfreezeUser(int id) {
 		BaseVO baseVO = new BaseVO();
 		if(id > 0){
-			User user = findById(id);
+			User user = sqlDAO.findById(User.class, id);
 			if(user == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_unfreezeUserIsNotFind"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_unfreezeUserIsNotFind"));
 			}else{
 				user.setIsfreeze(User.ISFREEZE_NORMAL);
-				save(user);
+				sqlDAO.save(user);
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_unfreezeUserPleaseEntryId"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_unfreezeUserPleaseEntryId"));
 		}
 		return baseVO;
 	}
@@ -693,7 +570,7 @@ public class UserServiceImpl implements UserService{
 	public UploadFileVO updateHeadByOSS(MultipartFile head) {
 		UploadFileVO uploadFileVO = new UploadFileVO();
 		if(head == null || head.isEmpty()){
-			uploadFileVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_uploadHeadImageNotFind"));
+			uploadFileVO.setBaseVO(BaseVO.FAILURE, Language.show("user_uploadHeadImageNotFind"));
 			return uploadFileVO;
 		}
 		
@@ -712,23 +589,17 @@ public class UserServiceImpl implements UserService{
 			return uploadFileVO;
 		}
 		
-//		if(!(user.getHead().equals(newHead))){
-//			User u = findById(user.getId());
-//			u.setHead(newHead);
-//			save(u);
-//			ShiroFunc.getUser().setHead(newHead);
-//		}
-		User u = findById(user.getId());
+		User u = sqlDAO.findById(User.class, user.getId());
 		//删除之前的头像
 		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
 			OSSUtil.deleteObject("image/head/"+u.getHead());
 		}
 		
 		u.setHead(newHead);
-		save(u);
+		sqlDAO.save(u);
 		ShiroFunc.getUser().setHead(newHead);
 		
-		logDao.insert("USER_UPDATEHEAD");
+//		logDao.insert("USER_UPDATEHEAD");
 		
 		return uploadFileVO;
 	}
@@ -738,17 +609,17 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 		String sex = request.getParameter("sex");
 		if(sex == null || sex.length()<0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateSexSexNotIsNull"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateSexSexNotIsNull"));
 			return baseVO;
 		}
 		if(!(sex.equals("男") || sex.equals("女"))){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateSexEntryFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateSexEntryFailure"));
 			return baseVO;
 		}
-		User u = findById(ShiroFunc.getUser().getId());
+		User u = sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
 		u.setSex(sex);
-		save(u);
-		logDao.insert("USER_UPDATE_SEX", ShiroFunc.getUser().getSex()+"修改为"+sex);
+		sqlDAO.save(u);
+//		logDao.insert("USER_UPDATE_SEX", ShiroFunc.getUser().getSex()+"修改为"+sex);
 		ShiroFunc.getUser().setSex(sex);
 		
 		return baseVO; 
@@ -763,18 +634,18 @@ public class UserServiceImpl implements UserService{
 		}
 		nickname = StringUtil.filterHtmlTag(nickname);
 		if(nickname.length()==0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateNicknameNotNull"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateNicknameNotNull"));
 			return baseVO;
 		}
 		if(nickname.length()>15){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateNicknameSizeFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateNicknameSizeFailure"));
 			return baseVO;
 		}
 		
-		User u = findById(ShiroFunc.getUser().getId());
+		User u = sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
 		u.setNickname(nickname);
-		save(u);
-		logDao.insert("USER_UPDATE_NICKNAME", ShiroFunc.getUser().getNickname());
+		sqlDAO.save(u);
+//		logDao.insert("USER_UPDATE_NICKNAME", ShiroFunc.getUser().getNickname());
 		ShiroFunc.getUser().setNickname(nickname);
 		
 		return baseVO;
@@ -789,14 +660,14 @@ public class UserServiceImpl implements UserService{
 		}
 		sign = StringUtil.filterHtmlTag(sign);
 		if(sign.length()>40){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_updateSignSizeFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateSignSizeFailure"));
 			return baseVO;
 		}
 		
-		User u = findById(ShiroFunc.getUser().getId());
+		User u = sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
 		u.setSign(sign);
-		save(u);
-		logDao.insert("USER_UPDATE_NICKNAME", sign);
+		sqlDAO.save(u);
+//		logDao.insert("USER_UPDATE_NICKNAME", sign);
 		ShiroFunc.getUser().setSign(sign);
 		
 		return baseVO;
@@ -816,9 +687,9 @@ public class UserServiceImpl implements UserService{
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
 			List<MultipartFile> imageList = multipartRequest.getFiles(formFileName);  
 			if(imageList.size() == 0){
-				logger.debug("上传头像时，未发现头像 ------"+Global.getLanguage("user_uploadHeadImageNotFind"));
+				logger.debug("上传头像时，未发现头像 ------"+Language.show("user_uploadHeadImageNotFind"));
 				uploadFileVO.setResult(UploadFileVO.NOTFILE);
-				uploadFileVO.setInfo(Global.getLanguage("user_uploadHeadImageNotFind"));
+				uploadFileVO.setInfo(Language.show("user_uploadHeadImageNotFind"));
 				return uploadFileVO;
 			}else{
 				logger.debug("上传头像，已发现头像的multipartFile");
@@ -827,8 +698,8 @@ public class UserServiceImpl implements UserService{
 	    }
 		
 		if(multipartFile == null || multipartFile.isEmpty()){
-			uploadFileVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_uploadHeadImageNotFind"));
-			logger.debug("上传头像的multipartFile为空，不存在上传的头像 ------"+Global.getLanguage("user_uploadHeadImageNotFind"));
+			uploadFileVO.setBaseVO(BaseVO.FAILURE, Language.show("user_uploadHeadImageNotFind"));
+			logger.debug("上传头像的multipartFile为空，不存在上传的头像 ------"+Language.show("user_uploadHeadImageNotFind"));
 			return uploadFileVO;
 		}
 		
@@ -863,17 +734,17 @@ public class UserServiceImpl implements UserService{
 //			ShiroFunc.getUser().setHead(newHead);
 //		}
 		
-		User u = findById(user.getId());
+		User u = sqlDAO.findById(User.class, user.getId());
 		//删除之前的头像
 		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
 			OSSUtil.deleteObject("image/head/"+u.getHead());
 		}
 		
 		u.setHead(newHead);
-		save(u);
+		sqlDAO.save(u);
 		ShiroFunc.getUser().setHead(newHead);
 		
-		logDao.insert("USER_UPDATEHEAD");
+//		logDao.insert("USER_UPDATEHEAD");
 		return uploadFileVO;
 	}
 
@@ -882,33 +753,33 @@ public class UserServiceImpl implements UserService{
 		BaseVO baseVO = new BaseVO();
 //		if(userid == 0){
 		//请传入要登陆用户的id
-//			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhonePhoneFailure"));
+//			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhonePhoneFailure"));
 //			return baseVO;
 //		}
 		
-		User user = findById(userid);
+		User user = sqlDAO.findById(User.class, userid);
 		if(user == null){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneUserNotFind"));
 			return baseVO;
 		}
 		
 		//ip检测
 		String ip = IpUtil.getIpAddress(request);
 		if(!(user.getLastip().equals(ip) || user.getRegip().equals(ip))){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneIpFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneIpFailure"));
 			return baseVO;
 		}
 		
 		//检验此用户状态是否正常，是否被冻结
 		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserFreeze"));
 			return baseVO;
 		}
 		
 		/*******更改User状态******/
 		user.setLasttime(DateUtil.timeForUnix10());
 		user.setLastip(IpUtil.getIpAddress(request));
-		save(user);
+		sqlDAO.save(user);
 		
 		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
         token.setRememberMe(false);
@@ -928,32 +799,32 @@ public class UserServiceImpl implements UserService{
 			ae.printStackTrace();
 		}
 		
-		logDao.insert("USER_LOGIN_SUCCESS");
-		baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
+//		logDao.insert("USER_LOGIN_SUCCESS");
+		baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_loginSuccess"));
 		return baseVO;
 	}
 
 	@Override
 	public BaseVO loginForUserId(HttpServletRequest request, int userId) {
 		BaseVO baseVO = new BaseVO();
-		User user = findById(userId);
+		User user = sqlDAO.findById(User.class, userId);
 		if(user == null){
 			logger.debug("用户不存在");
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginByPhoneUserNotFind"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginByPhoneUserNotFind"));
 			return baseVO;
 		}
 		
 		//检验此用户状态是否正常，是否被冻结
 		if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
 			logger.debug("此用户被冻结，无法设置为登陆用户");
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("user_loginUserFreeze"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_loginUserFreeze"));
 			return baseVO;
 		}
 		
 		/*******更改User状态******/
 		user.setLasttime(DateUtil.timeForUnix10());
 		user.setLastip(IpUtil.getIpAddress(request));
-		save(user);
+		sqlDAO.save(user);
 		logger.debug("设置指定userId为登陆用户，设置后得User："+user);
 		
 		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getUsername());
@@ -974,8 +845,8 @@ public class UserServiceImpl implements UserService{
 			ae.printStackTrace();
 		}
 		
-		logDao.insert("USER_LOGIN_SUCCESS");
-		baseVO.setBaseVO(BaseVO.SUCCESS, Global.getLanguage("user_loginSuccess"));
+//		logDao.insert("USER_LOGIN_SUCCESS");
+		baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_loginSuccess"));
 		return baseVO;
 	}
 
@@ -983,16 +854,19 @@ public class UserServiceImpl implements UserService{
 	public BaseVO updatePassword(int userid, String newPassword) {
 		BaseVO baseVO = new BaseVO();
 		if(!(userid > 0)){
-			baseVO.setBaseVO(BaseVO.FAILURE, "userid is null");
+			return BaseVO.failure("userid is null");
 		}
-		User user=findById(userid);
+		if(newPassword == null || newPassword.length() == 0){
+			return BaseVO.failure("新密码不能为空");
+		}
+		User user=sqlDAO.findById(User.class, userid);
 		
 		String md5Password = new Md5Hash(newPassword, user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
 		user.setPassword(md5Password);
-		save(user);
+		sqlDAO.save(user);
 		
-		logDao.insert("USER_UPDATEPASSWORD");
 		return baseVO;
 	}
+
 
 }

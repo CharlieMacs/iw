@@ -131,10 +131,10 @@ public class User extends BaseEntity {
 		this.password = password;
 	}
 	/**
-	 * 头像,图片文件名，如 29.jpg
+	 * 头像,图片文件名，uuid.后缀
 	 * @return
 	 */
-	@Column(name = "head", length = 15)
+	@Column(name = "head", length = 40)
 	public String getHead() {
 		return this.head;
 	}

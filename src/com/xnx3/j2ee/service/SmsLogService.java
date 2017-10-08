@@ -4,39 +4,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.net.AliyunSMSUtil;
-
 public interface SmsLogService {
-
-	public void save(SmsLog transientInstance);
-
-	public void delete(SmsLog persistentInstance);
-
-	public SmsLog findById(java.lang.Integer id);
-
-	public List<SmsLog> findByExample(SmsLog instance);
-
-	public List findByProperty(String propertyName, Object value);
-
-	public List<SmsLog> findByCode(Object code);
-
-	public List<SmsLog> findByUserid(Object userid);
-
-	public List<SmsLog> findByUsed(Object used);
-
-	public List<SmsLog> findByType(Object type);
-
-	public List<SmsLog> findByAddtime(Object addtime);
-
-	public List findAll();
-
-	public SmsLog merge(SmsLog detachedInstance);
-	
-	public List<SmsLog> findByPhone(Object phone);
 	
 	/**
 	 * 获取当前条件下的这个手机号，当天信息记录有多少
@@ -45,8 +16,6 @@ public interface SmsLogService {
 	 * @return 记录数
 	 */
 	public int findByPhoneNum(String phone,Short type);
-	
-	public List<SmsLog> findByIp(Object ip);
 	
 	/**
 	 * 获取当前条件下的IP，当天信息记录有多少
@@ -57,15 +26,15 @@ public interface SmsLogService {
 	public int findByIpNum(String ip,Short type);
 	
 	/**
-	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表
+	 * 根据手机号、是否使用，类型，以及发送时间，查询符合的数据列表。即查询验证码是否存在
 	 * @param phone 手机号
 	 * @param addtime 添加使用，即发送时间，查询数据的时间大于此时间
 	 * @param used 是否使用，如 {@link SmsLog#USED_FALSE}
 	 * @param type 短信验证码类型，如 {@link SmsLog#TYPE_LOGIN}
 	 * @param code 验证码
-	 * @return
+	 * @return 若查询到验证码存在，返回 {@link SmsLog}，若查询不到，返回null，即验证码不存在
 	 */
-	public List findByPhoneAddtimeUsedType(String phone,int addtime,Short used,Short type,String code);
+	public SmsLog findByPhoneAddtimeUsedTypeCode(String phone,int addtime,Short used,Short type,String code);
 	
 	/**
 	 * 发送手机号登录的验证码
@@ -89,19 +58,21 @@ public interface SmsLogService {
 	 */
 	public BaseVO sendSms(HttpServletRequest request, String phone, String content, Short type);
 	
+
 	/**
-	 * 输入手机号、动态验证码，验证是否成功
+	 * 通用手机验证码验证方法。输入手机号、动态验证码，验证是否成功
 	 * @param phone 目标手机号
 	 * @param code 六位数动态验证码
 	 * @param type 发送类型，位于 {@link SmsLog}， {@link SmsLog}.type的值
 	 * 				<ul>
-	 * 					<li>1:{@link SmsLog#TYPE_LOGIN}登录 </li>
+	 * 					<li>1:{@link SmsLog#TYPE_LOGIN}登录 </li>，若是使用此类型，则后面的overdue过期时间无用
 	 * 					<li>2:{@link SmsLog#TYPE_FIND_PASSWORD}找回密码 </li>
 	 * 					<li>3:{@link SmsLog#TYPE_BIND_PHONE}绑定手机 </li>
 	 * 				</ul>
+	 * @param overdue 验证码过期时间，单位为秒。除了type为{@link SmsLog#TYPE_LOGIN}以外都有效
 	 * @return {@link BaseVO}
 	 */
-	public BaseVO verifyPhoneAndCode(String phone, String code, Short type);
+	public BaseVO verifyPhoneAndCode(String phone, String code, Short type, int overdue);
 	
 	/**
 	 * 使用阿里云短信通道，向指定手机号发送指定内容的验证码。

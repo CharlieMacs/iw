@@ -1,29 +1,25 @@
 package com.xnx3.j2ee.controller;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.aliyuncs.http.HttpRequest;
-import com.xnx3.QRCodeUtil;
+import com.xnx3.StringUtil;
+import com.xnx3.j2ee.Func;
+import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.service.CaptchaService;
-import com.xnx3.j2ee.service.QRCodeService;
+import com.xnx3.j2ee.func.ActionLogCache;
+import com.xnx3.j2ee.func.Captcha;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.vo.BaseVO;
-import com.xnx3.media.ImageUtil;
 
 /**
  * 登录、注册
@@ -37,10 +33,6 @@ public class LoginController_ extends BaseController {
 	private UserService userService;
 	@Resource
 	private SmsLogService smsLogService;
-	@Resource
-	private QRCodeService qRCodeService;
-	@Resource
-	private CaptchaService captchaService;
 	
 	/**
 	 * 注册页面 
@@ -50,6 +42,7 @@ public class LoginController_ extends BaseController {
 	@RequestMapping("/reg")
 	public String reg(HttpServletRequest request){
 		userService.regInit(request);
+		ActionLogCache.insert(request, "进入注册页面");
 		return "iw/login/reg";
 	}
 	
@@ -58,7 +51,8 @@ public class LoginController_ extends BaseController {
 	 */
 	@RequestMapping("/captcha")
 	public void captcha(HttpServletRequest request,HttpServletResponse response) throws IOException{
-		captchaService.showImage(request, response);
+		ActionLogCache.insert(request, "获取验证码显示");
+		Captcha.showImage(request, response);
 	}
 	
 	/**
@@ -72,40 +66,68 @@ public class LoginController_ extends BaseController {
 	public String regSubmits(User user ,HttpServletRequest request,Model model){
 		BaseVO baseVO = userService.reg(user, request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
+			ActionLogCache.insert(request, "注册提交", "成功，注册的用户名："+getUser().getUsername());
 			return "redirect:/login.do";
 		}else{
+			ActionLogCache.insert(request, "注册提交", "失败");
 			return error(model, baseVO.getInfo());
 		}
 	}
 	
 	/**
-	 * 登陆请求验证
-	 * @param user user.getUsername() 包含用户名/邮箱/id
+	 * 登陆页面
 	 * @param request {@link HttpServletRequest}
 	 * @param model {@link Model}
 	 * @return View
 	 */
 	@RequestMapping("login")
-	public String login(User user,HttpServletRequest request,Model model){
+	public String login(HttpServletRequest request,Model model){
 		if(getUser() != null){
+			ActionLogCache.insert(request, "进入登录页面", "已经登录成功，无需再登录，进行跳转");
 			return redirect("user/info.do");
 		}
+		
+		ActionLogCache.insert(request, "进入登录页面");
 		return "iw/login/login";
 	}
 
 	/**
 	 * 登陆请求验证
 	 * @param request {@link HttpServletRequest} 
-	 * 		<br/>登陆时form表单需提交两个参数：username(用户名/邮箱)、password(密码)
-	 * @return 
+	 * 		<br/>登陆时form表单需提交三个参数：username(用户名/邮箱)、password(密码)、code（图片验证码的字符）
 	 */
 	@RequestMapping("loginSubmit")
-	public String loginSubmit(HttpServletRequest request,Model model){
-		BaseVO baseVO =  userService.loginByUsernameAndPassword(request);
-		if(baseVO.getResult() == BaseVO.SUCCESS){
-			return success(model, "登陆成功","user/info.do");
+	@ResponseBody
+	public BaseVO loginSubmit(HttpServletRequest request,Model model){
+		//验证码校验
+		BaseVO capVO = Captcha.compare(request.getParameter("code"), request);
+		if(capVO.getResult() == BaseVO.FAILURE){
+			ActionLogCache.insert(request, "用户名密码模式登录失败", "验证码出错，提交的验证码："+StringUtil.filterXss(request.getParameter("code")));
+			return error("验证码出错");
 		}else{
-			return error(model, baseVO.getInfo());
+			//验证码校验通过
+			
+			BaseVO baseVO =  userService.loginByUsernameAndPassword(request);
+			if(baseVO.getResult() == BaseVO.SUCCESS){
+				//登录成功,BaseVO.info字段将赋予成功后跳转的地址，所以这里要再进行判断
+				
+				//得到当前登录的用户的信息
+				User user = getUser();
+				//可以根据用户的不同权限，来判断用户登录成功后要跳转到哪个页面
+				if(Func.isAuthorityBySpecific(user.getAuthority(), Global.get("ROLE_SUPERADMIN_ID"))){
+					//如果是超级管理员，那么跳转到管理后台
+					baseVO.setInfo("admin/index/index.do");
+					ActionLogCache.insert(request, "用户名密码模式登录成功","进入管理后台admin/index/");
+				}else{
+					//其他的默认为普通用户。若有其他权限，可以在此，如同超级管理员一般，继续判断
+					baseVO.setInfo("user/index.do");
+					ActionLogCache.insert(request, "用户名密码模式登录成功","进入普通用户首页");
+				}
+			}else{
+				ActionLogCache.insert(request, "用户名密码模式登录失败",baseVO.getInfo());
+			}
+			
+			return baseVO;
 		}
 	}
 
@@ -113,11 +135,13 @@ public class LoginController_ extends BaseController {
 	 * 手机号－验证码方式登陆
 	 */
 	@RequestMapping("phoneVerifyLogin")
-	public String phoneVerifyLogin(){
+	public String phoneVerifyLogin(HttpServletRequest request){
 		if(getUser() != null){
+			ActionLogCache.insert(request, "进入手机号验证码模式登录页面","已登录，无需再登录了，直接跳转");
 			return redirect("user/info.do");
 		}
 		
+		ActionLogCache.insert(request, "进入手机号验证码模式登录页面");
 		return "iw/login/phoneVerifyLogin";
 	}
 	
@@ -125,14 +149,17 @@ public class LoginController_ extends BaseController {
 	 * 登陆请求验证
 	 * @param phone 登录的手机号
 	 * @param code 发送到手机的验证码
-	 * @param response {@link HttpServletRequest}
-	 * @param model {@link Model}
 	 * @return {@link BaseVO}
 	 */
 	@RequestMapping("phoneVerifyLoginSubmit")
 	@ResponseBody
 	public BaseVO loginByPhoneAndCode(HttpServletRequest request){
 		BaseVO baseVO = userService.loginByPhoneAndCode(request);
+		if(baseVO.getResult() - BaseVO.SUCCESS == 0){
+			ActionLogCache.insert(request, "手机号验证码模式登录成功");
+		}else{
+			ActionLogCache.insert(request, "手机号验证码模式登录失败", baseVO.getInfo());
+		}
 		return baseVO;
 	}
 	
@@ -145,21 +172,20 @@ public class LoginController_ extends BaseController {
 	@RequestMapping("sendPhoneLoginCode")
 	@ResponseBody
 	public BaseVO sendPhoneLoginCode(HttpServletRequest request){
+		ActionLogCache.insert(request, "发送手机号登录的验证码");
 		return smsLogService.sendPhoneLoginCode(request);
 	}
 	
 	@RequestMapping("404")
 	public String error404(){
+		//这个暂时就不做日志了
 		return "/publicPage/404";
 	}
 	
 	@RequestMapping("500")
-	public String error500(){
+	public String error500(HttpServletRequest request){
+//		ActionLogCache.insert(request, "500", "500出错");
 		return "/publicPage/500";
-	}
-	@RequestMapping("test")
-	public void test(HttpServletRequest reuqest, HttpServletResponse response) throws IOException{
-		qRCodeService.showQRCodeForPage("http://www.baidu.com", response);
 	}
 	
 }

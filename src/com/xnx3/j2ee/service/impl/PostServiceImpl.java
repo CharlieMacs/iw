@@ -1,21 +1,23 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
+import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
-import com.xnx3.j2ee.dao.LogDAO;
-import com.xnx3.j2ee.dao.PostClassDAO;
-import com.xnx3.j2ee.dao.PostCommentDAO;
-import com.xnx3.j2ee.dao.PostDAO;
-import com.xnx3.j2ee.dao.PostDataDAO;
-import com.xnx3.j2ee.dao.UserDAO;
+import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.entity.BaseEntity;
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
+import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.entity.User;
+import com.xnx3.j2ee.func.ActionLogCache;
+import com.xnx3.j2ee.func.Language;
+import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.service.PostService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.vo.BaseVO;
@@ -23,153 +25,14 @@ import com.xnx3.j2ee.vo.PostVO;
 
 public class PostServiceImpl implements PostService {
 	
-	private PostDAO postDAO;
-	private PostDataDAO postDataDAO;
-	private LogDAO logDAO;
-	private UserDAO userDAO;
-	private PostClassDAO postClassDAO;
-	private PostCommentDAO postCommentDAO;
-	
-	public PostDAO getPostDAO() {
-		return postDAO;
+	private SqlDAO sqlDAO;
+
+	public SqlDAO getSqlDAO() {
+		return sqlDAO;
 	}
 
-	public void setPostDAO(PostDAO postDAO) {
-		this.postDAO = postDAO;
-	}
-
-	public PostDataDAO getPostDataDAO() {
-		return postDataDAO;
-	}
-
-	public void setPostDataDAO(PostDataDAO postDataDAO) {
-		this.postDataDAO = postDataDAO;
-	}
-
-	public LogDAO getLogDAO() {
-		return logDAO;
-	}
-
-	public void setLogDAO(LogDAO logDAO) {
-		this.logDAO = logDAO;
-	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public PostClassDAO getPostClassDAO() {
-		return postClassDAO;
-	}
-
-	public void setPostClassDAO(PostClassDAO postClassDAO) {
-		this.postClassDAO = postClassDAO;
-	}
-
-	public PostCommentDAO getPostCommentDAO() {
-		return postCommentDAO;
-	}
-
-	public void setPostCommentDAO(PostCommentDAO postCommentDAO) {
-		this.postCommentDAO = postCommentDAO;
-	}
-
-	@Override
-	public void save(Post transientInstance) {
-		// TODO Auto-generated method stub
-		postDAO.save(transientInstance);
-	}
-
-	@Override
-	public void delete(Post persistentInstance) {
-		// TODO Auto-generated method stub
-		postDAO.delete(persistentInstance);
-	}
-
-	@Override
-	public Post findById(Integer id) {
-		// TODO Auto-generated method stub
-		return postDAO.findById(id);
-	}
-
-	@Override
-	public List<Post> findByExample(Post instance) {
-		// TODO Auto-generated method stub
-		return postDAO.findByExample(instance);
-	}
-
-	@Override
-	public List findByProperty(String propertyName, Object value) {
-		// TODO Auto-generated method stub
-		return postDAO.findByProperty(propertyName, value);
-	}
-
-	@Override
-	public List<Post> findByClassid(Object classid) {
-		// TODO Auto-generated method stub
-		return postDAO.findByClassid(classid);
-	}
-
-	@Override
-	public List<Post> findByTitle(Object title) {
-		// TODO Auto-generated method stub
-		return postDAO.findByTitle(title);
-	}
-
-	@Override
-	public List<Post> findByView(Object view) {
-		// TODO Auto-generated method stub
-		return postDAO.findByView(view);
-	}
-
-	@Override
-	public List<Post> findByInfo(Object info) {
-		// TODO Auto-generated method stub
-		return postDAO.findByInfo(info);
-	}
-
-	@Override
-	public List<Post> findByAddtime(Object addtime) {
-		// TODO Auto-generated method stub
-		return postDAO.findByAddtime(addtime);
-	}
-
-	public List<Post> findByState(Object state){
-		return postDAO.findByState(state);
-	}
-	
-	@Override
-	public List<Post> findByUserid(Object userid) {
-		// TODO Auto-generated method stub
-		return postDAO.findByUserid(userid);
-	}
-
-	@Override
-	public List findAll() {
-		// TODO Auto-generated method stub
-		return postDAO.findAll();
-	}
-
-	@Override
-	public Post merge(Post detachedInstance) {
-		// TODO Auto-generated method stub
-		return postDAO.merge(detachedInstance);
-	}
-
-	@Override
-	public void attachDirty(Post instance) {
-		// TODO Auto-generated method stub
-		postDAO.attachDirty(instance);
-	}
-
-	@Override
-	public void attachClean(Post instance) {
-		// TODO Auto-generated method stub
-		postDAO.attachClean(instance);
+	public void setSqlDAO(SqlDAO sqlDAO) {
+		this.sqlDAO = sqlDAO;
 	}
 
 	@Override
@@ -177,32 +40,32 @@ public class PostServiceImpl implements PostService {
 		BaseVO baseVO = new BaseVO();
 		int id = Lang.stringToInt(request.getParameter("id"), 0);
 		int classid = Lang.stringToInt(request.getParameter("classid"), 0);
-		String title = request.getParameter("title");
-		String text = request.getParameter("text");
+		String title = StringUtil.filterXss(request.getParameter("title"));
+		String text = StringUtil.filterXss(request.getParameter("text"));
 		
 		if(classid == 0){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_addPostPleaseSelectClass"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_addPostPleaseSelectClass"));
 			return baseVO;
 		}
 		if(title==null || title.length()<Global.bbs_titleMinLength || title.length()>Global.bbs_titleMaxLength){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_addPostTitleSizeFailure").replaceAll("\\$\\{min\\}", Global.bbs_titleMinLength+"").replaceAll("\\$\\{max\\}", Global.bbs_titleMaxLength+""));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_addPostTitleSizeFailure").replaceAll("\\$\\{min\\}", Global.bbs_titleMinLength+"").replaceAll("\\$\\{max\\}", Global.bbs_titleMaxLength+""));
 			return baseVO;
 		}
 		if(text==null || text.length()<Global.bbs_textMinLength){
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_addPostTextSizeFailure").replaceAll("\\$\\{min\\}",Global.bbs_textMinLength+""));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_addPostTextSizeFailure").replaceAll("\\$\\{min\\}",Global.bbs_textMinLength+""));
 			return baseVO;
 		}
 		
 		Post post = new com.xnx3.j2ee.entity.Post();
 		PostData postData = new PostData();
 		if(id != 0){
-			post = findById(id);
+			post = sqlDAO.findById(Post.class, id);
 			if(post == null){
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_updatePostNotFind"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_updatePostNotFind"));
 				return baseVO;
 			}else{
 				post.setId(id);
-				postData = postDataDAO.findById(post.getId());
+				postData = sqlDAO.findById(PostData.class, post.getId());
 			}
 		}else{
 			post.setAddtime(com.xnx3.DateUtil.timeForUnix10());
@@ -223,19 +86,19 @@ public class PostServiceImpl implements PostService {
 		post.setTitle(title);
 		post.setClassid(classid);
 		post.setInfo(info);
-		save(post);
+		sqlDAO.save(post);
 		
 		if(postData.getPostid()==null){
 			postData.setPostid(post.getId());
 		}
 		postData.setText(text);
-		postDataDAO.save(postData);
+		sqlDAO.save(postData);
 		
 		baseVO.setBaseVO(BaseVO.SUCCESS, post.getId()+"");
 		if(id == 0){
-			logDAO.insert(post.getId(), "BBS_POST_ADD", post.getTitle());
+//			logDAO.insert(post.getId(), "BBS_POST_ADD", post.getTitle());
 		}else{
-			logDAO.insert(post.getId(), "BBS_POST_UPDATE", post.getTitle());
+//			logDAO.insert(post.getId(), "BBS_POST_UPDATE", post.getTitle());
 		}
 		
 		return baseVO;
@@ -245,16 +108,16 @@ public class PostServiceImpl implements PostService {
 	public BaseVO deletePost(int id) {
 		BaseVO baseVO = new BaseVO();
 		if(id>0){
-			Post p = findById(id);
+			Post p = sqlDAO.findById(Post.class, id);
 			if(p!=null){
 				p.setIsdelete(BaseEntity.ISDELETE_DELETE);
-				save(p);
-				logDAO.insert(p.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", p.getTitle());
+				sqlDAO.save(p);
+//				logDAO.insert(p.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", p.getTitle());
 			}else{
-				baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_deletePostNotFind"));
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_deletePostNotFind"));
 			}
 		}else{
-			baseVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_deletePostIdFailure"));
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_deletePostIdFailure"));
 		}
 		return baseVO;
 	}
@@ -265,45 +128,192 @@ public class PostServiceImpl implements PostService {
 		
 		if(id>0){
 			//查询帖子详情
-			Post post=findById(id);
+			Post post=sqlDAO.findById(Post.class, id);
 			if(post == null){
-				postVO.setBaseVO(PostVO.FAILURE, Global.getLanguage("bbs_viewPostNotFind"));
+				postVO.setBaseVO(PostVO.FAILURE, Language.show("bbs_viewPostNotFind"));
 				return postVO;
 			}
 			
 			//查看帖子所属用户
-			User user = userDAO.findById(post.getUserid());
+			User user = sqlDAO.findById(User.class, post.getUserid());
 			//检验此用户状态是否正常，是否被冻结
 			if(user.getIsfreeze() == User.ISFREEZE_FREEZE){
-				postVO.setBaseVO(BaseVO.FAILURE, Global.getLanguage("bbs_postCreateUserIsFreeze"));
+				postVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_postCreateUserIsFreeze"));
 				return postVO;
 			}
 			postVO.setUser(user);
 			
 			//查所属板块
-			PostClass postClass = postClassDAO.findById(post.getClassid());
+			PostClass postClass = sqlDAO.findById(PostClass.class, post.getClassid());
 			if(postClass == null || postClass.getIsdelete() == BaseEntity.ISDELETE_DELETE){
-				postVO.setBaseVO(PostVO.FAILURE, Global.getLanguage("bbs_postViewPostClassIsNotFind"));
+				postVO.setBaseVO(PostVO.FAILURE, Language.show("bbs_postViewPostClassIsNotFind"));
 			}else{
 				postVO.setPostClass(postClass);
 				postVO.setPost(post);
 				post.setView(post.getView()+1);
-				save(post);
+				sqlDAO.save(post);
 				
-				PostData postData = postDataDAO.findById(post.getId());
+				PostData postData = sqlDAO.findById(PostData.class, post.getId());
 				postVO.setText(postData.getText());
 				
-				postVO.setCommentCount(postCommentDAO.count(post.getId()));
+				postVO.setCommentCount(count(post.getId()));
 				
 				if(Global.bbs_readPost_addLog){
-					logDAO.insert(post.getId(), "BBS_POST_VIEW", post.getTitle());
+//					logDAO.insert(post.getId(), "BBS_POST_VIEW", post.getTitle());
 				}
 			}
 		}else{
-			postVO.setBaseVO(PostVO.FAILURE, Global.getLanguage("bbs_postIdFailure"));
+			postVO.setBaseVO(PostVO.FAILURE, Language.show("bbs_postIdFailure"));
 		}
 		
 		return postVO;
 	}
 
+	@Override
+	public int count(int postid) {
+		return sqlDAO.count("post_comment", "WHERE postid= "+postid);
+	}
+
+
+	@Override
+	public BaseVO deleteComment(int id) {
+		BaseVO baseVO = new BaseVO();
+		if(id>0){
+			PostComment pc = sqlDAO.findById(PostComment.class, id);
+			if(pc!=null){
+				pc.setIsdelete(BaseEntity.ISDELETE_DELETE);
+				sqlDAO.save(pc);
+//				logDAO.insert(pc.getId(), "BBS_POST_DELETE_COMMENT", pc.getText());
+			}else{
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_deleteCommentNotFind"));
+			}
+		}else{
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_commentIdFailure"));
+		}
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO addComment(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		int postid = Lang.stringToInt(request.getParameter("postid"), 0);
+		String text = request.getParameter("text");
+		if(postid == 0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_unknowCommentPost"));
+			return baseVO;
+		}
+		
+		if(text==null || text.length()<Global.bbs_commentTextMinLength || text.length()>Global.bbs_commentTextMaxLength){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_commentSizeFailure").replaceAll("\\$\\{min\\}", Global.bbs_commentTextMinLength+"").replaceAll("\\$\\{max\\}", Global.bbs_commentTextMaxLength+""));
+			return baseVO;
+		}
+		
+		//先查询是不是有这个主贴
+		Post p=sqlDAO.findById(Post.class, postid);
+		if(p == null){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_commentPostNotFind"));
+			return baseVO;
+		}
+		
+		if(p.getState() != Post.STATE_NORMAL){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_commentPostIsNotNormal"));
+			return baseVO;
+		}
+		
+		if(p.getIsdelete() == Post.ISDELETE_DELETE){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_commentPostIsDelete"));
+			return baseVO;
+		}
+		
+		PostComment postComment=new PostComment();
+		postComment.setPostid(p.getId());
+		postComment.setUserid(ShiroFunc.getUser().getId());
+		postComment.setAddtime(DateUtil.timeForUnix10());
+		postComment.setText(text);
+		postComment.setIsdelete(PostComment.ISDELETE_NORMAL);
+		sqlDAO.save(postComment);
+		
+//		logDAO.insert(postComment.getId(), "BBS_POST_COMMENT_ADD", StringUtil.filterHtmlTag(postComment.getText()));
+		return baseVO;
+	}
+
+	@Override
+	public List commentAndUser(int postid) {
+		return commentAndUser(postid, 0);
+	}
+
+	@Override
+	public List commentAndUser(int postid, int limit) {
+		String limitString="";
+		if(limit > 0){
+			limitString = " LIMIT 0,"+limit;
+		}
+		
+		return sqlDAO.findMapBySqlQuery("SELECT comment.addtime,comment.userid,comment.text,user.head,user.nickname,user.id FROM post_comment comment,user WHERE comment.userid=user.id AND comment.postid= "+postid+" AND user.isfreeze="+User.ISFREEZE_NORMAL+" ORDER BY comment.id DESC "+limitString);
+	}
+	
+	@Override
+	public BaseVO savePostClass(HttpServletRequest request) {
+		BaseVO baseVO = new BaseVO();
+		int id = Lang.stringToInt(request.getParameter("id"), 0);
+		String name = request.getParameter("name");
+		if(name == null || name.length()==0){
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_savePostClassNameNotNull"));
+			return baseVO;
+		}
+		
+		PostClass postClass = null;
+		if(id==0){	//新增
+			postClass = new PostClass();
+		}else{
+			//修改
+			postClass = sqlDAO.findById(PostClass.class, id);
+			if(postClass == null){
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_updatePostClassNotFind"));
+				return baseVO;
+			}
+		}
+		
+		postClass.setName(name);
+		postClass.setIsdelete(BaseEntity.ISDELETE_NORMAL);
+		
+		sqlDAO.save(postClass);
+		if((id==0 && postClass.getId()>0) || id > 0){
+			if(id>0){
+//				logDAO.insert(postClass.getId(), "ADMIN_SYSTEM_BBS_CLASS_SAVE", postClass.getName());
+			}else{
+//				logDAO.insert(postClass.getId(), "ADMIN_SYSTEM_BBS_CLASS_ADD", postClass.getName());
+			}
+			gerenatePostClassCacheJsFile();
+		}else{
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_savePostClassFailure"));
+		}
+		return baseVO;
+	}
+
+	@Override
+	public BaseVO deletePostClass(int id) {
+		BaseVO baseVO = new BaseVO();
+		if(id>0){
+			PostClass pc = sqlDAO.findById(PostClass.class, id);
+			if(pc!=null){
+				pc.setIsdelete(BaseEntity.ISDELETE_DELETE);
+				sqlDAO.save(pc);
+//				logDAO.insert(pc.getId(), "ADMIN_SYSTEM_BBS_POST_DELETE", pc.getName());
+				gerenatePostClassCacheJsFile();
+			}else{
+				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_deletePostClassNotFind"));
+			}
+		}else{
+			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("bbs_pleaseAddDeletePostClassID"));
+		}
+		return baseVO;
+	}
+	
+	/**
+	 * 生成正常未删除的PostClass的缓存的js文件
+	 */
+	private void gerenatePostClassCacheJsFile(){
+		new Bbs().postClass(sqlDAO.findByProperty(PostClass.class, "isdelete", BaseEntity.ISDELETE_NORMAL));
+	}
 }
