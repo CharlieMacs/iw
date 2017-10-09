@@ -116,7 +116,7 @@ public class MessageController_ extends BaseController {
 		String boxWhere = box.equals("inbox")? "message.recipientid="+getUser().getId():"message.senderid="+getUser().getId();
 		sql.appendWhere(boxWhere+" AND message.senderid=user.id AND message.isdelete = "+Message.ISDELETE_NORMAL+" AND user.isfreeze="+User.ISFREEZE_NORMAL);
 		int count = sqlService.count("message,user", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user ", page);
 		sql.setGroupBy("message.id");
 		List<Map<String, Object>> list = sqlService.findMapBySql(sql);

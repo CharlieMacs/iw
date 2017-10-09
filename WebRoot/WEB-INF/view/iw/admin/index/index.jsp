@@ -60,6 +60,15 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 				</a>
 			</li>
 		</shiro:hasPermission>
+		
+		<shiro:hasPermission name="adminMessage"> 
+			<li class="layui-nav-item">
+				<a id="shengchengzhengzhan" href="javascript:loadUrl('<%=basePath %>admin/message/list.do');">
+					<i class="layui-icon firstMenuIcon">&#xe63a;</i>
+					<span class="firstMenuFont">站内信息</span>
+				</a>
+			</li>
+		</shiro:hasPermission>
 			
 		<shiro:hasPermission name="adminBbs"> 
 			<li class="layui-nav-item">
@@ -101,15 +110,6 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 						<dd><a id="rzfw_fangwentongji" class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/log/cartogram.do');">访问统计</a></dd>
 					</shiro:hasPermission>
 				</dl>
-			</li>
-		</shiro:hasPermission>
-		
-		<shiro:hasPermission name="adminMessage"> 
-			<li class="layui-nav-item">
-				<a id="shengchengzhengzhan" href="javascript:loadUrl('<%=basePath %>admin/message/list.do');">
-					<i class="layui-icon firstMenuIcon">&#xe63a;</i>
-					<span class="firstMenuFont">站内信息</span>
-				</a>
 			</li>
 		</shiro:hasPermission>
 		
@@ -157,7 +157,7 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 		
 		<li class="layui-nav-item" style="position: absolute;bottom: 0px; text-align:center;">
 			<a href="http://github.com/xnx3/iw" target="_black">
-				<span class="firstMenuFont">Power By iw</span>
+				<span class="firstMenuFont">power by iw</span>
 			</a>
 		</li>
 	</ul>

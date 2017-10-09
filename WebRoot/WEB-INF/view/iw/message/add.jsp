@@ -4,15 +4,10 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="发信"/>
-    </jsp:include>
-<link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
-</head>
-<body>
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="发送站内信息"/>
+</jsp:include>
+
 <article id="container">
 	<section id="main">
 		<form method="post" action="send.do">

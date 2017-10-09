@@ -27,9 +27,7 @@ public class PathFormat {
 		if(ShiroFunc.getUser() != null){
 			userid = ShiroFunc.getUser().getId();
 		}
-//		System.out.println("-111------parse------->>"+input);
 		input = input.replaceAll("\\{userid\\}", userid+"");
-		logger.info("input111---user--:"+input);
 		if(ShiroFunc.getCurrentActiveUser() != null && ShiroFunc.getCurrentActiveUser().getUeUploadParam1() != null){
 			String uploadParam1 = (String)ShiroFunc.getCurrentActiveUser().getUeUploadParam1();
 			if(uploadParam1 != null){
@@ -40,7 +38,6 @@ public class PathFormat {
 		}else{
 			logger.info("Sh111iroFunc.getCurrentActiveUser() == null || ShiroFunc.getCurrentActiveUser().getUeUploadParam1() == null");
 		}
-		logger.info("i111nput---uploadP---:"+input);
 		
 		
 		Pattern pattern = Pattern.compile( "\\{([^\\}]+)\\}", Pattern.CASE_INSENSITIVE  );
@@ -188,13 +185,6 @@ public class PathFormat {
 		
 		return ( Math.random() + "" ).replace( ".", "" ).substring( 0, length );
 		
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String input = "12{userid}345";
-		input = input.replaceAll("\\{userid\\}", "-");
-//		System.out.println(input);
 	}
 
 }

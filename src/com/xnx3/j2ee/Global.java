@@ -54,8 +54,6 @@ public class Global {
 	public final static int USER_PASSWORD_SALT_NUMBER=2;	//密码散列几次，2即可,需要跟配置文件的散列次数一致
 	public final static int PROMPT_STATE_SUCCESS=1;			//中专提示页面prompt.jsp的成功提示状态
 	public final static int PROMPT_STATE_ERROR=0;			//中专提示页面prompt.jsp的失败（错误）提示状态
-	public final static int PAGE_DEFAULT_EVERYNUMBER=20;	//用户前台分页，默认每页20行记录
-	public final static int PAGE_ADMIN_DEFAULT_EVERYNUMBER=10;	//后台分页，每页10条纪录
 	
 	/*****论坛相关******/
 	public static int bbs_titleMinLength;	//发帖标题允许的最小长度（英文长度）
@@ -75,11 +73,6 @@ public class Global {
 	public static int roleId_user = 1;		//普通用户的角色id
 	
 	static{
-		/****站内信****/
-		MESSAGE_USED = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.used").equals("true");
-		MESSAGE_CONTENT_MINLENGTH = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.content_minlength"), 0);
-		MESSAGE_CONTENT_MAXLENGTH = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.content_maxlength"), 0);
-		
 		/*****论坛相关******/
 		bbs_titleMinLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.titleMinLength"), 0);
 		bbs_titleMaxLength = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("bbs.titleMaxLength"), 0);
@@ -136,9 +129,6 @@ public class Global {
 		return projectPath;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(getProjectPath());
-	}
 	
 	/**
 	 * 获取语言包language.xml中的描述文字。如果没有找到返回空字符""

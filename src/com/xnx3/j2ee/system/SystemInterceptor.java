@@ -28,16 +28,10 @@ import com.xnx3.j2ee.util.CookieUtil;
  *
  */
 public class SystemInterceptor extends HandlerInterceptorAdapter {
-	public static boolean useMessage=false;	//是否使用站内信息功能	
-	
 	public static boolean useExecuteTime = false;	//是否使用Controller函数记录执行时间的功能
 	public static long recordTime = 0;	//若执行时间超过多少毫秒，就在控制台打印出来，这里的单位是毫秒
 	
-	@Resource
-	private MessageService messageService;
-	
 	static{
-		useMessage = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("message.used").equals("true");
 		useExecuteTime = ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("ExecuteTime.controller.used").equals("true");
 		int recordTimeInt = Lang.stringToInt(ConfigManagerUtil.getSingleton("systemConfig.xml").getValue("ExecuteTime.recordTime"), 0);
 		recordTime = recordTimeInt;

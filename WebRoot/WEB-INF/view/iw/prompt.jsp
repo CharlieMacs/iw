@@ -104,21 +104,22 @@ if(state == Global.PROMPT_STATE_SUCCESS){
 		  		<%=info %>
 		  </div>
 		  <div style="font-size: 20px;opacity: 0.6;">
-		  		3秒后自动&nbsp;<b><a href="<%=redirectUrl %>" style="text-decoration: underline;">跳转</a></b>&nbsp;...
+		  		<span id="time">3</span>秒后自动&nbsp;<b><a href="<%=redirectUrl %>" style="text-decoration: underline;">跳转</a></b>&nbsp;...
 		  </div>
   		
   </div>
 </div>
 
-<!--  -->
-
 <script type="text/javascript">
-
-function jump(){ 
-	window.location.href='<%=redirectUrl %>';
-} 
-//定时执行，3秒后执行
-window.setTimeout(jump,3000); 
+function run(){
+    var s = document.getElementById("time");
+    if(s.innerHTML == 1){
+        window.location.href='<%=redirectUrl %>';
+        return false;
+    }
+    s.innerHTML = s.innerHTML * 1 - 1;
+}
+window.setInterval("run();", 1000);
 </script>
 </body>
 </html>

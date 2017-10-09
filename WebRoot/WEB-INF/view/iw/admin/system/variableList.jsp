@@ -55,7 +55,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$(function(){
 				var xnx3_${system.name }_index = 0;
 				$("#xnx3_${system.name }").hover(function(){
-					xnx3_${system.name }_index = layer.tips('值&nbsp;:&nbsp;${system.value }<br/>描述&nbsp;:&nbsp;${system.description }', '#xnx3_${system.name }', {
+					xnx3_${system.name }_index = layer.tips('值&nbsp;:&nbsp;${system.value }<br/><hr class="layui-bg-gray">${system.description }', '#xnx3_${system.name }', {
 						tips: [2, '#0FA6A8'], //还可配置颜色
 						time:0,
 						tipsMore: true,

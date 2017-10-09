@@ -37,11 +37,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<% int i = 0; %>
   	<c:forEach items="${list}" var="log">
   		<% i++; %>
-  		<tr style="cursor: pointer;" id="xnx3_<%=i %>_tr">
-          <td id="xnx3_<%=i %>"><x:substring maxLength="18" text="${log['action'] }"></x:substring> </td>
-          <td><x:substring maxLength="18" text="${log['remark'] }"></x:substring> </td>
-          <td style="width:50px;">${log['goalid'] }</td>
-          <td style="width:100px;"><x:substring maxLength="18" text="${log['username'] }"></x:substring></td>
+  		<tr>
+          <td style="cursor: pointer;" id="xnx3_<%=i %>" onclick="xnx3_<%=i %>_onclick();"><x:substring maxLength="18" text="${log['action'] }"></x:substring> </td>
+          <td style="cursor: pointer;" onclick="xnx3_<%=i %>_onclick();"><x:substring maxLength="18" text="${log['remark'] }"></x:substring> </td>
+          <td style="width:50px; cursor: pointer;" onclick="xnx3_<%=i %>_onclick();">${log['goalid'] }</td>
+          <td style="width:100px; cursor: pointer;" onclick="userView('${log['userid'] }');"><x:substring maxLength="18" text="${log['username'] }"></x:substring></td>
           <td style="width:100px;"><x:time linuxTime="${log['logtime'] }" format="yy-MM-dd hh:mm"></x:time></td>
       </tr>
       <script>
@@ -74,11 +74,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				},function(){
 					layer.close(xnx3_<%=i %>_index);
 				})
-				
-				$("#xnx3_<%=i %>_tr").click(function(){
-					view('<table class="layui-table iw_table">'+xnx3_<%=i %>_table_content);
-				});
 			});	
+			function xnx3_<%=i %>_onclick(){
+				view('<table class="layui-table iw_table">'+xnx3_<%=i %>_table_content);
+			}
 		</script>
     </c:forEach>
   </tbody>
@@ -87,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <jsp:include page="../../common/page.jsp"></jsp:include>
 
 <script>
-//查看某条
+//查看某条动作详情
 function view(content){
 	layer.open({
 		type: 1, 
@@ -98,6 +97,19 @@ function view(content){
 	});
 }
 
+//查看用户详情信息
+function userView(id){
+	if(id.length < 1){
+		return;
+	}
+	layer.open({
+		type: 2, 
+		title:'查看用户信息', 
+		area: ['460px', '630px'],
+		shadeClose: true, //开启遮罩关闭
+		content: '<%=basePath %>admin/user/view.do?id='+id
+	});
+}
 </script>
 
 <jsp:include page="../../common/foot.jsp"></jsp:include>

@@ -145,7 +145,7 @@ public class ObjectService {
 			// // 遍历所有Object
 			for (OSSObjectSummary objectSummary : sublisting.getObjectSummaries()) {
 				// System.out.println(objectSummary.getKey());
-				filePathList.add(objectSummary.getKey());
+				filePathList.add("/"+objectSummary.getKey());
 			}
 		} while (hasNext);
 

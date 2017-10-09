@@ -40,7 +40,10 @@ public class LoginController_ extends BaseController {
 	 * @return View
 	 */
 	@RequestMapping("/reg")
-	public String reg(HttpServletRequest request){
+	public String reg(HttpServletRequest request ,Model model){
+		if(Global.getInt("ALLOW_USER_REG") == 0){
+			return error(model, "系统已禁止用户自行注册");
+		}
 		userService.regInit(request);
 		ActionLogCache.insert(request, "进入注册页面");
 		return "iw/login/reg";
@@ -64,6 +67,10 @@ public class LoginController_ extends BaseController {
 	 */
 	@RequestMapping("/regSubmit")
 	public String regSubmits(User user ,HttpServletRequest request,Model model){
+		if(Global.getInt("ALLOW_USER_REG") == 0){
+			return error(model, "系统禁止用户自行注册");
+		}
+		
 		BaseVO baseVO = userService.reg(user, request);
 		if(baseVO.getResult() == BaseVO.SUCCESS){
 			ActionLogCache.insert(request, "注册提交", "成功，注册的用户名："+getUser().getUsername());
@@ -174,18 +181,6 @@ public class LoginController_ extends BaseController {
 	public BaseVO sendPhoneLoginCode(HttpServletRequest request){
 		ActionLogCache.insert(request, "发送手机号登录的验证码");
 		return smsLogService.sendPhoneLoginCode(request);
-	}
-	
-	@RequestMapping("404")
-	public String error404(){
-		//这个暂时就不做日志了
-		return "/publicPage/404";
-	}
-	
-	@RequestMapping("500")
-	public String error500(HttpServletRequest request){
-//		ActionLogCache.insert(request, "500", "500出错");
-		return "/publicPage/500";
 	}
 	
 }

@@ -50,7 +50,7 @@ public class LogAdminController_ extends BaseController{
 		AliyunLogPageUtil log = new AliyunLogPageUtil(ActionLogCache.aliyunLogUtil);
 		
 		//得到当前页面的列表数据
-		JSONArray jsonArray = log.list("", "", true, Global.getInt("ACTIONLOG_LIST_ROW"), request);
+		JSONArray jsonArray = log.list("", "", true, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		
 		//得到当前页面的分页相关数据（必须在执行了list方法获取列表数据之后，才能调用此处获取到分页）
 		Page page = log.getPage();

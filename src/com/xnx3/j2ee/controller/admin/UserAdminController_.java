@@ -68,7 +68,7 @@ public class UserAdminController_ extends BaseController {
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"username","email","nickname","phone","id=","regtime(date:yyyy-MM-dd hh:mm:ss)>"});
 		int count = sqlService.count("user", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM user", page);
 		sql.setDefaultOrderBy("user.id DESC");
 		List<User> list = sqlService.findBySql(sql, User.class);

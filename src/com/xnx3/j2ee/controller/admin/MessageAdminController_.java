@@ -46,7 +46,7 @@ public class MessageAdminController_ extends BaseController {
 		sql.setSearchColumn(new String[]{"id=","senderid=","recipientid="});
 		sql.appendWhere("message.isdelete = "+Message.ISDELETE_NORMAL);
 		int count = sqlService.count("message", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT message.*,message_data.content, (SELECT user.nickname FROM user WHERE user.id=message.recipientid) AS other_nickname ,(SELECT user.nickname FROM user WHERE user.id=message.senderid) AS self_nickname FROM message ,message_data ,user ", page);
 		sql.appendWhere("message.id=message_data.id");
 		sql.setGroupBy("message.id");

@@ -5,21 +5,17 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="帖子列表"/>
-    </jsp:include>
-	<link href="<%=basePath %>style/user/css/forum.css" rel="stylesheet" type="text/css">
-</head>
-<body>
+<jsp:include page="../common/head.jsp">
+   	<jsp:param name="title" value="帖子列表"/>
+   </jsp:include>
+<link href="<%=basePath %>style/user/css/forum.css" rel="stylesheet" type="text/css">
+
 	<article id="container">
 		<jsp:include page="../common/head.jsp"></jsp:include>
 		<section id="main">
 			<div class="bgBox"></div>
 			<h2>
-				<img src="<%=basePath %>style/user/img/common/star01.png" alt="">论坛${tt }<a href='addPost.do?classid=<%=request.getParameter("classid") %>' class="btn fR">我要发帖</a></h2>
+				<img src="<%=basePath %>style/user/img/common/star01.png" alt="">论坛${tt }<a href='addPost.do?classid=<%=request.getParameter("classid") == null? "":request.getParameter("classid")  %>' class="btn fR">我要发帖</a></h2>
 			<div id="conts" class="clearfix">
 				<div class="lBox">
 					<ul class="borderUl">

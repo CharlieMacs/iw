@@ -56,7 +56,7 @@ public class BbsAdminController_ extends BaseController {
 		sql.setSearchColumn(new String[]{"classid=","title","view","info","addtime(date:yyyy-MM-dd hh:mm:ss)>"});
 		sql.appendWhere("isdelete = "+BaseEntity.ISDELETE_NORMAL);
 		int count = sqlService.count("post", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM post", page);
 		sql.setDefaultOrderBy("post.id DESC");
 		List<Post> list = sqlService.findBySql(sql, Post.class);
@@ -121,7 +121,7 @@ public class BbsAdminController_ extends BaseController {
 		sql.setSearchColumn(new String[]{"id=","name"});
 		sql.appendWhere("isdelete = "+PostClass.ISDELETE_NORMAL);
 		int count = sqlService.count("post_class", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM post_class", page);
 		sql.setDefaultOrderBy("post_class.id DESC");
 		List<PostClass> list = sqlService.findBySql(sql, PostClass.class);
@@ -231,7 +231,7 @@ public class BbsAdminController_ extends BaseController {
 		sql.setSearchColumn(new String[]{"postid=","userid="});
 		sql.appendWhere("isdelete = "+BaseEntity.ISDELETE_NORMAL);
 		int count = sqlService.count("post_comment", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM post_comment", page);
 		sql.setDefaultOrderBy("post_comment.id DESC");
 		List<PostComment> list = sqlService.findBySql(sql, PostComment.class);

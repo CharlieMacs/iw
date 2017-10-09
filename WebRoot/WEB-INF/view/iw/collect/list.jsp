@@ -5,17 +5,9 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../../publicPage/common/head.jsp">
-    	<jsp:param name="title" value="我的关注列表"/>
-    </jsp:include>
-</head>
-<body>
-<article id="container">
-	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
-	<section id="main">
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="我的关注列表"/>
+</jsp:include>
 		
 		<div><h1>我的关注列表</h1><a href="<%=basePath %>collect/add.do"  style="color:blue;">添加关注</a></div>
 		
@@ -45,14 +37,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        </table>
 	    </section>
 	    <!-- 通用分页跳转 -->
-	    <jsp:include page="../../publicPage/common/page.jsp">
-	    	<jsp:param name="page" value="${page }"/>
-	    </jsp:include>
+	    <jsp:include page="../common/page.jsp"></jsp:include>
 		
 	</section>
-	<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
-	<footer id="footer"></footer>
-</article>
 
-</body>
-</html>
+<jsp:include page="../common/foot.jsp"></jsp:include> 

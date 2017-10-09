@@ -25,10 +25,13 @@
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor"/>
     <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 默认500错误页面，就是不在exceptionMappings指定范围内，500错误页面 -->
+    	<property name="defaultErrorView" value="/iw/500" />
+    	
         <property name="exceptionMappings">
             <props>
-                <prop key="org.apache.shiro.authz.UnauthorizedException">/iw/unauthorized</prop>
-                <prop key="org.apache.shiro.authz.AuthorizationException">/iw/unauthorized</prop>
+                <prop key="org.apache.shiro.authz.UnauthorizedException">/iw/403</prop>
+                <prop key="org.apache.shiro.authz.AuthorizationException">/iw/403</prop>
             </props>
         </property>
     </bean>

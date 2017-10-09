@@ -99,7 +99,7 @@ public class BbsController_ extends BaseController {
 		sql.setSearchColumn(new String[]{"classid=","title","view>","info","addtime","userid="});
 		sql.appendWhere("post.state = "+Post.STATE_NORMAL+" AND post.isdelete = "+Post.ISDELETE_NORMAL);
 		int count = sqlService.count("post", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT post.*, user.nickname, user.head FROM post LEFT JOIN user ON user.id = post.userid ", page);
 		sql.setDefaultOrderBy("post.id DESC");
 		List<Map<String, Object>> list = sqlService.findMapBySql(sql);

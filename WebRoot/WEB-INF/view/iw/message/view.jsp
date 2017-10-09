@@ -4,17 +4,11 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="阅读站内信"/>
-    </jsp:include>
-<link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
-</head>
-<body>
-<article id="container">
-	<section id="main">
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="阅读站内信"/>
+</jsp:include>
+
+
 		<hr/>
 		发信者：${messageVO.senderUser.nickname }
 		<br/>
@@ -24,9 +18,5 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<br/>
 		信息内容：${messageVO.content}
 		<br/>
-		<br/>
-	</section>
-	<footer id="footer"></footer>
-</article>
-</body>
-</html>
+
+<jsp:include page="../common/foot.jsp"></jsp:include> 

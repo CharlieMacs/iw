@@ -3,11 +3,8 @@
   <display-name>iw</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
     <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.do</welcome-file>
   </welcome-file-list>
   
   <!-- shiro的filter -->
@@ -81,17 +78,11 @@
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class> 
 	</listener>
 	
-	<jsp-config>
-		<taglib>
-			<taglib-uri>http://www.xnx3.com/java_xnx3/xnx3_tld</taglib-uri>
-			<taglib-location>/WEB-INF/classes/xnx3.tld</taglib-location>
-		</taglib>
-	</jsp-config>
-
 	<!-- 项目启动初始化 -->
 	<servlet>
 	  <servlet-name>init</servlet-name>
 	  <servlet-class>com.xnx3.j2ee.init.InitServlet</servlet-class>
 	  <load-on-startup>2</load-on-startup>
 	</servlet>
+	
 </web-app>

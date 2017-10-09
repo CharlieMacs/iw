@@ -64,7 +64,7 @@ public class CollectController_ extends BaseController {
 		Sql sql = new Sql(request);
 		sql.appendWhere("collect.othersid="+getUser().getId());
 		int count = sqlService.count("collect", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT collect.*,user.nickname,user.head FROM collect,user", page);
 		sql.appendWhere("collect.userid = user.id");
 		sql.setDefaultOrderBy("collect.id DESC");
@@ -83,7 +83,7 @@ public class CollectController_ extends BaseController {
 		Sql sql = new Sql(request);
 		sql.appendWhere("collect.userid="+getUser().getId());
 		int count = sqlService.count("collect", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT collect.*,user.nickname,user.head FROM collect,user", page);
 		sql.appendWhere("collect.othersid = user.id");
 		sql.setDefaultOrderBy("collect.id DESC");

@@ -4,12 +4,9 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../../publicPage/common/head.jsp">
-    	<jsp:param name="title" value="个人中心"/>
-    </jsp:include>
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="个人中心"/>
+</jsp:include>
 	
 <script type="text/javascript">
 $(function(){
@@ -50,28 +47,9 @@ $(function(){
 	});
 });
 </script>
-</head>
-<body>
 
-	<article id="container">
-		
-		<div style="width:100%; height:200px;">
-		
-		
-		</div>
-		
 		<section id="main">
-			<div class="bgBox"></div>
-			<h2>用户中心</h2>
 			<div id="conts">
-				<ul class="naviUl clearfix">
-					<li class="on">
-						<a href="../user/info.do">用户中心</a>
-					</li>
-					<li>
-						<a href="../friend/index.do">好友管理</a>
-					</li>
-				</ul>
 				<h3>修改个人资料</h3>
 				<div class="innerBox">
 					<div class="clearfix">
@@ -146,7 +124,7 @@ $(function(){
 				</div>
 			</div>
 			</section>
-		<footer id="footer"></footer>
 	</article>
-</body>
-</html>
+
+	
+<jsp:include page="../common/foot.jsp"></jsp:include> 

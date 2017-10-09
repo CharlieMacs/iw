@@ -6,17 +6,11 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="站内信列表"/>
-    </jsp:include>
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="站内信列表"/>
+</jsp:include>
 <script src="<%=basePath+Global.CACHE_FILE %>Message_state.js"></script>
-</head>
-<body>
-<article id="container">
-	<section id="main">
+
 		<div><a href="<%=basePath %>/message/add.do"  style="color:blue;">新建信息</a></div>
 		<div><a href="<%=basePath %>/message/list.do?state=0&box=inbox"  style="color:blue;">收件箱未读消息</a>，<a href="<%=basePath %>/message/list.do?state=1&box=inbox"  style="color:blue;">收件箱已读消息</a>，<a href="<%=basePath %>/message/list.do?state=0&box=outbox"  style="color:blue;">发件箱未读消息</a>，<a href="<%=basePath %>/message/list.do?state=1&box=outbox"  style="color:blue;">发件箱已读消息</a></div>
 		<div>信息列表：</div>
@@ -52,12 +46,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        </table>
 	    </section>
 	    <!-- 通用分页跳转 -->
-	    <jsp:include page="../common/page.jsp">
-	    	<jsp:param name="page" value="${page }"/>
-	    </jsp:include>
+	    <jsp:include page="../common/page.jsp"></jsp:include>
 		
-	</section>
-	<footer id="footer"></footer>
-</article>
-</body>
-</html>
+<jsp:include page="../common/foot.jsp"></jsp:include> 

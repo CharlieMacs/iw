@@ -36,7 +36,7 @@ public class InitServlet extends HttpServlet {
 	public void init(ServletConfig servletContext) throws ServletException {
 		//获取当前项目的所在路径
 		Global.projectPath = servletContext.getServletContext().getRealPath("/");
-		
+		java.lang.System.out.println("Global.projectPath:"+Global.projectPath);
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext.getServletContext());
 		postService = ctx.getBean("postService", PostService.class);
 		sqlService = ctx.getBean("sqlService", SqlService.class);

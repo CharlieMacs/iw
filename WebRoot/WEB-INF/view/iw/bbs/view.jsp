@@ -8,17 +8,10 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../common/head.jsp">
-    	<jsp:param name="title" value="${postVO.post.title }"/>
-    	<jsp:param name="keywords" value="${postVO.post.title }"/>
-    	<jsp:param name="description" value="${postVO.post.info }"/>
-    </jsp:include>
-</head>
-<body>
-<jsp:include page="../common/head.jsp"></jsp:include>
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="我的关注列表"/>
+</jsp:include>
+
 
 <div style="text-align:left; padding:20px;">
 	<div>
@@ -81,5 +74,5 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</form>
 	</div>
 </div>
-</body>
-</html>
+
+<jsp:include page="../common/foot.jsp"></jsp:include> 

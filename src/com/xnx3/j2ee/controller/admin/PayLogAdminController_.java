@@ -34,7 +34,7 @@ public class PayLogAdminController_ extends BaseController{
 		sql.setSearchTable("pay_log");
 		sql.setSearchColumn(new String[]{"userid=","orderno","channel"});
 		int count = sqlService.count("pay_log", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT pay_log.*,(SELECT user.nickname FROM user WHERE user.id=pay_log.userid) AS nickname FROM pay_log ", page);
 		sql.setDefaultOrderBy("pay_log.id DESC");
 		List<Map<String, Object>> list = sqlService.findMapBySql(sql);

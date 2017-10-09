@@ -55,9 +55,7 @@ public class PingxxController_ extends BaseController {
 	}
 	
 	/**
-	 * APP支付，向APP返回Charge
-	 * @param request
-	 * @return
+	 * 支付（这里是针对APP做的，其他的应该用也没问题），返回Charge数据
 	 */
 	@RequestMapping("/charge")
 	@ResponseBody

@@ -33,7 +33,7 @@ public class SmsLogAdminController_ extends BaseController {
 		Sql sql = new Sql(request);
 		sql.setSearchColumn(new String[]{"phone","used=","userid="});
 		int count = sqlService.count("sms_log", sql.getWhere());
-		Page page = new Page(count, Global.PAGE_ADMIN_DEFAULT_EVERYNUMBER, request);
+		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM sms_log", page);
 		sql.setDefaultOrderBy("sms_log.id DESC");
 		List<SmsLog> list = sqlService.findBySql(sql, SmsLog.class);

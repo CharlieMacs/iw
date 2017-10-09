@@ -43,5 +43,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</section>
 		<footer id="footer"></footer>
 	</article>
-</body>
-</html>
+
+<!-- 可使用UEditor富文本编辑器： -->
+<!-- 配置文件 -->
+<script type="text/javascript" src="<%=basePath %>/module/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="<%=basePath %>/module/ueditor/ueditor.all.js"></script>
+<div class="weui_cells weui_cells_form">
+
+	<div class="weui_cell">
+	  <div class="weui_cell_bd weui_cell_primary">
+	   	<textarea class="weui_textarea" id="myEditor" placeholder="请输入新闻内容" name="text" rows="3"></textarea>
+	  </div>
+	</div>
+</div>
+    
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+var ueditorText = document.getElementById('myEditor').innerHTML;
+var ue = UE.getEditor('myEditor',{
+	autoHeightEnabled: true,
+	autoFloatEnabled: true
+});
+//对编辑器的操作最好在编辑器ready之后再做
+ue.ready(function() {
+});
+</script>	
+<!-- UEditor富文本编辑器演示完毕 -->
+	

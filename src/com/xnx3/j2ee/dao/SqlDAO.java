@@ -247,7 +247,6 @@ public class SqlDAO {
 	 * @return 此实体类的数据表的原名
 	 */
 	public static String getDatabaseTableName(Class c){
-		System.out.println(c.getName());
 		Table table = (Table) c.getAnnotation(javax.persistence.Table.class);
 		String tableName = null;
 		if(table != null && table.name() != null && table.name().length() > 0){

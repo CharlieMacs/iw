@@ -4,13 +4,10 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../../publicPage/common/head.jsp">
-    	<jsp:param name="title" value="好友中心"/>
-    </jsp:include>
-<link href="<%=basePath %>style/user/css/friend.css" rel="stylesheet" type="text/css">
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="我的好友"/>
+</jsp:include>
+
 <script>
 	$(function(){
 		$.post('<%=basePath %>friend/list.do', function (data) {
@@ -90,16 +87,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	});
 });
 </script>
-<!--[if IE]>
-<script src="js/html5.js"></script>
-<![endif]-->
-</head>
-<body>
-<article id="container">
-	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
-	<section id="main">
-		<div class="bgBox"></div>
-		<h2><img src="<%=basePath %>style/user/img/common/star01.png" alt="">好友管理</h2>
+
 		<div id="conts">
 			<ul class="naviUl clearfix">
 				<li><a href="../user/info.do">用户中心</a></li>
@@ -156,10 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</form>	
 			</div>
 		</div>
-		<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
 		
-	</section>
-	<footer id="footer"></footer>
-</article>
-</body>
-</html>
+
+
+<jsp:include page="../common/foot.jsp"></jsp:include> 
