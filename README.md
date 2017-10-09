@@ -56,17 +56,6 @@
 com.xnx3.j2ee.Global						基础配置、集中管理。全局控制，全局的参数、常亮，都是在这里<br/>
 com.xnx3.j2ee.Global.get("systemName");	直接调用system表配置的值<br/>
 src/systemConfig.xml						系统某些实用功能的配置文件所在<br/>
-<br/><br/>
-<h2>JSP页面全局参数获取</h2>
-<pre>
-	用户信息参数：${user}，如调用user表的id为${user.id}<br/>
-	未读信息条数：${unreadMessage}
-</pre>
-
 <br/>
-<br/>
-架构设计：管雷鸣<br/>
-参与：杨建伟、魏文群<br/>
-联系QQ：921153866<br/>
 
 
