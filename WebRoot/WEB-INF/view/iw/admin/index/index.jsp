@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.xnx3.com/java_xnx3/xnx3_tld" prefix="x" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
+//view/iw/admin/index/index.jsp
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>

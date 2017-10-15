@@ -29,7 +29,6 @@ import com.xnx3.j2ee.vo.MessageVO;
 @Controller
 @RequestMapping("/message")
 public class MessageController_ extends BaseController {
-	
 	@Resource
 	private MessageService messageService;
 	@Resource
@@ -39,7 +38,6 @@ public class MessageController_ extends BaseController {
 	
 	/**
 	 * 填写信息页面
-	 * @return View
 	 */
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/add")
@@ -52,8 +50,6 @@ public class MessageController_ extends BaseController {
 	 * 发送信息提交
 	 * @param other 发送给的用户id
 	 * @param content 发送信息的内容
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("messageSend")
 	@RequestMapping("/send")
@@ -68,11 +64,9 @@ public class MessageController_ extends BaseController {
 		}
 	}
 	
-
 	/**
 	 * 阅读信息
 	 * @param id 信息的id，message.id
-	 * @return View
 	 */
 	@RequiresPermissions("messageView")
 	@RequestMapping("/view")
@@ -101,9 +95,6 @@ public class MessageController_ extends BaseController {
 	 * 						<li>outbox:发件箱
 	 * 						<li>inbox:收件箱
 	 * 					</ul>
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("messageList")
 	@RequestMapping("/list")
@@ -126,5 +117,4 @@ public class MessageController_ extends BaseController {
 		model.addAttribute("page", page);
 		return "iw/message/list";
 	}
-	
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.xnx3.IntegerUtil;
 import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.Post;
@@ -26,7 +25,6 @@ import com.xnx3.j2ee.vo.PostVO;
 /**
  * 论坛，帖子处理
  * @author 管雷鸣
- *
  */
 @Controller
 @RequestMapping("/bbs")
@@ -41,8 +39,6 @@ public class BbsController_ extends BaseController {
 	/**
 	 * 发帖
 	 * @param classid 要发表到哪个分类下(论坛板块)
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("bbsAddPost")
 	@RequestMapping("/addPost")
@@ -62,7 +58,6 @@ public class BbsController_ extends BaseController {
 		model.addAttribute("classid", classid);
 		return "iw/bbs/addPost";
 	}
-	
 	
 	/**
 	 * 发帖提交页面
@@ -88,9 +83,6 @@ public class BbsController_ extends BaseController {
 	 * 					<li>0:所有
 	 * 					<li>其余数字就是搜索的classid
 	 * 				</ul>
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("bbsList")
 	@RequestMapping("/list")
@@ -113,8 +105,6 @@ public class BbsController_ extends BaseController {
 	/**
 	 * 查看帖子详情
 	 * @param post {@link Post}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("bbsView")
 	@RequestMapping("/view")
@@ -138,8 +128,6 @@ public class BbsController_ extends BaseController {
 	 * 回帖处理
 	 * @param post {@link Post}
 	 * @param text 回帖内容
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("bbsAddComment")
 	@RequestMapping("/addCommentSubmit.do")

@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.Role;
-import com.xnx3.j2ee.entity.RolePermission;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.entity.UserRole;
 import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.service.RoleService;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.UserService;
-import com.xnx3.Lang;
 import com.xnx3.j2ee.bean.PermissionTree;
 import com.xnx3.j2ee.bean.RoleMark;
 import com.xnx3.j2ee.controller.BaseController;
@@ -35,14 +32,12 @@ import com.xnx3.j2ee.vo.BaseVO;
 @Controller
 @RequestMapping("/admin/role")
 public class RoleAdminController_ extends BaseController {
-
 	@Resource
 	private RoleService roleService;
 	@Resource
 	private UserService userService;
 	@Resource
 	private SqlService sqlService;
-	
 	
 	/**
 	 * 新增、编辑角色
@@ -243,8 +238,6 @@ public class RoleAdminController_ extends BaseController {
 	 * 保存角色－资源设置
 	 * @param roleId 角色id，Role.id
 	 * @param permission 多选框的资源列表，如 1,2,3,4
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminRoleEditRolePermission")
 	@RequestMapping("saveRolePermission")
@@ -265,7 +258,6 @@ public class RoleAdminController_ extends BaseController {
 	/**
 	 * 编辑用户－权限关系
 	 * @param userid 用户id，User.id
-	 * @param model {@link Model}
 	 */
 	@RequiresPermissions("adminRoleEditUserRole")
 	@RequestMapping("editUserRole")

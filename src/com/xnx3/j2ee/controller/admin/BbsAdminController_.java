@@ -30,12 +30,10 @@ import com.xnx3.j2ee.vo.BaseVO;
 /**
  * 论坛，帖子
  * @author 管雷鸣
- *
  */
 @Controller
 @RequestMapping("/admin/bbs")
 public class BbsAdminController_ extends BaseController {
-	
 	@Resource
 	private PostService postService;
 	@Resource
@@ -45,9 +43,6 @@ public class BbsAdminController_ extends BaseController {
 
 	/**
 	 * 帖子列表
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPostList")
 	@RequestMapping("postList")
@@ -154,8 +149,6 @@ public class BbsAdminController_ extends BaseController {
 	/**
 	 * 添加／修改板块提交页面
 	 * @param postClass {@link PostClass}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsClass")
 	@RequestMapping("saveClass")
@@ -200,8 +193,6 @@ public class BbsAdminController_ extends BaseController {
 	/**
 	 * 删除板块
 	 * @param id 板块id，PostClass.id
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsDeleteClass")
 	@RequestMapping("deleteClass")
@@ -221,8 +212,6 @@ public class BbsAdminController_ extends BaseController {
 	/**
 	 * 评论列表
 	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminBbsPostCommentList")
 	@RequestMapping("commentList")

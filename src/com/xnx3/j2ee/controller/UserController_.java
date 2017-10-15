@@ -1,25 +1,20 @@
 package com.xnx3.j2ee.controller;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.func.ActionLogCache;
-import com.xnx3.j2ee.func.OSS;
 import com.xnx3.j2ee.service.MessageService;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.service.UserService;
@@ -34,7 +29,6 @@ import com.xnx3.net.MailUtil;
 @Controller
 @RequestMapping("/user")
 public class UserController_ extends BaseController {
-	
 	@Resource
 	private MessageService messageService;
 	@Resource
@@ -44,13 +38,13 @@ public class UserController_ extends BaseController {
 
 	/**
 	 * 用户个人中心
-	 * @return View
 	 */
-	@RequiresPermissions("userInfo")
-	@RequestMapping("/info")
-	public String userInfo(HttpServletRequest request){
+	@RequiresPermissions("userIndex")
+	@RequestMapping("/index")
+	public String index(HttpServletRequest request, Model model){
 		ActionLogCache.insert(request, "个人中心");
-		return "iw/user/info";
+		model.addAttribute("user", getUser());
+		return "iw/user/index";
 	}
 	
 	/**
@@ -60,10 +54,11 @@ public class UserController_ extends BaseController {
 	@RequiresPermissions("userUploadHead")
 	@RequestMapping("/uploadHead")
 	public String uploadHead(@RequestParam("head") MultipartFile file,Model model, HttpServletRequest request){
-		UploadFileVO v = OSS.uploadImage(Global.get("USER_HEAD_PATH"), file);
+		//上传头像，并进行超过宽度200px的图像进行压缩
+		UploadFileVO v = userService.updateHeadByOSS(request, "head", 400);
 		if(v.getResult() == UploadFileVO.SUCCESS){
 			ActionLogCache.insert(request, "上传头像", "成功，头像文件路径："+Global.get("USER_HEAD_PATH")+v.getPath());
-			return success(model, "上传成功，文件路径："+v.getPath());
+			return success(model, "上传成功");
 		}else{
 			ActionLogCache.insert(request, "上传头像", "失败："+v.getInfo());
 			return error(model, v.getInfo());
@@ -83,7 +78,7 @@ public class UserController_ extends BaseController {
 			return error(model, baseVO.getInfo());
 		}else{
 			ActionLogCache.insert(request, "修改昵称");
-			return success(model, "修改成功！", "user/info.do");
+			return success(model, "修改成功！");
 		}
 	}
 	
@@ -94,24 +89,26 @@ public class UserController_ extends BaseController {
 	 */
 	@RequiresPermissions("userUpdatePassword")
 	@RequestMapping("updatePassword")
-	public BaseVO updatePassword(HttpServletRequest request, String oldPassword,String newPassword,Model model){
+	public String updatePassword(HttpServletRequest request, String oldPassword,String newPassword,Model model){
 		if(oldPassword==null){
 			ActionLogCache.insert(request, "修改密码", "失败：未输入密码");
-			return error("请输入旧密码");
+			return error(model, "请输入旧密码");
 		}else{
 			User uu=sqlService.findById(User.class, getUser().getId());
-			if(oldPassword.equals(uu.getPassword())){
+			//将输入的原密码进行加密操作，判断原密码是否正确
+			
+			if(new Md5Hash(oldPassword, uu.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString().equals(uu.getPassword())){
 				BaseVO vo = userService.updatePassword(getUserId(), newPassword);
 				if(vo.getResult() - BaseVO.SUCCESS == 0){
 					ActionLogCache.insert(request, "修改密码", "成功");
-					return success();
+					return success(model, "修改成功");
 				}else{
 					ActionLogCache.insert(request, "修改密码", "失败："+vo.getInfo());
-					return error(vo.getInfo());
+					return error(model, vo.getInfo());
 				}
 			}else{
 				ActionLogCache.insert(request, "修改密码", "失败：原密码错误");
-				return error("原密码错误！");
+				return error(model, "原密码错误！");
 			}
 		}
 	}
@@ -121,8 +118,9 @@ public class UserController_ extends BaseController {
 	 */
 	@RequiresPermissions("userInvite")
 	@RequestMapping("invite")
-	public String invite(HttpServletRequest request){
+	public String invite(HttpServletRequest request, Model model){
 		ActionLogCache.insert(request, "获取邀请码注册网址");
+		model.addAttribute("user", getUser());
 		return "iw/user/invite";
 	}
 	
@@ -155,8 +153,6 @@ public class UserController_ extends BaseController {
 	
 	/**
 	 * 用户退出，页面跳转提示。
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequestMapping("logout")
 	public String logout(Model model, HttpServletRequest request){
@@ -165,4 +161,16 @@ public class UserController_ extends BaseController {
 		return success(model, "注销登录成功", "login.do");
 	}
 	
+	/**
+	 * 我邀请注册的用户列表，我的1级下线，直属下线
+	 */
+	@RequestMapping("inviteList")
+	public String inviteList(HttpServletRequest request,Model model){
+		List<User> list = sqlService.findBySqlQuery("SELECT * FROM user WHERE referrerid = "+getUserId()+" ORDER BY id DESC", User.class);
+		
+		ActionLogCache.insert(request, "查看我邀请的用户，当前1级下线人数："+list.size()+"人");
+		model.addAttribute("userList", list);
+		model.addAttribute("size", list.size());
+		return "iw/user/inviteList";
+	}
 }

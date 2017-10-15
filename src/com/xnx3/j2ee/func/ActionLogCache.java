@@ -30,13 +30,16 @@ public class ActionLogCache {
 
 	/**
 	 * 插入一条日志
+	 * @param logItem 传入要保存的logItem，若为空，则会创建一个新的。此项主要为扩展使用，可自行增加其他信息记录入日志
 	 * @param request HttpServletRequest
 	 * @param goalid 操作的目标的id，若无，可为0，也可为空
 	 * @param action 动作的名字，如：用户登录、更改密码
 	 * @param remark 动作的描述，如用户将名字张三改为李四
 	 */
-	public static void insert(HttpServletRequest request, int goalid, String action, String remark){
-		LogItem logItem = aliyunLogUtil.newLogItem();
+	public static synchronized void insert(LogItem logItem, HttpServletRequest request, int goalid, String action, String remark){
+		if(logItem == null){
+			logItem = aliyunLogUtil.newLogItem();
+		}
 		
 		/*用户相关信息,只有用户登录后，才会记录用户信息*/
 		User user = ShiroFunc.getUser();
@@ -58,7 +61,6 @@ public class ActionLogCache {
 			logItem.PushBack("referer", request.getHeader("referer"));
 			logItem.PushBack("userAgent", request.getHeader("User-Agent"));
 		}
-		
 		try {
 			aliyunLogUtil.cacheLog(logItem);
 		} catch (LogException e) {
@@ -69,11 +71,22 @@ public class ActionLogCache {
 	/**
 	 * 插入一条日志
 	 * @param request HttpServletRequest
+	 * @param goalid 操作的目标的id，若无，可为0，也可为空
+	 * @param action 动作的名字，如：用户登录、更改密码
+	 * @param remark 动作的描述，如用户将名字张三改为李四
+	 */
+	public static synchronized void insert(HttpServletRequest request, int goalid, String action, String remark){
+		insert(null, request, goalid, action, remark);
+	}
+	
+	/**
+	 * 插入一条日志
+	 * @param request HttpServletRequest
 	 * @param action 动作的名字，如：用户登录、更改密码
 	 * @param remark 动作的描述，如用户将名字张三改为李四
 	 */
 	public static void insert(HttpServletRequest request, String action, String remark){
-		insert(request, 0, action, remark);
+		insert(null, request, 0, action, remark);
 	}
 	
 	/**
@@ -83,7 +96,7 @@ public class ActionLogCache {
 	 * @param action 动作的名字，如：用户登录、更改密码
 	 */
 	public static void insert(HttpServletRequest request, int goalid, String action){
-		insert(request, goalid, action, "");
+		insert(null, request, goalid, action, "");
 	}
 	
 	/**
@@ -93,7 +106,7 @@ public class ActionLogCache {
 	 * @param remark 动作的描述，如用户将名字张三改为李四
 	 */
 	public static void insert(HttpServletRequest request, String action){
-		insert(request, 0, action, "");
+		insert(null, request, 0, action, "");
 	}
 	
 }

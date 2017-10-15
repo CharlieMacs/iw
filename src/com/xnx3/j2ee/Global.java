@@ -1,19 +1,13 @@
 package com.xnx3.j2ee;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
-import com.xnx3.Language;
-import com.xnx3.file.FileUtil;
 
 /**
  * 基础配置、集中管理
  * @author 管雷鸣
- *
  */
 public class Global {
 
@@ -115,27 +109,4 @@ public class Global {
 		}
 		return i==null? 0:i;
 	}
-	
-	
-	/**
-	 * 获取当前项目所在的绝对路径。以废弃，可以直接使用 Global.projectPath 。此参数会在servlet中初始化
-	 * @deprecated
-	 */
-	public static String getProjectPath(){
-		if(projectPath == null){
-			String path = new Global().getClass().getResource("/").getPath();
-			projectPath = path.replace("WEB-INF/classes/", "");
-		}
-		return projectPath;
-	}
-	
-	
-	/**
-	 * 获取语言包language.xml中的描述文字。如果没有找到返回空字符""
-	 * @param key
-	 * @return
-	 */
-//	public static String getLanguage(String key){
-//		return Language.show(null, key);
-//	}
 }

@@ -1,21 +1,15 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.aliyun.openservices.log.common.LogItem;
 import com.aliyun.openservices.log.common.QueriedLog;
 import com.aliyun.openservices.log.exception.LogException;
@@ -26,7 +20,6 @@ import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.controller.BaseController;
 import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.util.Page;
-import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.LogLineGraphVO;
 import com.xnx3.net.AliyunLogPageUtil;
 

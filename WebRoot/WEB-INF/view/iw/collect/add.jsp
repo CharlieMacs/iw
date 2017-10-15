@@ -9,12 +9,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </jsp:include>
 
 
-		<div><h1>添加关注</h1><a href="<%=basePath %>/collect/list.do"  style="color:blue;">关注列表</a></div>
-		
-		<form action="addSubmit.do" method="get">
-			要关注的用户id：<input type="text" name="othersid"/>
-			<input type="submit" value="关注" />
-		</form>
-		
-	
+<div><h1>添加关注</h1></div>
+
+<form action="addSubmit.do" method="get">
+	要关注的用户id：<input type="text" name="othersid"/>
+	<input type="submit" value="关注" />
+</form>
+
 <jsp:include page="../common/foot.jsp"></jsp:include> 

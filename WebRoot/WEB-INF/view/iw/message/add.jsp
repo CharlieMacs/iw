@@ -8,17 +8,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:param name="title" value="发送站内信息"/>
 </jsp:include>
 
-<article id="container">
-	<section id="main">
-		<form method="post" action="send.do">
-			对方id：<input type="text" name="recipientid" value="" />（待优化）
-			<br/>
-			信息内容：<textarea name="content" rows="" cols=""></textarea>
-			<br/>
-			<input type="submit" value="发送" />(待优化)
-		</form>
-	</section>
-	<footer id="footer"></footer>
-</article>
-</body>
-</html>
+<div style="padding:30px; text-align:center; font-size:30px;">
+	发送站内信息
+</div>
+
+<form method="post" action="send.do">
+	对方id（接收消息方的user.id）：<input type="text" name="recipientid" />
+	<br/>
+	信息内容：<textarea name="content"></textarea>
+	<br/>
+	<input type="submit" value="发送" />
+</form>

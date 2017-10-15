@@ -58,7 +58,6 @@ public class CustomRealm extends AuthorizingRealm {
    
             //根据用户id查询权限url
     		List<Permission> permissions = roleService.findPermissionByUser(user);
-    		System.out.println(permissions.size());
     		activeUser.setPermissions(permissions);
     		
 			//转换为树状集合

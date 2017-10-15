@@ -1,16 +1,14 @@
 package com.xnx3.j2ee.controller;
 
+import java.awt.Font;
 import java.io.IOException;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Func;
 import com.xnx3.j2ee.Global;
@@ -20,6 +18,7 @@ import com.xnx3.j2ee.func.Captcha;
 import com.xnx3.j2ee.service.SmsLogService;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.vo.BaseVO;
+import com.xnx3.media.CaptchaUtil;
 
 /**
  * 登录、注册
@@ -28,7 +27,6 @@ import com.xnx3.j2ee.vo.BaseVO;
 @Controller
 @RequestMapping("/")
 public class LoginController_ extends BaseController {
-
 	@Resource
 	private UserService userService;
 	@Resource
@@ -36,14 +34,17 @@ public class LoginController_ extends BaseController {
 	
 	/**
 	 * 注册页面 
-	 * @param request {@link HttpServletRequest}
-	 * @return View
 	 */
 	@RequestMapping("/reg")
 	public String reg(HttpServletRequest request ,Model model){
 		if(Global.getInt("ALLOW_USER_REG") == 0){
 			return error(model, "系统已禁止用户自行注册");
 		}
+		//判断用户是否已注册，已注册的用户将出现提示，已登录，无需注册
+		if(getUser() != null){
+			return error(model, "您已登陆，无需注册");
+		}
+		
 		userService.regInit(request);
 		ActionLogCache.insert(request, "进入注册页面");
 		return "iw/login/reg";
@@ -55,15 +56,19 @@ public class LoginController_ extends BaseController {
 	@RequestMapping("/captcha")
 	public void captcha(HttpServletRequest request,HttpServletResponse response) throws IOException{
 		ActionLogCache.insert(request, "获取验证码显示");
-		Captcha.showImage(request, response);
+		
+		CaptchaUtil captchaUtil = new CaptchaUtil();
+	    captchaUtil.setCodeCount(5);                   //验证码的数量，若不增加图宽度的话，只能是1～5个之间
+	    captchaUtil.setFont(new Font("Fixedsys", Font.BOLD, 21));    //验证码字符串的字体
+	    captchaUtil.setHeight(18);  //验证码图片的高度
+	    captchaUtil.setWidth(110);      //验证码图片的宽度
+//	    captchaUtil.setCode(new String[]{"我","是","验","证","码"});   //如果对于数字＋英文不满意，可以自定义验证码的文字！
+	    Captcha.showImage(captchaUtil, request, response);
 	}
 	
 	/**
 	 * 注册相应请求地址
 	 * @param user {@link User}
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequestMapping("/regSubmit")
 	public String regSubmits(User user ,HttpServletRequest request,Model model){
@@ -83,15 +88,12 @@ public class LoginController_ extends BaseController {
 	
 	/**
 	 * 登陆页面
-	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequestMapping("login")
 	public String login(HttpServletRequest request,Model model){
 		if(getUser() != null){
 			ActionLogCache.insert(request, "进入登录页面", "已经登录成功，无需再登录，进行跳转");
-			return redirect("user/info.do");
+			return redirect("user/index.do");
 		}
 		
 		ActionLogCache.insert(request, "进入登录页面");
@@ -145,7 +147,7 @@ public class LoginController_ extends BaseController {
 	public String phoneVerifyLogin(HttpServletRequest request){
 		if(getUser() != null){
 			ActionLogCache.insert(request, "进入手机号验证码模式登录页面","已登录，无需再登录了，直接跳转");
-			return redirect("user/info.do");
+			return redirect("user/index.do");
 		}
 		
 		ActionLogCache.insert(request, "进入手机号验证码模式登录页面");

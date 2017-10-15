@@ -35,8 +35,6 @@ public class MessageAdminController_ extends BaseController {
 	/**
 	 * 信息列表
 	 * @param request {@link HttpServletRequest}
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminMessageList")
 	@RequestMapping("list")
@@ -63,8 +61,6 @@ public class MessageAdminController_ extends BaseController {
 	/**
 	 * 删除信息
 	 * @param id 信息的id，Message.id
-	 * @param model {@link Model}
-	 * @return View
 	 */
 	@RequiresPermissions("adminMessageDelete")
 	@RequestMapping("delete")

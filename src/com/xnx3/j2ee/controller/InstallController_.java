@@ -1,17 +1,12 @@
 package com.xnx3.j2ee.controller;
 
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.j2ee.service.SqlService;
-import com.xnx3.net.OSSUtil;
-import com.xnx3.net.OSSUtils;
 
 /**
  * IW 快速开发底层架构的安装，比如，阿里云各种产品如OSS、日志服务等的创建等

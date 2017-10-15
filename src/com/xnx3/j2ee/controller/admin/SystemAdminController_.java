@@ -13,9 +13,7 @@ import com.xnx3.DateUtil;
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.PostClass;
-import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.System;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.generateCache.Message;
@@ -28,7 +26,6 @@ import com.xnx3.j2ee.controller.BaseController;
 /**
  * 系统管理
  * @author 管雷鸣
- *
  */
 @Controller
 @RequestMapping("/admin/system")

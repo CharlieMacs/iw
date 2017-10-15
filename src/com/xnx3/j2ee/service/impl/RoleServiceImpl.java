@@ -2,12 +2,6 @@ package com.xnx3.j2ee.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.xnx3.Lang;
 import com.xnx3.j2ee.service.RoleService;
 import com.xnx3.j2ee.vo.BaseVO;

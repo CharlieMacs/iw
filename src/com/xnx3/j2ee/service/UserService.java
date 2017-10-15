@@ -21,14 +21,11 @@ public interface UserService {
 	/**
 	 * 根据手机号取用户信息。若手机号不存在，返回null
 	 * @param phone
-	 * @return
 	 */
 	public User findByPhone(Object phone);
 
-	
 	/**
 	 * 用户名＋密码进行登陆
-	 * @param request {@link HttpServletRequest} 
 	 * 		<br/>登陆时form表单需提交两个参数：username(用户名/邮箱)、password(密码)
 	 * @return {@link BaseVO}
 	 */
@@ -36,7 +33,6 @@ public interface UserService {
 	
 	/**
 	 * 手机号＋动态验证码登陆
-	 * @param request {@link HttpServletRequest} 
 	 * 		<br/>登陆时form表单需提交两个参数：phone(手机号)、code(手机收到的动态验证码)
 	 * @return {@link BaseVO}
 	 */
@@ -44,7 +40,6 @@ public interface UserService {
 	
 	/**
 	 * 传入一个用户id，使当前登陆的用户为此用户。
-	 * @param request
 	 * @param userid 要登陆的用户的user.id
 	 * @return {@link BaseVO}
 	 */
@@ -60,9 +55,7 @@ public interface UserService {
 	
 	/**
 	 * 传入一个 {@link User}.id 让此用户变为当前得登陆用户
-	 * @param request
 	 * @param userId 要登陆得 {@link User}.id
-	 * @return
 	 */
 	public BaseVO loginForUserId(HttpServletRequest request,int userId);
 	
@@ -80,7 +73,6 @@ public interface UserService {
 	 * @param user {@link User} 
 	 * 		<br/>表单的用户名(username)、 密码(password)为必填项
 	 * @param request {@link HttpServletRequest} 作用为获取推荐人信息、获取注册用户的ip
-	 * @return {@link BaseVO}
 	 */
 	public BaseVO reg(User user ,HttpServletRequest request);
 	
@@ -93,21 +85,18 @@ public interface UserService {
 	 * 修改昵称
 	 * @param request {@link HttpServletRequest} 
 	 * 			<br/>form表单需提交参数：nickname(要修改成的昵称)
-	 * @return {@link BaseVO}
 	 */
 	public BaseVO updateNickName(HttpServletRequest request);
 	
 	/**
 	 * 冻结用户
 	 * @param id 用户id，user.id
-	 * @return {@link BaseVO}
 	 */
 	public BaseVO freezeUser(int id);
 	
 	/**
 	 * 解除冻结用户
 	 * @param id 用户id，user.id
-	 * @return {@link BaseVO}
 	 */
 	public BaseVO unfreezeUser(int id);
 	

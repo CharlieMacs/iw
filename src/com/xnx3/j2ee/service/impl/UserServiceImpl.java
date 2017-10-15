@@ -32,6 +32,7 @@ import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.j2ee.entity.*;
 import com.xnx3.j2ee.func.Language;
+import com.xnx3.j2ee.func.OSS;
 import com.xnx3.media.ImageUtil;
 import com.xnx3.net.OSSUtil;
 import com.xnx3.net.ossbean.PutResult;
@@ -667,7 +668,6 @@ public class UserServiceImpl implements UserService{
 		User u = sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
 		u.setSign(sign);
 		sqlDAO.save(u);
-//		logDao.insert("USER_UPDATE_NICKNAME", sign);
 		ShiroFunc.getUser().setSign(sign);
 		
 		return baseVO;
@@ -704,47 +704,21 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		User user = ShiroFunc.getUser();
-		String fileSuffix = "png";
-		fileSuffix = Lang.findFileSuffix(multipartFile.getOriginalFilename());
-		String newHead = Lang.uuid()+"."+fileSuffix;
-		try {
-			InputStream is = null;
-			if(maxWidth == 0){
-//				logger.debug("上传头像，没有开启头像缩放功能");
-				is = multipartFile.getInputStream();
-			}else{
-//				logger.debug("上传头像，开启了头像缩放功能，限制最大宽度:"+maxWidth);
-				is = ImageUtil.proportionZoom(multipartFile.getInputStream(), maxWidth, fileSuffix);
-			}
-			PutResult result = OSSUtil.put("image/head/"+newHead, is);
-			uploadFileVO.setFileName(result.getFileName());
-			uploadFileVO.setPath(result.getPath());
-			uploadFileVO.setUrl(result.getUrl());
-			uploadFileVO.setBaseVO(UploadFileVO.SUCCESS, "上传成功");
-		} catch (IOException e) {
-			e.printStackTrace();
-			uploadFileVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
-			return uploadFileVO;
+		UploadFileVO vo = OSS.uploadImageByMultipartFile(Global.get("USER_HEAD_PATH"), multipartFile, maxWidth);
+		if(vo.getResult() - UploadFileVO.FAILURE == 0){
+			return vo;
 		}
-		
-//		if(!(user.getHead().equals(newHead))){
-//			User u = findById(user.getId());
-//			u.setHead(newHead);
-//			save(u);
-//			ShiroFunc.getUser().setHead(newHead);
-//		}
 		
 		User u = sqlDAO.findById(User.class, user.getId());
 		//删除之前的头像
 		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
-			OSSUtil.deleteObject("image/head/"+u.getHead());
+			OSSUtil.deleteObject(Global.get("USER_HEAD_PATH")+u.getHead());
 		}
 		
-		u.setHead(newHead);
+		u.setHead(vo.getFileName());
 		sqlDAO.save(u);
-		ShiroFunc.getUser().setHead(newHead);
+		ShiroFunc.getUser().setHead(vo.getFileName());
 		
-//		logDao.insert("USER_UPDATEHEAD");
 		return uploadFileVO;
 	}
 

@@ -21,8 +21,7 @@ import com.xnx3.j2ee.util.IpUtil;
 public class PingxxController_ extends BaseController {
 	
 	/**
-	 * 
-	 * @return View
+	 * 支付成功后，pingxx会异步请求咱自己的服务器的Webhooks接口，返回支付成功的结果，请求的便是这个接口
 	 * @throws IOException 
 	 */
 	@RequestMapping("/Webhooks")
@@ -55,7 +54,7 @@ public class PingxxController_ extends BaseController {
 	}
 	
 	/**
-	 * 支付（这里是针对APP做的，其他的应该用也没问题），返回Charge数据
+	 * 支付（这里是针对APP做的，其他的应该用也没问题），返回创建支付使用的Charge数据，来进行支付之前的准备。支付之前使用此处
 	 */
 	@RequestMapping("/charge")
 	@ResponseBody

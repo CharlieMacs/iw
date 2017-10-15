@@ -1,14 +1,10 @@
 package com.xnx3.j2ee.dao;
 
 import static org.hibernate.criterion.Example.create;
-
-import java.lang.annotation.Annotation;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.Table;
-
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;

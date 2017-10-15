@@ -5,36 +5,22 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
-	<jsp:include page="../../publicPage/common/head.jsp">
-    	<jsp:param name="title" value="邀请注册"/>
-    </jsp:include>
-</head>
-<body>
+<jsp:include page="../common/head.jsp">
+	<jsp:param name="title" value="邀请注册"/>
+</jsp:include>
 
-	<article id="container">
-	<jsp:include page="../../publicPage/common/top.jsp"></jsp:include>
-		
-		<section id="main">
-			<div class="bgBox"></div>
-			<h2>
-				<div id="conts">
 					您的邀请注册地址：
 					<br/>
 					<%=basePath%>reg.do?inviteid=${user.id }
 					<br/>
-					将此发送给您的朋友，注册成功后，便可获得：
+					邀请他人注册，可以获得丰厚的<%=Global.get("CURRENCY_NAME") %>奖励！
+					<br/>比如：
+					<br/>
+					<br/>我推荐了B用户注册后，我单纯的推荐注册收益如下： 
+					<br/>
+					<br/>我推荐B注册，我获得<%=Global.get("INVITEREG_AWARD_ONE") %><%=Global.get("CURRENCY_NAME") %> 
+					<br/>B又推荐C注册，B用户获得<%=Global.get("INVITEREG_AWARD_ONE") %><%=Global.get("CURRENCY_NAME") %>，我获得<%=Global.get("INVITEREG_AWARD_TWO") %><%=Global.get("CURRENCY_NAME") %>
+					<br/>C又推荐D注册，C用户获得<%=Global.get("INVITEREG_AWARD_ONE") %><%=Global.get("CURRENCY_NAME") %>，B用户获得<%=Global.get("INVITEREG_AWARD_TWO") %><%=Global.get("CURRENCY_NAME") %>，我获得<%=Global.get("INVITEREG_AWARD_THREE") %><%=Global.get("CURRENCY_NAME") %> 
+					<br/>D又推荐E注册，D用户获得<%=Global.get("INVITEREG_AWARD_ONE") %><%=Global.get("CURRENCY_NAME") %>，C用户获得<%=Global.get("INVITEREG_AWARD_TWO") %><%=Global.get("CURRENCY_NAME") %>，B用户获得<%=Global.get("INVITEREG_AWARD_THREE") %><%=Global.get("CURRENCY_NAME") %>，我获得<%=Global.get("INVITEREG_AWARD_FOUR") %><%=Global.get("CURRENCY_NAME") %>
 					
-					<br/>一级下线：<%=Global.get("INVITEREG_AWARD_ONE") %><%=Global.get("CURRENCY_NAME") %>
-					<br/>二级下线：<%=Global.get("INVITEREG_AWARD_TWO") %><%=Global.get("CURRENCY_NAME") %>
-					<br/>三级下线：<%=Global.get("INVITEREG_AWARD_THREE") %><%=Global.get("CURRENCY_NAME") %>
-					<br/>四级下线：<%=Global.get("INVITEREG_AWARD_FOUR") %><%=Global.get("CURRENCY_NAME") %>
 				</div>
-			<jsp:include page="../../publicPage/common/menu.jsp"></jsp:include>
-			</section>
-		<footer id="footer"></footer>
-	</article>
-</body>
-</html>

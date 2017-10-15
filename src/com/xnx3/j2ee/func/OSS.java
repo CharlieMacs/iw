@@ -10,7 +10,6 @@ import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse.Credentials;
 import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.shiro.ShiroFunc;
-import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.media.ImageUtil;
 import com.xnx3.net.OSSUtil;
@@ -25,69 +24,58 @@ public class OSS {
 
 	/**
 	 * SpringMVC 带的文件上传
+	 * <br/>推荐使用 uploadImageByMultipartFile
 	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
 	 * @param multipartFile SpringMVC接收的 {@link MultipartFile}
 	 * @return {@link UploadFileVO}
+	 * @deprecated
 	 */
 	public static UploadFileVO upload(String filePath, MultipartFile multipartFile) {
-		UploadFileVO vo = new UploadFileVO();
-		if(multipartFile == null || multipartFile.isEmpty()){
-			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_pleaseSelectUploadFile"));
-			return vo;
-		}
-		
-		PutResult pr = null;
-		try {
-			pr = OSSUtil.put(filePath, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-			vo.setBaseVO(BaseVO.FAILURE, Language.show("oss_uploadFailure"));
-			return vo;
-		}
-		
-		vo.setPath(pr.getPath());
-		vo.setFileName(pr.getFileName());
-		vo.setUrl(pr.getUrl());
-		
-		return vo;
+		return uploadImageByMultipartFile(filePath, multipartFile);
 	}
 
 	/**
 	 * SpringMVC 上传图片文件，配置允许上传的文件后缀再 systemConfig.xml 的OSS节点
+	 * <br/>推荐使用 uploadImageByMultipartFile
 	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
 	 * @param multipartFile SpringMVC接收的 {@link MultipartFile}
 	 * @return {@link UploadFileVO}
+	 * @deprecated
 	 */
 	public static UploadFileVO uploadImage(String filePath, MultipartFile multipartFile) {
-		UploadFileVO vo = new UploadFileVO();
-		if(multipartFile == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_pleaseSelectUploadFile"));
-			return vo;
-		}
-		
-		String fileSuffix=com.xnx3.Lang.subString(multipartFile.getOriginalFilename(), ".", null, 3);	//获得文件后缀，以便重命名
-		try {
-			return uploadImage(filePath, multipartFile.getInputStream(), fileSuffix);
-		} catch (IOException e) {
-			e.printStackTrace();
-			vo.setBaseVO(BaseVO.FAILURE, e.getMessage());
-			return vo;
-		}
+		return uploadImageByMultipartFile(filePath, multipartFile);
 	}
 
-	private static UploadFileVO uploadImage(String filePath, InputStream inputStream, String fileSuffix) {
-		UploadFileVO vo = new UploadFileVO();
-		boolean find = false;	//是否再可上传后缀里发现此后缀
+	/**
+	 * 判断某个后缀名是否在可上传图片的后缀列表中(systemConfig.xml的OSS.imageSuffixList节点配置)，该图片是否允许上传
+	 * @param fileSuffix 要判断的上传的文件的后缀名
+	 * @return true：可上传，允许上传，后缀在指定的后缀列表中
+	 */
+	public static boolean imageAllowUpload(String fileSuffix){
 		String[] ia = Global.ossFileUploadImageSuffixList.split("\\|");
 		for (int j = 0; j < ia.length; j++) {
 			if(ia[j].length()>0){
 				if(ia[j].equalsIgnoreCase(fileSuffix)){
-					find = true;
-					break;
+					return true;
 				}
 			}
 		}
-		if(!find){
+		return false;
+	}
+	
+
+	/**
+	 * 上传图片文件
+	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
+	 * @param inputStream 图片的数据流
+	 * @param fileSuffix 图片的后缀名
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度
+	 * @return {@link UploadFileVO}
+	 */
+	public static UploadFileVO uploadImageByInputStream(String filePath, InputStream inputStream, String fileSuffix, int maxWidth) {
+		UploadFileVO vo = new UploadFileVO();
+		
+		if(!imageAllowUpload(fileSuffix)){
 			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_uploadFileNotInSuffixList"));
 			return vo;
 		}
@@ -97,6 +85,11 @@ public class OSS {
 			return vo;
 		}
 		
+		//判断其是否进行图像压缩
+		if(maxWidth > 0){
+			inputStream = ImageUtil.proportionZoom(inputStream, maxWidth, fileSuffix);
+		}
+		
 		PutResult pr = null;
 		pr = OSSUtil.put(filePath, "."+fileSuffix, inputStream);
 		
@@ -104,6 +97,55 @@ public class OSS {
 		vo.setFileName(pr.getFileName());
 		vo.setUrl(pr.getUrl());
 		
+		return vo;
+	}
+
+	/**
+	 * SpringMVC 带的文件上传
+	 * <br/>推荐使用 uploadImageByMultipartFile
+	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile}
+	 * @return {@link UploadFileVO}
+	 */
+	public static UploadFileVO uploadImageByMultipartFile(String filePath, MultipartFile multipartFile) {
+		return uploadImageByMultipartFile(filePath, multipartFile, 0);
+	}
+	
+	/**
+	 * SpringMVC 上传图片文件，配置允许上传的文件后缀再 systemConfig.xml 的OSS节点
+	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO uploadImageByMultipartFile(String filePath, MultipartFile multipartFile, int maxWidth) {
+		UploadFileVO vo = new UploadFileVO();
+		
+		if(multipartFile == null){
+			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_pleaseSelectUploadFile"));
+			return vo;
+		}
+		InputStream inputStream = null;
+		try {
+			inputStream = multipartFile.getInputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(inputStream == null){
+			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_pleaseSelectUploadFile"));
+			return vo;
+		}
+		
+		//获取上传的文件的后缀
+		String fileSuffix = null;
+		fileSuffix = Lang.findFileSuffix(multipartFile.getOriginalFilename());
+		
+		if(!imageAllowUpload(fileSuffix)){
+			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_uploadFileNotInSuffixList"));
+			return vo;
+		}
+		
+		vo = uploadImageByInputStream(filePath, inputStream, fileSuffix, maxWidth);
 		return vo;
 	}
 	
@@ -150,26 +192,15 @@ public class OSS {
 
 	/**
 	 * SpringMVC 上传图片文件，配置允许上传的文件后缀再 systemConfig.xml 的OSS节点
+	 * <br/>推荐使用  uploadImageByMultipartFile
 	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
 	 * @param multipartFile SpringMVC接收的 {@link MultipartFile}
 	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。
 	 * @return {@link UploadFileVO}
+	 * @deprecated
 	 */
 	public static UploadFileVO uploadImage(String filePath, MultipartFile multipartFile, int maxWidth) {
-		UploadFileVO vo = new UploadFileVO();
-		if(multipartFile == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, Language.show("oss_pleaseSelectUploadFile"));
-			return vo;
-		}
-		
-		String fileSuffix=com.xnx3.Lang.subString(multipartFile.getOriginalFilename(), ".", null, 3);	//获得文件后缀，以便重命名
-		try {
-			return uploadImage(filePath, ImageUtil.proportionZoom(multipartFile.getInputStream(), maxWidth, fileSuffix), fileSuffix);
-		} catch (IOException e) {
-			e.printStackTrace();
-			vo.setBaseVO(BaseVO.FAILURE, e.getMessage());
-			return vo;
-		}
+		return uploadImageByMultipartFile(filePath, multipartFile, maxWidth);
 	}
 	
 	/**
@@ -187,12 +218,7 @@ public class OSS {
 			List<MultipartFile> imageList = multipartRequest.getFiles(formFileName);  
 			if(imageList.size()>0 && !imageList.get(0).isEmpty()){
 				MultipartFile multi = imageList.get(0);
-				String fileSuffix=com.xnx3.Lang.subString(multi.getOriginalFilename(), ".", null, 3);	//获得文件后缀，以便重命名
-				try {
-					uploadFileVO = uploadImage(filePath,ImageUtil.proportionZoom(multi.getInputStream(), maxWidth, fileSuffix) , fileSuffix);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				uploadFileVO = uploadImageByMultipartFile(filePath, multi, maxWidth);
 			}else{
 				uploadFileVO.setResult(UploadFileVO.NOTFILE);
 				uploadFileVO.setInfo(Language.show("oss_uploadNotFile"));
@@ -219,7 +245,7 @@ public class OSS {
 			List<MultipartFile> imageList = multipartRequest.getFiles(formFileName);  
 			
 			if(imageList.size()>0 && !imageList.get(0).isEmpty()){
-				uploadFileVO = uploadImage(filePath, imageList.get(0));
+				uploadFileVO = uploadImageByMultipartFile(filePath, imageList.get(0));
 			}else{
 				uploadFileVO.setResult(UploadFileVO.NOTFILE);
 				uploadFileVO.setInfo(Language.show("oss_uploadNotFile"));

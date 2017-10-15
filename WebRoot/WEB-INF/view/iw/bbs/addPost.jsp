@@ -33,7 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</dd>
 					<dt>内容：</dt>
 					<dd>
-						<textarea name="text"></textarea>
+						<textarea name="text" id="myEditor"></textarea>
 					</dd>
 					<dd>
 						<input type="submit" value="发帖" class="btn btn01">
@@ -44,20 +44,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<footer id="footer"></footer>
 	</article>
 
-<!-- 可使用UEditor富文本编辑器： -->
+<!-- 可使用UEditor富文本编辑器，若不用UEditor，那么直接将下面的删除掉即可 -->
 <!-- 配置文件 -->
 <script type="text/javascript" src="<%=basePath %>/module/ueditor/ueditor.config.js"></script>
 <!-- 编辑器源码文件 -->
 <script type="text/javascript" src="<%=basePath %>/module/ueditor/ueditor.all.js"></script>
-<div class="weui_cells weui_cells_form">
-
-	<div class="weui_cell">
-	  <div class="weui_cell_bd weui_cell_primary">
-	   	<textarea class="weui_textarea" id="myEditor" placeholder="请输入新闻内容" name="text" rows="3"></textarea>
-	  </div>
-	</div>
-</div>
-    
 <!-- 实例化编辑器 -->
 <script type="text/javascript">
 var ueditorText = document.getElementById('myEditor').innerHTML;

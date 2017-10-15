@@ -5,24 +5,11 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<jsp:include page="../../../publicPage/adminCommon/head.jsp">
-    	<jsp:param name="title" value="编辑帖子"/>
-    </jsp:include>
-    <script src="<%=basePath+Global.CACHE_FILE %>Bbs_postClass.js"></script>
-</head>
+<jsp:include page="../../common/head.jsp">
+	<jsp:param name="title" value="编辑帖子"/>
+</jsp:include>
+<script src="<%=basePath+Global.CACHE_FILE %>Bbs_postClass.js"></script>
 
-<body>
-
-<section id="container" >
-<jsp:include page="../../../publicPage/adminCommon/topHeader.jsp"></jsp:include>     
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <jsp:include page="../../../publicPage/adminCommon/menu.jsp"></jsp:include>         
-    </div>
-</aside>
     <!--main content start-->
     <section id="main-content" >
         <section class="wrapper">
@@ -126,6 +113,4 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <!--main content end-->
 </section>
 
-<jsp:include page="../../../publicPage/adminCommon/footImport.jsp"></jsp:include>  
-</body>
-</html>
+<jsp:include page="../../common/foot.jsp"></jsp:include> 
