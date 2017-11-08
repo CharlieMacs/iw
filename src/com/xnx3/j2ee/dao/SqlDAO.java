@@ -44,6 +44,9 @@ public class SqlDAO {
 	 * @return 统计条数
 	 */
 	public int count(String tableName,String where){
+		if(where == null){
+			where = "";
+		}
 		String queryString = "SELECT count(*) FROM "+tableName+" "+where;
 		BigInteger count = (BigInteger)getCurrentSession().createSQLQuery(queryString).uniqueResult();
 		return count.intValue();
@@ -187,7 +190,7 @@ public class SqlDAO {
 	/**
 	 * 执行原生SQL语句
 	 * @param sql 要执行的SQL语句
-	 * @return query.executeUpdate()的返回值
+	 * @return query.executeUpdate()的返回值，即Sql语句成功更新的条数
 	 */
 	public int executeSql(String sql){    
         int result ;    

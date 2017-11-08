@@ -1,3 +1,4 @@
+<%@page import="com.xnx3.StringUtil"%>
 <% /* 
 	列表页面，顶部的搜索框，input 默认是 type=text 的搜索，除非传入iw_type 
 	共有三个参数：
@@ -22,16 +23,21 @@ String iw_type = "text";
 if(typeObj != null){
 	iw_type = typeObj.toString();
 }
+
+//request的值
+String iw_name_value = request.getParameter(iw_name);
+//对其进行防XSS过滤
+iw_name_value = StringUtil.filterXss(iw_name_value);
 %>
 <label class="layui-form-label"><%=iw_label %></label>
 <div class="layui-input-inline" style="width: 100px; float:left;">
 <%
 if(iw_type.equals("text")){
 %>
-	<input style="width:100px;" type="text" name="<%=iw_name %>" placeholder="" value='<%=request.getParameter(iw_name)==null? "":request.getParameter(iw_name)  %>' autocomplete="off" class="layui-input">
+	<input style="width:100px;" type="text" name="<%=iw_name %>" placeholder="" value='<%=iw_name_value==null? "":iw_name_value  %>' autocomplete="off" class="layui-input">
 <%
 }else if(iw_type.equals("select")){
 %>
-		<script type="text/javascript">writeSelectAllOptionFor<%=iw_name %>('<%=request.getParameter(iw_name) %>');</script>
+		<script type="text/javascript">writeSelectAllOptionFor<%=iw_name %>('<%=iw_name_value %>');</script>
 <% } %>
 </div>

@@ -82,7 +82,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div><i class="layui-icon">&#xe654;</i> &nbsp;：新增操作，可以在某个顶级资源分类下进行新增其下级的资源</div>
 </div>
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script type="text/javascript">
 //鼠标跟随提示
 $(function(){

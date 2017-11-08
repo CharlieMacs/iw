@@ -49,7 +49,7 @@ public class BaseGenerate {
 	public void generateCacheFile(){
 		addCommonJsFunction();
 		initCacheFolder();
-		String filePath = Global.projectPath+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js"; 
+		String filePath = Global.getProjectPath()+Global.CACHE_FILE+getClass().getSimpleName()+"_"+objName+".js"; 
 		try {
 			content = content + " var xnx3_r"+DateUtil.timeForUnix10()+" = '"+getRandomValue()+"';";
 			FileUtil.write(filePath, content,FileUtil.UTF8);
@@ -78,10 +78,10 @@ public class BaseGenerate {
 	 * 初始化缓存文件夹，若根目录下没有缓存文件夹，自动创建
 	 */
 	private void initCacheFolder(){
-		if(!FileUtil.exists(Global.projectPath+Global.CACHE_FILE)){
-			logger.info("create cache folder : "+ Global.projectPath+Global.CACHE_FILE);
+		if(!FileUtil.exists(Global.getProjectPath()+Global.CACHE_FILE)){
+			logger.info("create cache folder : "+ Global.getProjectPath()+Global.CACHE_FILE);
 			String[] folders = Global.CACHE_FILE.split("/");
-			String path = Global.projectPath;
+			String path = Global.getProjectPath();
 			for (int i = 0; i < folders.length; i++) {
 				if(folders[i].length()>0&&!FileUtil.exists(path+folders[i])){
 					File file = new File(path+folders[i]);
@@ -96,7 +96,7 @@ public class BaseGenerate {
 	 * 增加一些常用的js函数
 	 */
 	public void addCommonJsFunction(){
-		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectValue){ writeSelectAllOptionFor"+this.objName+"_(selectValue,'所有', false); } function writeSelectAllOptionFor"+this.objName+"_(selectValue,firstTitle,required){ var content = \"\"; if(selectValue==''){ content = content + '<option value=\"\" selected=\"selected\">'+firstTitle+'</option>'; }else{ content = content + '<option value=\"\">'+firstTitle+'</option>'; } for(var p in "+this.objName+"){ if(p == selectValue){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write('<select name="+this.objName+" '+(required? 'required':'')+'>'+content+'</select>'); }";
+		this.content+= "/*页面上输出选择框的所有option，显示到页面上*/ function writeSelectAllOptionFor"+this.objName+"(selectValue){ writeSelectAllOptionFor"+this.objName+"_(selectValue,'所有', false); } function writeSelectAllOptionFor"+this.objName+"_(selectValue,firstTitle,required){ var content = \"\"; if(selectValue==''){ content = content + '<option value=\"\" selected=\"selected\">'+firstTitle+'</option>'; }else{ content = content + '<option value=\"\">'+firstTitle+'</option>'; } for(var p in "+this.objName+"){ if(p == selectValue){ content = content+'<option value=\"'+p+'\" selected=\"selected\">'+"+this.objName+"[p]+'</option>'; }else{ content = content+'<option value=\"'+p+'\">'+"+this.objName+"[p]+'</option>'; } } document.write('<select name="+this.objName+" '+(required? 'required':'')+' lay-verify=\""+this.objName+"\" lay-filter=\""+this.objName+"\" id=\""+this.objName+"\">'+content+'</select>'); }";
 	}
 	
 	/**

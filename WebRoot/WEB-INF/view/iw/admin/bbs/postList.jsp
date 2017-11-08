@@ -66,7 +66,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!-- 通用分页跳转 -->
 <jsp:include page="../../common/page.jsp"></jsp:include>
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script type="text/javascript">
 //根据id删除系统变量
 function deletePost(id,name){

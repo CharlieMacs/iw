@@ -34,7 +34,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 </form>
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script>
 //自适应弹出层大小
 var index = parent.layer.getFrameIndex(window.name); //获取窗口索引

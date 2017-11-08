@@ -10,8 +10,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <jsp:include page="../../common/head.jsp">
 	<jsp:param name="title" value="系统参数"/>
 </jsp:include>
-<script src="http://res.weiunity.com/js/jquery-2.1.4.js"></script>
-
 
 <jsp:include page="../../common/list/formSearch_formStart.jsp" ></jsp:include>
 	<jsp:include page="../../common/list/formSearch_input.jsp">
@@ -83,7 +81,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div style="padding-left:30px;">com.xnx3.j2ee.Global.getInt("USER_REG_ROLE");</div>
 </div>
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script type="text/javascript">
 //根据id删除系统变量
 function deleteVariable(id,name){

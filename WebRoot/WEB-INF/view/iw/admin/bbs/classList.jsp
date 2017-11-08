@@ -57,7 +57,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script type="text/javascript">
 //根据id删除系统变量
 function deleteClass(id,name){

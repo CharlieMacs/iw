@@ -13,7 +13,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	margin-bottom: 3px;
 } 
 </style>
-<script src="http://res.weiunity.com/js/jquery-2.1.4.js"></script>
 
 <form action="saveRolePermission.do" method="post" class="layui-form">
 	<input type="hidden" value="${role.id }" name="roleId" />

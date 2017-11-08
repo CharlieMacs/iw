@@ -7,9 +7,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:param name="title" value="访问统计"/>
 </jsp:include>
 
-<script src="http://res.weiunity.com/js/jquery-2.1.4.js"></script>
-
-
 <!-- echarts -->
 <script src="http://res.weiunity.com/js/echarts.min.js" type="text/javascript"></script>
 

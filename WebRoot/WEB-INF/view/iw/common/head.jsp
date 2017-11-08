@@ -38,6 +38,19 @@ if(description == null ){
 <!-- layer 、 layui -->
 <link rel="stylesheet" href="http://res.weiunity.com/layui2/css/layui.css">
 <script src="http://res.weiunity.com/layui2/layui.js"></script>
+<script>
+//加载 layer 模块
+layui.use('layer', function(){
+  layer = layui.layer;
+});
+</script>
+
+<script src="http://res.weiunity.com/js/jquery-2.1.4.js"></script>
+
+<!-- weui，一个UI框架，这个包含weui，依赖Jquery -->
+<script src="http://res.weiunity.com/js/jquery-weui.js"></script>
+<link rel="stylesheet" href="http://res.weiunity.com/css/jquery-weui.css">
+<link rel="stylesheet" href="http://res.weiunity.com/css/weui.min.css">
 
 <!-- order by 列表的排序 -->
 <script src="http://res.weiunity.com/js/iw.js"></script>

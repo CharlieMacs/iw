@@ -71,6 +71,7 @@ public class UserAdminController_ extends BaseController {
 		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM user", page);
 		sql.setDefaultOrderBy("user.id DESC");
+		sql.setOrderByField(new String[]{"id","lasttime","money","currency"});
 		List<User> list = sqlService.findBySql(sql, User.class);
 		
 		model.addAttribute("page", page);

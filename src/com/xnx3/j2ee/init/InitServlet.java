@@ -1,6 +1,7 @@
 package com.xnx3.j2ee.init;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,20 +35,31 @@ public class InitServlet extends HttpServlet {
 	
 	@Override
 	public void init(ServletConfig servletContext) throws ServletException {
-		//获取当前项目的所在路径
-		Global.projectPath = servletContext.getServletContext().getRealPath("/");
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext.getServletContext());
 		postService = ctx.getBean("postService", PostService.class);
 		sqlService = ctx.getBean("sqlService", SqlService.class);
 		
-		generateCache_postClass();
-		new Role().role(sqlService.findAll(com.xnx3.j2ee.entity.Role.class));
+		//判断一下，当 system 表中有数据时，才会加载postClass、role、system等数据库信息。反之，如果system表没有数据，也就是认为开发者刚吧iw框架假设起来，还没有往里填充数据，既然没有数据，便不需要加载这几个数据表的数据了
+		List<Map<String,Object>> map = sqlService.findMapBySqlQuery("SHOW TABLES LIKE '%system%'");
+		if(map.size() > 0){
+			generateCache_postClass();
+			new Role().role(sqlService.findAll(com.xnx3.j2ee.entity.Role.class));
+			readSystemTable();
+		}else{
+			Global.databaseCreateFinish = false;
+			java.lang.System.out.println("--------------------");
+			java.lang.System.out.println("");
+			java.lang.System.out.println("");
+			java.lang.System.out.println("请访问您当前项目/install/sql.do 进行导入数据");
+			java.lang.System.out.println("");
+			java.lang.System.out.println("");
+			java.lang.System.out.println("--------------------");
+		}
+		
 		new Message();
 		new PayLog();
 		new SmsLog();
 		new User();
-		
-		readSystemTable();
 	}
 	
 	/**

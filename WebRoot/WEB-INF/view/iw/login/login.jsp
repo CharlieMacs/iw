@@ -100,7 +100,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div style="display:none;  position: absolute;bottom: 0px;padding: 10px;text-align: center;width: 100%;background-color: yellow;">建议使用<a href="https://www.baidu.com/s?wd=Chrome" target="_black" style="text-decoration:underline">Chrome(谷歌)</a>、<a href="https://www.baidu.com/s?wd=Firefox" target="_black" style="text-decoration:underline">Firefox(火狐)</a>浏览器，IE浏览器会无法操作！！！</div>
 <![endif]-->
 
-<jsp:include page="../common/weui.jsp" />
 <script>
 //Demo
 layui.use('form', function(){

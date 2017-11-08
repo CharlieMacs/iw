@@ -12,7 +12,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<title><%=Global.get("SITE_NAME") %></title>
 </head>
 <body>
-	<div style="text-align: center; font-size:28px; padding-top:15%;">Welcome to use iw framework, I wish you a happy development!</div>
+	<div style="text-align: center; font-size:28px; padding-top:15%;">Welcome to use iw framework, I wish you a happy development!
+	
+		<%  if(!Global.databaseCreateFinish){ %>
+			<div><a href="install/sql.do">数据库尚未导入！点击进入/install/sql.do 导入数据库</a></div>
+		<% }  %>
+	</div>
+	
+	
 	<div style="text-align: center; padding-top:15%">
 		<a href="login.do">登录后台(帐号密码都是admin)</a>
 		&nbsp;|&nbsp;

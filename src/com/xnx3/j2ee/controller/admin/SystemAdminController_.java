@@ -1,14 +1,17 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.xnx3.DateUtil;
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
@@ -60,6 +63,7 @@ public class SystemAdminController_ extends BaseController {
 		Page page = new Page(count, 1000, request);
 		sql.setSelectFromAndPage("SELECT * FROM system", page);
 		sql.setDefaultOrderBy("id DESC");
+		sql.setOrderByField(new String[]{"id","lasttime","name"});
 		List<System> systemList = sqlService.findBySql(sql, System.class);
 		
 		ActionLogCache.insert(request, "系统变量列表");

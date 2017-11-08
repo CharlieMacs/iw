@@ -54,6 +54,7 @@ public class BbsAdminController_ extends BaseController {
 		Page page = new Page(count, Global.getInt("LIST_EVERYPAGE_NUMBER"), request);
 		sql.setSelectFromAndPage("SELECT * FROM post", page);
 		sql.setDefaultOrderBy("post.id DESC");
+		sql.setOrderByField(new String[]{"id","view"});
 		List<Post> list = sqlService.findBySql(sql, Post.class);
 		
 		ActionLogCache.insert(request, "管理后台帖子列表", "第"+ page.getCurrentPageNumber() +"页");

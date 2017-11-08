@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Session;
+
 import com.xnx3.j2ee.entity.Role;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.util.Sql;
@@ -20,7 +22,7 @@ public interface SqlService {
 	/**
 	 * 获取查询的信息条数
 	 * @param tableName 表名,多个表名中间用,分割，如: "user,message,log"。同样如果是多个表，where参数需要增加关联条件
-	 * @param where 查询条件，传入如“WHERE id > 1”
+	 * @param where 查询条件，传入如“WHERE id > 1” ；若没有查询条件，则可以传入null或者""空字符串
 	 * @return 统计条数
 	 */
 	public int count(String tableName,String where);
@@ -102,7 +104,7 @@ public interface SqlService {
 	/**
 	 * 执行原生SQL语句
 	 * @param sql 要执行的SQL语句
-	 * @return query.executeUpdate()的返回值
+	 * @return query.executeUpdate()的返回值，即Sql语句成功更新的条数
 	 */
 	public int executeSql(String sql);
 	
@@ -130,4 +132,9 @@ public interface SqlService {
 	 */
 	public <E> List<E> findAll(Class<E> entityClass);
 	
+	/**
+	 * 获取当前Hibernate的Session对象
+	 * @return {@link Session}当前hibernate的Session
+	 */
+	public Session getCurrentSession();
 }

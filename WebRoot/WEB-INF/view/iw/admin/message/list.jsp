@@ -10,7 +10,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:param name="title" value="信息列表"/>
 </jsp:include>
 <script src="<%=basePath+Global.CACHE_FILE %>Message_state.js"></script>
-<script src="http://res.weiunity.com/js/jquery-2.1.4.js"></script>
 
 <jsp:include page="../../common/list/formSearch_formStart.jsp" ></jsp:include>
 	<jsp:include page="../../common/list/formSearch_input.jsp">
@@ -75,7 +74,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!-- 通用分页跳转 -->
 <jsp:include page="../../common/page.jsp"></jsp:include>
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script type="text/javascript">
 /*
  * 根据站内信id删除站内信

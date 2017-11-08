@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.persistence.Table;
 
+import org.hibernate.Session;
+
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.entity.User;
@@ -106,4 +108,7 @@ public class SqlServiceImpl implements SqlService {
 		return sqlDAO.findAll(entityClass);
 	}
 	
+	public Session getCurrentSession() {
+		return sqlDAO.getCurrentSession();
+	}
 }

@@ -22,8 +22,10 @@ public class Global {
 	/********文件目录相关，用户头像存在于当前项目的根目录下的文件夹*********/
 	public final static String USER_HEAD_FILE="upload/userHead/";
 	
-	/********** 动态参数，会在项目启动时加载 ***********/
-	public static String projectPath=null;	//当前项目再硬盘的路径，绝对路径
+	/*
+	 * 当前项目再硬盘的路径，绝对路径。动态参数，会在项目启动时加载。取此参数，可以使用 {@link #getProjectPath()} 取
+	 */
+	private static String projectPath=null;
 	
 	/***** system表的参数,name-value ******/
 	public static Map<String, String> system = new HashMap<String, String>();	//value：String字符串，此数据会在应用启动起来后，自动从数据库中将system表的全部数据取出来放到这里。
@@ -65,6 +67,9 @@ public class Global {
 	/***** 权限相关 *****/
 	public static int roleId_admin = 9;	//超级管理员的角色id
 	public static int roleId_user = 1;		//普通用户的角色id
+	
+	/****** iw框架down下来，搭建开发环境时使用到的参数 ******/
+	public static boolean databaseCreateFinish = true;		//数据库是否完成创建导入。默认是数据库正常已创建。有initServlet初始化时进行判断，给其赋值
 	
 	static{
 		/*****论坛相关******/
@@ -108,5 +113,16 @@ public class Global {
 			}
 		}
 		return i==null? 0:i;
+	}
+	
+	/**
+	 * 当前项目再硬盘的路径，绝对路径
+	 */
+	public static String getProjectPath(){
+		if(projectPath == null){
+			String path = new Global().getClass().getResource("/").getPath();
+			projectPath = path.replace("WEB-INF/classes/", "");
+		}
+		return projectPath;
 	}
 }

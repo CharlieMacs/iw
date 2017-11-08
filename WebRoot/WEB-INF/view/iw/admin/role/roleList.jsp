@@ -50,7 +50,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<botton class=""><i class="layui-icon">&#xe640;</i></botton><span style="padding-left:12px;padding-right: 30px;">删除角色</span>
 </div>
 
-<jsp:include page="../../common/weui.jsp"></jsp:include>
 <script type="text/javascript">
 /**
  * 编辑角色属性／新增角色
