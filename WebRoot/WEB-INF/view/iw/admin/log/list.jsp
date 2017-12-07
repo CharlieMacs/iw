@@ -18,7 +18,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	<i class="layui-icon" style="border: 1px solid #e2e2e2; padding:3px;border-radius: 30px; color: #626262;font-size: 12px; cursor: pointer; margin-left: 10px;" onclick="window.open('https://help.aliyun.com/document_detail/29060.html');">&#xe607;</i>
     <input class="layui-btn iw_list_search_submit" type="submit" value="搜索" />
-    
+    <span style="padding-left:20px;">常用：</span>
+    <a href="?queryString=403">403</a>
+    <a href="?queryString=500">500</a>
+    <a href="?queryString=warn">warn</a>
+    <a href="?queryString=risk">risk</a>
 </form>
 
 <table class="layui-table iw_table">

@@ -72,7 +72,7 @@ public class UserController_ extends BaseController {
 	@RequiresPermissions("userUpdateNickName")
 	@RequestMapping("updateNickName")
 	public String updateNickName(HttpServletRequest request,Model model){
-		BaseVO baseVO = userService.updateNickName(request);
+		BaseVO baseVO = userService.updateNickname(request);
 		if(baseVO.getResult() == BaseVO.FAILURE){
 			ActionLogCache.insert(request, "修改昵称", "失败："+baseVO.getInfo());
 			return error(model, baseVO.getInfo());

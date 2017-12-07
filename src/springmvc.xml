@@ -20,7 +20,7 @@
 		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
 	</context:component-scan> -->
 	
-	<!-- Shiro start -->
+<!-- Shiro 开始 若不使用数据库，需要将Shiro配置的这些删除掉-->
 	<!-- Required for security annotations to work in this servlet -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor"/>
@@ -35,7 +35,7 @@
             </props>
         </property>
     </bean>
-	<!-- Shiro end -->
+<!-- Shiro 结束 -->
 	
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">

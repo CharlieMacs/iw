@@ -40,6 +40,10 @@ public class LogAdminController_ extends BaseController{
 	@RequiresPermissions("adminLogList")
 	@RequestMapping("list")
 	public String list(HttpServletRequest request,Model model) throws LogException{
+		if(ActionLogCache.aliyunLogUtil == null){
+			return error(model, "您未开启日志服务！无法查看操作日志");
+		}
+		
 		AliyunLogPageUtil log = new AliyunLogPageUtil(ActionLogCache.aliyunLogUtil);
 		
 		//得到当前页面的列表数据
@@ -50,7 +54,7 @@ public class LogAdminController_ extends BaseController{
 		//设置分页，出现得上几页、下几页跳转按钮的个数
 		page.setListNumber(2);
 		
-		ActionLogCache.insert(request, "查看总管理后台日志列表", "第"+page.getCurrentPageNumber()+"页");
+//		ActionLogCache.insert(request, "查看总管理后台日志列表", "第"+page.getCurrentPageNumber()+"页");
 		
 		model.addAttribute("list", jsonArray);
 		model.addAttribute("page", page);
@@ -63,6 +67,9 @@ public class LogAdminController_ extends BaseController{
 	@RequiresPermissions("adminLogCartogram")
 	@RequestMapping("cartogram")
 	public String cartogram(HttpServletRequest request, Model model){
+		if(ActionLogCache.aliyunLogUtil == null){
+			return error(model, "您未开启日志服务！无法查看操作日志");
+		}
 		ActionLogCache.insert(request, "查看总管理后台操作的统计图表");
 		return "/iw/admin/log/cartogram";
 	}

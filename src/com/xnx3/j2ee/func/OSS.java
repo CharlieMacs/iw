@@ -230,13 +230,40 @@ public class OSS {
 		return uploadFileVO;
 	}
 
-
 	/**
 	 * SpringMVC 上传单个图片文件，配置允许上传的文件后缀再 systemConfig.xml 的OSS节点
 	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
 	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
 	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO uploadImageByRequest(String filePath, HttpServletRequest request, String formFileName) {
+		UploadFileVO uploadFileVO = new UploadFileVO();
+		if (request instanceof MultipartHttpServletRequest) {
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
+			List<MultipartFile> imageList = multipartRequest.getFiles(formFileName);  
+			
+			if(imageList.size()>0 && !imageList.get(0).isEmpty()){
+				uploadFileVO = uploadImageByMultipartFile(filePath, imageList.get(0));
+			}else{
+				uploadFileVO.setResult(UploadFileVO.NOTFILE);
+				uploadFileVO.setInfo(Language.show("oss_uploadNotFile"));
+			}
+	    }else{
+	    	uploadFileVO.setResult(UploadFileVO.NOTFILE);
+			uploadFileVO.setInfo(Language.show("oss_uploadNotFile"));
+	    }
+		return uploadFileVO;
+	}
+
+	/**
+	 * SpringMVC 上传单个图片文件，配置允许上传的文件后缀再 systemConfig.xml 的OSS节点
+	 * <br/> 建议使用 uploadImageByRequest
+	 * @param filePath 上传后的文件所在OSS的目录、路径，如 "jar/file/"
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 * @deprecated
 	 */
 	public static UploadFileVO uploadImage(String filePath, HttpServletRequest request, String formFileName) {
 		UploadFileVO uploadFileVO = new UploadFileVO();

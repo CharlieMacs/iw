@@ -15,7 +15,6 @@ import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.PostComment;
 import com.xnx3.j2ee.entity.PostData;
 import com.xnx3.j2ee.entity.User;
-import com.xnx3.j2ee.func.ActionLogCache;
 import com.xnx3.j2ee.func.Language;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.service.PostService;

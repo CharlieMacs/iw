@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.xnx3.DateUtil;
+import com.xnx3.IntegerUtil;
 import com.xnx3.Lang;
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
@@ -28,11 +29,13 @@ import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.service.UserService;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 import com.xnx3.j2ee.util.IpUtil;
+import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.j2ee.entity.*;
 import com.xnx3.j2ee.func.Language;
 import com.xnx3.j2ee.func.OSS;
+import com.xnx3.j2ee.func.Safety;
 import com.xnx3.media.ImageUtil;
 import com.xnx3.net.OSSUtil;
 import com.xnx3.net.ossbean.PutResult;
@@ -506,31 +509,6 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-	/**
-	 * 修改昵称
-	 * @param request {@link HttpServletRequest} 
-	 * 			<br/>form表单需提交参数：nickname(要修改成的昵称)
-	 * @return {@link BaseVO}
-	 */
-	@Override
-	public BaseVO updateNickName(HttpServletRequest request) {
-		BaseVO baseVO = new BaseVO();
-		String nickname = request.getParameter("nickname");
-		if(nickname==null){
-			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateNicknameNicknameIsNull"));
-		}else{
-			User uu=sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
-			String oldNickName = uu.getNickname();
-			uu.setNickname(nickname);
-			sqlDAO.save(uu);
-			
-			//更新Session
-			ShiroFunc.getCurrentActiveUser().setUser(uu);
-	        
-//			logDao.insert("USER_UPDATE_NICKNAME", oldNickName);
-		}
-		return baseVO;
-	}
 
 	@Override
 	public BaseVO freezeUser(int id) {
@@ -633,7 +611,7 @@ public class UserServiceImpl implements UserService{
 		if(nickname == null){
 			nickname = "";
 		}
-		nickname = StringUtil.filterHtmlTag(nickname);
+		nickname = Safety.filter(nickname);
 		if(nickname.length()==0){
 			baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_updateNicknameNotNull"));
 			return baseVO;
@@ -646,7 +624,6 @@ public class UserServiceImpl implements UserService{
 		User u = sqlDAO.findById(User.class, ShiroFunc.getUser().getId());
 		u.setNickname(nickname);
 		sqlDAO.save(u);
-//		logDao.insert("USER_UPDATE_NICKNAME", ShiroFunc.getUser().getNickname());
 		ShiroFunc.getUser().setNickname(nickname);
 		
 		return baseVO;
@@ -842,5 +819,126 @@ public class UserServiceImpl implements UserService{
 		return baseVO;
 	}
 
+	@Override
+	public BaseVO createUser(User user, HttpServletRequest request) {
+		//用户名、密码进行xss、sql防注入
+		user.setUsername(StringUtil.filterXss(Sql.filter(user.getUsername())));
+		user.setPassword(StringUtil.filterXss(Sql.filter(user.getPassword())));
+		
+		//既然是注册新用户，那么用户名、密码一定是不能为空的
+		if(user.getUsername()==null||user.getUsername().equals("")){
+			return BaseVO.failure("用户名不能为空！");
+		}
+		if(user.getPassword()==null||user.getPassword().equals("")){
+			return BaseVO.failure("密码不能为空！");
+		}
+		//用户名长度判断
+		if(user.getUsername().length() > 20){
+			return BaseVO.failure(Language.show("user_userNameToLong"));
+		}
+		
+		//判断用户名、邮箱、手机号是否有其中已经注册了，唯一性
+		//邮箱的唯一，仅当邮箱设置了之后，才会判断邮箱的唯一性
+		if(user.getEmail() != null && user.getEmail().length() > 0){
+			if(sqlDAO.findByProperty(User.class, "email", user.getEmail()).size() > 0){
+				return BaseVO.failure(Language.show("user_regFailureForEmailAlreadyExist"));
+			}
+		}
+		//判断用户名唯一性
+		if(sqlDAO.findByProperty(User.class, "username", user.getUsername()).size() > 0){
+			return BaseVO.failure(Language.show("user_regFailureForUsernameAlreadyExist"));
+		}
+		//判断手机号唯一性
+		if(user.getPhone() != null && user.getPhone().length() > 0){
+			if(findByPhone(user.getUsername()) != null){
+				return BaseVO.failure(Language.show("user_regFailureForPhoneAlreadyExist"));
+			}
+		}
+		
+		if(user.getRegip() == null){
+			user.setRegip(IpUtil.getIpAddress(request));
+		}
+		if(user.getLastip() == null){
+			user.setLastip(IpUtil.getIpAddress(request));
+		}
+		if(user.getRegtime() == null){
+			user.setRegtime(DateUtil.timeForUnix10());
+		}
+		if(user.getLasttime() == null){
+			user.setLasttime(DateUtil.timeForUnix10());
+		}
+		if(user.getNickname() == null){
+			user.setNickname(user.getUsername());
+		}else{
+			user.setNickname(StringUtil.filterXss(Sql.filter(user.getNickname())));
+		}
+		if(user.getAuthority() == null){
+			user.setAuthority(Global.get("USER_REG_ROLE"));
+		}
+		if(user.getCurrency() == null){
+			user.setCurrency(0);
+		}
+		if(user.getReferrerid() == null){
+			//当前登录的用户id
+			user.setReferrerid(ShiroFunc.getUserId());
+		}
+		if(user.getIsfreeze() == null){
+			user.setIsfreeze(User.ISFREEZE_NORMAL);
+		}
+		if(user.getHead() == null){
+			user.setHead("default.png");
+		}else{
+			user.setHead(StringUtil.filterXss(Sql.filter(user.getHead())));
+		}
+		if(user.getId() != null){
+			user.setId(null);
+		}
+		
+		/* 密码加密，保存 */
+		Random random = new Random();
+		user.setSalt(random.nextInt(10)+""+random.nextInt(10)+""+random.nextInt(10)+""+random.nextInt(10)+"");
+        String md5Password = new Md5Hash(user.getPassword(), user.getSalt(),Global.USER_PASSWORD_SALT_NUMBER).toString();
+		user.setPassword(md5Password);
+		sqlDAO.save(user);
+			
+		if(user.getId()>0){
+			//已注册成功
+			
+			//赋予该用户系统设置的默认角色
+			UserRole userRole = new UserRole();
+			userRole.setRoleid(Lang.stringToInt(user.getAuthority(), Global.getInt("USER_REG_ROLE")));
+			userRole.setUserid(user.getId());
+			sqlDAO.save(userRole);
+			return BaseVO.success();
+		}else{
+			return BaseVO.failure(Language.show("user_regFailure"));
+		}
+	}
+
+	@Override
+	public String getHead(String defaultHead) {
+		String head = null;
+		
+		User user = ShiroFunc.getUser();
+		if(user == null){
+			head = defaultHead;
+		}else{
+			if(user.getHead() != null && user.getHead().length() > 10){
+				if(user.getHead().indexOf("http:") == -1){
+					if(user.getHead().equals("default.png")){
+						head = defaultHead;
+					}else{
+						head = OSSUtil.url + Global.get("USER_HEAD_PATH") + user.getHead();
+					}
+				}else{
+					head = user.getHead();
+				}
+			}else{
+				head = defaultHead;
+			}
+		}
+		
+		return head;
+	}
 
 }

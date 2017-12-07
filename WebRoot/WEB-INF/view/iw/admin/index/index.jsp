@@ -55,7 +55,7 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 	<ul class="">
 		<shiro:hasPermission name="adminUser"> 
 			<li class="layui-nav-item">
-				<a id="shengchengzhengzhan" href="javascript:loadUrl('<%=basePath %>admin/user/list.do');">
+				<a href="javascript:loadUrl('<%=basePath %>admin/user/list.do');">
 					<i class="layui-icon firstMenuIcon">&#xe612;</i>
 					<span class="firstMenuFont">用户管理</span>
 				</a>
@@ -64,7 +64,7 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 		
 		<shiro:hasPermission name="adminMessage"> 
 			<li class="layui-nav-item">
-				<a id="shengchengzhengzhan" href="javascript:loadUrl('<%=basePath %>admin/message/list.do');">
+				<a href="javascript:loadUrl('<%=basePath %>admin/message/list.do');">
 					<i class="layui-icon firstMenuIcon">&#xe63a;</i>
 					<span class="firstMenuFont">站内信息</span>
 				</a>
@@ -78,14 +78,14 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 					<span class="firstMenuFont">论坛管理</span>
 				</a>
 				<dl class="layui-nav-child">
-					<shiro:hasPermission name="adminLog">
-						<dd><a id="rzfw_caozuorizhi" class="subMenuItem" href="javascript:loadUrl('<%=basePath %>/admin/bbs/classList.do');">分类板块</a></dd>
+					<shiro:hasPermission name="adminBbsClassList">
+						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>/admin/bbs/classList.do');">分类板块</a></dd>
 					</shiro:hasPermission>
-					<shiro:hasPermission name="adminSmsLog"> 
+					<shiro:hasPermission name="adminBbsPostList"> 
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>/admin/bbs/postList.do');">帖子管理</a></dd>
 					</shiro:hasPermission>
-					<shiro:hasPermission name="adminLog">
-						<dd><a id="rzfw_fangwentongji" class="subMenuItem" href="javascript:loadUrl('<%=basePath %>/admin/bbs/commentList.do');">回帖管理</a></dd>
+					<shiro:hasPermission name="adminBbsPostCommentList">
+						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>/admin/bbs/commentList.do');">回帖管理</a></dd>
 					</shiro:hasPermission>
 				</dl>
 			</li>
@@ -98,8 +98,8 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 					<span class="firstMenuFont">日志统计</span>
 				</a>
 				<dl class="layui-nav-child">
-					<shiro:hasPermission name="adminLog">
-						<dd><a id="rzfw_caozuorizhi" class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/log/list.do');">用户动作</a></dd>
+					<shiro:hasPermission name="adminLogList">
+						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/log/list.do');">用户动作</a></dd>
 					</shiro:hasPermission>
 					<shiro:hasPermission name="adminSmsLog"> 
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/smslog/list.do');">手机验证</a></dd>
@@ -107,8 +107,8 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 					<shiro:hasPermission name="adminPayLog"> 
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/payLog/list.do');">在线支付</a></dd>
 					</shiro:hasPermission>
-					<shiro:hasPermission name="adminLog">
-						<dd><a id="rzfw_fangwentongji" class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/log/cartogram.do');">访问统计</a></dd>
+					<shiro:hasPermission name="adminLogCartogram">
+						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/log/cartogram.do');">访问统计</a></dd>
 					</shiro:hasPermission>
 				</dl>
 			</li>
@@ -121,10 +121,10 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 					<span class="firstMenuFont">权限管理</span>
 				</a>
 				<dl class="layui-nav-child">
-					<shiro:hasPermission name="adminLog">
+					<shiro:hasPermission name="adminRoleRoleList">
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/role/roleList.do');">角色管理</a></dd>
 					</shiro:hasPermission>
-					<shiro:hasPermission name="adminSmsLog"> 
+					<shiro:hasPermission name="adminRolePermissionList"> 
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/role/permissionList.do');">资源管理</a></dd>
 					</shiro:hasPermission>
 				</dl>
@@ -138,10 +138,10 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 					<span class="firstMenuFont">系统管理</span>
 				</a>
 				<dl class="layui-nav-child">
-					<shiro:hasPermission name="adminLog">
+					<shiro:hasPermission name="adminOnlineUserList">
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/user/onlineUserList.do');">在线会员</a></dd>
 					</shiro:hasPermission>
-					<shiro:hasPermission name="adminSmsLog"> 
+					<shiro:hasPermission name="adminSystemVariable"> 
 						<dd><a class="subMenuItem" href="javascript:loadUrl('<%=basePath %>admin/system/variableList.do?orderBy=lasttime_ASC');">系统变量</a></dd>
 					</shiro:hasPermission>
 				</dl>

@@ -82,13 +82,6 @@ public interface UserService {
 	public void logout();
 	
 	/**
-	 * 修改昵称
-	 * @param request {@link HttpServletRequest} 
-	 * 			<br/>form表单需提交参数：nickname(要修改成的昵称)
-	 */
-	public BaseVO updateNickName(HttpServletRequest request);
-	
-	/**
 	 * 冻结用户
 	 * @param id 用户id，user.id
 	 */
@@ -155,4 +148,28 @@ public interface UserService {
 	 * @param newPassword 更改后的新密码
 	 */
 	public BaseVO updatePassword(int userid, String newPassword);
+	
+	/**
+	 * 创建用户，此接口是为二次开发准备的，可以在后台或者其他地方自由创建新用户
+	 * @param user 要创建的新用户的一些信息，注意，传入的值：
+	 * 			<ul>
+	 * 				<li><b>{@link User}.username 必须有值，不能为空</b></li>
+	 * 				<li><b>{@link User}.password 必须有值，不能为空。这里赋予用户登录时的密码，此接口中会自动转化为加密后的密码存储</b></li>
+	 * 				<li>{@link User} .id 即使有值也会无效，自动赋予null，以创建新用户</li>				
+	 * 				<li>{@link User}.nickname 用户昵称，若是不传值，默认赋予其 {@link User}.username的值</li>
+	 * 				<li>{@link User}.regtime、regip 注册时间、注册ip、最后登录时间、最后登录ip，若是不传入值，则默认从request中取当前开通这个用户的ip</li>
+	 * 				<li>{@link User}.authority 这个用户的权限。只限传入一个roleid，这里不支持多个roleid的传入！若不传入，默认赋予用户普通会员的权限（系统管理－系统变量中，变量名为USER_REG_ROLE的值）。</li>
+	 * 				<li>{@link User}.phone、email 手机号、邮箱，如果填写了，会自动判断其唯一性，是否是唯一的</li>
+	 * 			</ul>
+	 * @param request {@link HttpServletRequest}主要拿其中的注册ip等信息
+	 * @return 成功|失败
+	 */
+	public BaseVO createUser(User user ,HttpServletRequest request);
+	
+	/**
+	 * 获取当前用户的头像，拿到的是绝对路径的网址，如 http://res.weiunity.com/image/imqq.jpg
+	 * @param defaultHead 默认头像网址（带http的绝对路径图片网址），如果用户没有头像，或者使用的是默认头像，那么会自动返回这里设置的默认头像网址。如 http://res.weiunity.com/image/imqq.jpg
+	 * @return 头像的绝对路径网址，如 http://res.weiunity.com/image/imqq.jpg
+	 */
+	public String getHead(String defaultHead);
 }

@@ -75,3 +75,103 @@ function orderBy(content){
 	document.getElementById("selectOrderBy_xnx3_id").options[defaultShow_index].selected = true;  
 	//layui.form().render('select')	刷新dom
 }
+
+
+//用于记录弹出失败、成功、加载中等最后一次弹出的编号，用来主动关闭时使用
+var iw_currentLayerLoadingTipIndex = 0;
+var iw = {
+	/**
+	 * 弹出友好的失败提示，2秒后自动消失
+	 * @param text 提示的内容。若不填写，则默认是“操作失败”
+	 */ 
+	msgFailure: function(text){
+		var msgText = '';
+		if(typeof(text) == 'undefined'){
+			msgText = '操作失败';
+		}else{
+			msgText = text;
+		}
+		
+		layer.msg(msgText, {
+			icon: 2,
+			time: 2000 //2秒关闭（如果不配置，默认是3秒）
+		}, function(){
+			//do something
+		});
+	},
+	/**
+	 * 弹出友好的成功提示，2秒后自动消失
+	 * @param text 提示的内容。若不填写，则默认是“操作成功”
+	 */
+	msgSuccess: function(text){
+		var msgText = '';
+		if(typeof(text) == 'undefined'){
+			msgText = '操作成功';
+		}else{
+			msgText = text;
+		}
+		layer.msg(msgText, {
+			icon: 1,
+			time: 2000 //2秒关闭（如果不配置，默认是3秒）
+		}, function(){
+			//do something
+		});
+	},
+	/**
+	 * 显示等待提示，可用来显示ajax表单提交等
+	 * @param text 提示文字，若不传，默认显示“加载中..”
+	 */
+	loading: function(text){
+		var msgText = '';
+		if(typeof(text) == 'undefined'){
+			msgText = '加载中...';
+		}else{
+			msgText = text;
+		}
+		iw_currentLayerLoadingTipIndex = layer.msg('<img src="http://res.weiunity.com/image/loading.svg"  style="width:55px; padding:10px; padding-top:15px;" /><div style="padding-top:10px; padding-bottom:5px;">'+msgText+'</div>', {
+			icon: -1,
+				time: 60000 //60秒关闭（如果不配置，默认是3秒）
+			}, function(){
+				//do something
+			}); 
+	},
+	/**
+	 * 隐藏等待提示，如提交中的等待提示。隐藏的是最近的一次弹出提示框
+	 */
+	loadClose: function(){
+		layer.close(iw_currentLayerLoadingTipIndex);
+	}
+}
+
+/**
+ * 弹出友好的失败提示，2秒后自动消失
+ * <br/>已废弃。请使用  iw.msgFailure(text)
+ * @param text 提示的内容。若不填写，则默认是“操作失败”
+ * @deprecated
+ */
+function msgFailure(text){
+	iw.msgFailure(text);
+}
+
+/**
+ * 弹出友好的成功提示，2秒后自动消失
+ * @param text 提示的内容。若不填写，则默认是“操作成功”
+ */
+function msgSuccess(text){
+	iw.msgSuccess(text);
+}
+
+/**
+ * 显示等待提示，可用来显示ajax表单提交等
+ * @param text 提示文字，若不传，默认显示“加载中..”
+ */
+function loading(text){
+	iw.loading(text);
+}
+
+/**
+ * 隐藏等待提示，如提交中的等待提示。隐藏的是最近的一次弹出提示框
+ */
+function loadClose(){
+	iw.loadClose();
+}

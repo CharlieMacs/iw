@@ -2,6 +2,7 @@ package com.xnx3.j2ee;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 
@@ -70,6 +71,9 @@ public class Global {
 	
 	/****** iw框架down下来，搭建开发环境时使用到的参数 ******/
 	public static boolean databaseCreateFinish = true;		//数据库是否完成创建导入。默认是数据库正常已创建。有initServlet初始化时进行判断，给其赋值
+	public static String databaseCreateFinish_explain = "";	//其上出错的说明
+	public static boolean xnx3Config_oss = true;			//OSS文件上传是否完成配置
+	public static String xnx3Config_oss_explain = "";		//其上出错的说明
 	
 	static{
 		/*****论坛相关******/

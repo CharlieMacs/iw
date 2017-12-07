@@ -18,12 +18,12 @@ public class BaseGenerate {
 	/**
 	 * 生成js缓存文件的内容
 	 */
-	private String content;
+	public String content;
 	
 	/**
 	 * 生成的js存储数据的对象名，保存的文件名也是使用此有关联
 	 */
-	private String objName;	
+	public String objName;	
 	
 	/**
 	 * 创建js对象

@@ -44,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	   		<td>${system.name }</td>
 	   		<td id="xnx3_${system.name }"><x:substring maxLength="10" text="${system.value }"></x:substring></td>
 	        <td><x:substring maxLength="40" text="${system.description }"></x:substring></td>
-	        <td class="numeric">
+	        <td style="width:110px;">
 	        	<botton class="layui-btn layui-btn-small" onclick="variable(${system.id }, '${system.name }');" style="margin-left: 3px;"><i class="layui-icon">&#xe642;</i></botton>
 	        	<botton class="layui-btn layui-btn-small" onclick="deleteVariable(${system.id }, '${system.name }');" style="margin-left: 3px;"><i class="layui-icon">&#xe640;</i></botton>
 	        </td>
