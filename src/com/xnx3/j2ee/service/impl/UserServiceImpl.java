@@ -1,7 +1,6 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.xnx3.DateUtil;
-import com.xnx3.IntegerUtil;
 import com.xnx3.Lang;
 import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
@@ -33,11 +31,12 @@ import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
 import com.xnx3.j2ee.vo.UploadFileVO;
 import com.xnx3.j2ee.entity.*;
+import com.xnx3.j2ee.func.AttachmentFile;
 import com.xnx3.j2ee.func.Language;
 import com.xnx3.j2ee.func.OSS;
 import com.xnx3.j2ee.func.Safety;
 import com.xnx3.media.ImageUtil;
-import com.xnx3.net.OSSUtil;
+//import com.xnx3.net.OSSUtil;
 import com.xnx3.net.ossbean.PutResult;
 
 public class UserServiceImpl implements UserService{
@@ -263,7 +262,7 @@ public class UserServiceImpl implements UserService{
 				}
 				
 //				logDao.insert("USER_REGISTER_SUCCESS");
-				baseVO.setBaseVO(BaseVO.SUCCESS, Language.show("user_regSuccess"));
+				baseVO.setBaseVO(BaseVO.SUCCESS, user.getId()+"");
 			}else{
 				baseVO.setBaseVO(BaseVO.FAILURE, Language.show("user_regFailure"));
 			}
@@ -558,7 +557,8 @@ public class UserServiceImpl implements UserService{
 		fileSuffix = Lang.findFileSuffix(head.getOriginalFilename());
 		String newHead = Lang.uuid()+"."+fileSuffix;
 		try {
-			PutResult result = OSSUtil.put("image/head/"+newHead, head.getInputStream());
+//			PutResult result = OSSUtil.put(Global.get("USER_HEAD_PATH")+newHead, head.getInputStream());
+			PutResult result = AttachmentFile.put(Global.get("USER_HEAD_PATH")+newHead, head.getInputStream());
 			uploadFileVO.setFileName(result.getFileName());
 			uploadFileVO.setPath(result.getPath());
 			uploadFileVO.setUrl(result.getUrl());
@@ -571,7 +571,7 @@ public class UserServiceImpl implements UserService{
 		User u = sqlDAO.findById(User.class, user.getId());
 		//删除之前的头像
 		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
-			OSSUtil.deleteObject("image/head/"+u.getHead());
+			AttachmentFile.deleteObject("image/head/"+u.getHead());
 		}
 		
 		u.setHead(newHead);
@@ -681,20 +681,20 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		User user = ShiroFunc.getUser();
-		UploadFileVO vo = OSS.uploadImageByMultipartFile(Global.get("USER_HEAD_PATH"), multipartFile, maxWidth);
-		if(vo.getResult() - UploadFileVO.FAILURE == 0){
-			return vo;
+		uploadFileVO = OSS.uploadImageByMultipartFile(Global.get("USER_HEAD_PATH"), multipartFile, maxWidth);
+		if(uploadFileVO.getResult() - UploadFileVO.FAILURE == 0){
+			return uploadFileVO;
 		}
 		
 		User u = sqlDAO.findById(User.class, user.getId());
 		//删除之前的头像
 		if(u.getHead() != null && u.getHead().length() > 0 && !u.getHead().equals("default.png")){
-			OSSUtil.deleteObject(Global.get("USER_HEAD_PATH")+u.getHead());
+			AttachmentFile.deleteObject(Global.get("USER_HEAD_PATH")+u.getHead());
 		}
 		
-		u.setHead(vo.getFileName());
+		u.setHead(uploadFileVO.getFileName());
 		sqlDAO.save(u);
-		ShiroFunc.getUser().setHead(vo.getFileName());
+		ShiroFunc.getUser().setHead(uploadFileVO.getFileName());
 		
 		return uploadFileVO;
 	}
@@ -928,7 +928,7 @@ public class UserServiceImpl implements UserService{
 					if(user.getHead().equals("default.png")){
 						head = defaultHead;
 					}else{
-						head = OSSUtil.url + Global.get("USER_HEAD_PATH") + user.getHead();
+						head = AttachmentFile.netUrl() + Global.get("USER_HEAD_PATH") + user.getHead();
 					}
 				}else{
 					head = user.getHead();

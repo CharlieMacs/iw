@@ -1,7 +1,6 @@
 package com.xnx3.j2ee.shiro;
 
 import java.util.List;
-
 import com.xnx3.j2ee.bean.PermissionTree;
 import com.xnx3.j2ee.entity.Permission;
 import com.xnx3.j2ee.entity.User;

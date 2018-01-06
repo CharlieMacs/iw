@@ -73,6 +73,11 @@ public interface UserService {
 	 * @param user {@link User} 
 	 * 		<br/>表单的用户名(username)、 密码(password)为必填项
 	 * @param request {@link HttpServletRequest} 作用为获取推荐人信息、获取注册用户的ip
+	 * @return {@link BaseVO} 
+	 * 			<ul>
+	 * 				<li>若result为SUCCESS，则info为注册成功的user.id</li>
+	 * 				<li>若result为FAILURE，则info为失败的原因</li>
+	 * 			</ul>
 	 */
 	public BaseVO reg(User user ,HttpServletRequest request);
 	

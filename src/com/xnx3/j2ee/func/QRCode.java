@@ -2,9 +2,7 @@ package com.xnx3.j2ee.func;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
-
 import com.xnx3.QRCodeUtil;
 import com.xnx3.media.ImageUtil;
 

@@ -1,9 +1,7 @@
 package com.xnx3.j2ee.service.impl;
 
 import java.util.List;
-
 import com.xnx3.DateUtil;
-import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.entity.Collect;
 import com.xnx3.j2ee.entity.User;

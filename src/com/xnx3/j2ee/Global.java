@@ -2,7 +2,6 @@ package com.xnx3.j2ee;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
 

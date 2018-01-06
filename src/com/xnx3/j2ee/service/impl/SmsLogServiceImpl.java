@@ -3,14 +3,10 @@ package com.xnx3.j2ee.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.hibernate.Query;
-
 import com.xnx3.DateUtil;
 import com.xnx3.StringUtil;
-import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.dao.SqlDAO;
 import com.xnx3.j2ee.entity.SmsLog;
 import com.xnx3.j2ee.func.Language;

@@ -1,20 +1,16 @@
 package com.xnx3.j2ee.controller.admin;
 
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.xnx3.DateUtil;
 import com.xnx3.StringUtil;
-import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.entity.System;
 import com.xnx3.j2ee.func.ActionLogCache;

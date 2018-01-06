@@ -17,7 +17,7 @@ import com.xnx3.net.ossbean.CredentialsVO;
 import com.xnx3.net.ossbean.PutResult;
 
 /**
- * 阿里云OSS相关操作，如上传图片
+ * 阿里云OSS相关操作，如上传图片。建议上传图片、附件、文件等，用 {@link AttachmentFile} 进行上传。可自由配置使用哦OSS、或服务器磁盘等
  * @author 管雷鸣
  */
 public class OSS {

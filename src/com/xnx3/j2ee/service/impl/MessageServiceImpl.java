@@ -1,9 +1,6 @@
 package com.xnx3.j2ee.service.impl;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.xnx3.DateUtil;
 import com.xnx3.Lang;
 import com.xnx3.j2ee.Global;

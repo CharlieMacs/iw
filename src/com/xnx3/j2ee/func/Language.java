@@ -2,7 +2,6 @@ package com.xnx3.j2ee.func;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-
 import com.xnx3.j2ee.shiro.ActiveUser;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 

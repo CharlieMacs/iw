@@ -4,7 +4,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 
 /**

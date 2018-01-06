@@ -15,6 +15,7 @@ import com.aliyun.oss.model.CreateBucketRequest;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.DateUtil;
 import com.xnx3.j2ee.Global;
+import com.xnx3.j2ee.func.AttachmentFile;
 import com.xnx3.j2ee.func.OSS;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.generateCache.Message;
@@ -24,7 +25,6 @@ import com.xnx3.j2ee.generateCache.SmsLog;
 import com.xnx3.j2ee.generateCache.User;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.net.OSSUtil;
-import com.xnx3.net.OSSUtils;
 
 /**
  * 初始化项目，将使用到的一些东东加入Global以方便后续使用
@@ -54,8 +54,11 @@ public class InitServlet extends HttpServlet {
 			}
 		}
 		
-		//OSS自动检测、赋值
-		checkOssConfig();
+		//如果使用的是阿里云OSS，进行OSS自动检测、赋值。
+		if(AttachmentFile.isMode(AttachmentFile.MODE_ALIYUN_OSS)){
+			checkOssConfig();
+		}
+
 		
 		/*以下为生成相关数据缓存*/
 		try {

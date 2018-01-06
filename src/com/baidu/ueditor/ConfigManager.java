@@ -9,10 +9,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.baidu.ueditor.define.ActionMap;
 
 /**

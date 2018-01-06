@@ -1,16 +1,9 @@
 package com.xnx3.j2ee.service.impl;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.Table;
-
 import org.hibernate.Session;
-
-import com.xnx3.StringUtil;
 import com.xnx3.j2ee.dao.SqlDAO;
-import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.service.SqlService;
 import com.xnx3.j2ee.util.Sql;
 

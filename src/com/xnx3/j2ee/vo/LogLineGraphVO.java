@@ -1,7 +1,6 @@
 package com.xnx3.j2ee.vo;
 
 import net.sf.json.JSONArray;
-
 import com.xnx3.j2ee.vo.BaseVO;
 
 /**

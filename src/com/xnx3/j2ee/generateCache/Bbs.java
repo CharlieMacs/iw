@@ -2,9 +2,7 @@ package com.xnx3.j2ee.generateCache;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
-
 import com.xnx3.j2ee.entity.Post;
 import com.xnx3.j2ee.entity.PostClass;
 import com.xnx3.j2ee.init.InitServlet;

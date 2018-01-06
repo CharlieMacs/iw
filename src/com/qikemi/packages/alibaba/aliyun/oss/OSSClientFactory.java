@@ -1,7 +1,6 @@
 package com.qikemi.packages.alibaba.aliyun.oss;
 
 import org.apache.log4j.Logger;
-
 import com.aliyun.openservices.oss.OSSClient;
 import com.qikemi.packages.alibaba.aliyun.oss.properties.OSSClientProperties;
 

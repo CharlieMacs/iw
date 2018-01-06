@@ -1,6 +1,5 @@
 package com.xnx3.j2ee.generateCache;
 import java.util.List;
-
 import com.xnx3.j2ee.init.InitServlet;
 import com.xnx3.j2ee.service.SqlService;
 

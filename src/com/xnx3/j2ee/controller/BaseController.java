@@ -2,16 +2,11 @@ package com.xnx3.j2ee.controller;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.xnx3.StringUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.entity.User;
 import com.xnx3.j2ee.func.Safety;
 import com.xnx3.j2ee.shiro.ActiveUser;
-import com.xnx3.j2ee.util.Sql;
 import com.xnx3.j2ee.vo.BaseVO;
-import com.xnx3.net.ossbean.PutResult;
 
 /**
  * 所有Controller父类

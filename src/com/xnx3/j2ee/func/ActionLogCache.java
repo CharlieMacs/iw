@@ -1,7 +1,6 @@
 package com.xnx3.j2ee.func;
 
 import javax.servlet.http.HttpServletRequest;
-
 import com.aliyun.openservices.log.common.LogItem;
 import com.aliyun.openservices.log.exception.LogException;
 import com.xnx3.ConfigManagerUtil;

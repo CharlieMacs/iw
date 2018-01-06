@@ -8,16 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-import com.aliyun.openservices.oss.OSSClient;
-import com.aliyun.openservices.oss.model.Bucket;
+//import com.aliyun.openservices.oss.OSSClient;
+//import com.aliyun.openservices.oss.model.Bucket;
 import com.baidu.ueditor.define.BaseState;
 import com.baidu.ueditor.define.State;
 import com.qikemi.packages.alibaba.aliyun.oss.BucketService;
-import com.qikemi.packages.alibaba.aliyun.oss.OSSClientFactory;
+//import com.qikemi.packages.alibaba.aliyun.oss.OSSClientFactory;
 import com.qikemi.packages.alibaba.aliyun.oss.properties.OSSClientProperties;
 import com.qikemi.packages.baidu.ueditor.upload.AsynUploaderThreader;
 import com.qikemi.packages.baidu.ueditor.upload.SynUploader;
 import com.qikemi.packages.utils.SystemUtil;
+import com.xnx3.j2ee.func.AttachmentFile;
 import com.xnx3.j2ee.shiro.ShiroFunc;
 
 /**
@@ -44,15 +45,17 @@ public class Uploader {
 		state = BinaryUploader.save(this.request, this.conf);
 		JSONObject stateJson = new JSONObject(state.toJSONString());
 		String bucketName = OSSClientProperties.bucketName;
-		OSSClient client = OSSClientFactory.createOSSClient();
+//		OSSClient client = OSSClientFactory.createOSSClient();
 		if (OSSClientProperties.useAsynUploader) {
 			AsynUploaderThreader asynThreader = new AsynUploaderThreader();
-			asynThreader.init(stateJson, client, this.request);
+//			asynThreader.init(stateJson, client, this.request);
+			asynThreader.init(stateJson, this.request);
 			Thread uploadThreader = new Thread(asynThreader);
 			uploadThreader.start();
 		} else {
 			SynUploader synUploader = new SynUploader();
-			synUploader.upload(stateJson, client, this.request);
+//			synUploader.upload(stateJson, client, this.request);
+			synUploader.upload(stateJson, this.request);
 		}
 		if (false == OSSClientProperties.useLocalStorager) {
 			String uploadFilePath = (String) this.conf.get("rootPath") + (String) stateJson.get("url");
@@ -85,22 +88,24 @@ public class Uploader {
 			if (OSSClientProperties.useStatus) {
 
 				String bucketName = OSSClientProperties.bucketName;
-				OSSClient client = OSSClientFactory.createOSSClient();
+//				OSSClient client = OSSClientFactory.createOSSClient();
 				// auto create Bucket to default zone
-				if (OSSClientProperties.autoCreateBucket) {
-					Bucket bucket = BucketService.create(client, bucketName);
-					logger.debug("Bucket 's " + bucket.getName() + " Created.");
-				}
+//				if (OSSClientProperties.autoCreateBucket) {
+//					Bucket bucket = BucketService.create(client, bucketName);
+//					logger.debug("Bucket 's " + bucket.getName() + " Created.");
+//				}
 
 				// upload type
 				if (OSSClientProperties.useAsynUploader) {
 					AsynUploaderThreader asynThreader = new AsynUploaderThreader();
-					asynThreader.init(stateJson, client, this.request);
+//					asynThreader.init(stateJson, client, this.request);
+					asynThreader.init(stateJson, this.request);
 					Thread uploadThreader = new Thread(asynThreader);
 					uploadThreader.start();
 				} else {
 					SynUploader synUploader = new SynUploader();
-					synUploader.upload(stateJson, client, this.request);
+//					synUploader.upload(stateJson, client, this.request);
+					synUploader.upload(stateJson, this.request);
 				}
 
 				// storage type
@@ -117,7 +122,8 @@ public class Uploader {
 						OSSClientProperties.ossEndPoint
 								+ stateJson.getString("url"));
 			} else {
-				state.putInfo("url", "/" + SystemUtil.getProjectName()
+				//绝对路径，而非原本的相对路径
+				state.putInfo("url",  AttachmentFile.netUrl() + SystemUtil.getProjectName()
 						+ stateJson.getString("url"));
 			}
 		}

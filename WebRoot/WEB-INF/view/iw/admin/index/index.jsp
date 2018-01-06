@@ -165,7 +165,7 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 </div>
 
 
-<div id="content" style="width: 100%;height:100%;position: absolute;left: 150px;word-wrap: break-word;border-right: 150px;border-right-style: dotted;box-sizing: border-box;">
+<div id="content" style="width: 100%;height:100%;position: absolute;left: 150px;word-wrap: break-word;border-right: 150px;box-sizing: border-box;">
 	<iframe name="iframe" id="iframe" frameborder="0" style="width:100%;height:100%;box-sizing: border-box;"></iframe>
 </div>
 
