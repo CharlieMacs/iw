@@ -558,10 +558,10 @@ public class UserServiceImpl implements UserService{
 		String newHead = Lang.uuid()+"."+fileSuffix;
 		try {
 //			PutResult result = OSSUtil.put(Global.get("USER_HEAD_PATH")+newHead, head.getInputStream());
-			PutResult result = AttachmentFile.put(Global.get("USER_HEAD_PATH")+newHead, head.getInputStream());
-			uploadFileVO.setFileName(result.getFileName());
-			uploadFileVO.setPath(result.getPath());
-			uploadFileVO.setUrl(result.getUrl());
+			uploadFileVO = AttachmentFile.put(Global.get("USER_HEAD_PATH")+newHead, head.getInputStream());
+//			uploadFileVO.setFileName(result.getFileName());
+//			uploadFileVO.setPath(result.getPath());
+//			uploadFileVO.setUrl(result.getUrl());
 		} catch (IOException e) {
 			e.printStackTrace();
 			uploadFileVO.setBaseVO(BaseVO.FAILURE, e.getMessage());
