@@ -98,6 +98,7 @@ public class AttachmentFile {
 		if(isMode(MODE_ALIYUN_OSS)){
 			OSSUtil.putStringFile(path, text);
 		}else if(isMode(MODE_LOCAL_FILE)){
+			directoryInit(path);
 			FileUtil.write(localFilePath+path, text);
 		}
 	}
@@ -114,6 +115,7 @@ public class AttachmentFile {
 			PutResult pr = OSSUtil.put(filePath, localPath);
 			vo = PutResultToUploadFileVO(pr);
 		}else if(isMode(MODE_LOCAL_FILE)){
+			directoryInit(filePath);
 			File localFile = new File(localPath);
 			try {
 				InputStream localInput = new FileInputStream(localFile);
@@ -141,6 +143,7 @@ public class AttachmentFile {
 			PutResult pr = OSSUtil.put(path, inputStream);
 			vo = PutResultToUploadFileVO(pr);
 		}else if(isMode(MODE_LOCAL_FILE)){
+			directoryInit(path);
 			File file = new File(localFilePath+path);
 			OutputStream os;
 			try {
@@ -212,6 +215,7 @@ public class AttachmentFile {
 		if(isMode(MODE_ALIYUN_OSS)){
 			OSSUtil.getOSSClient().copyObject(OSSUtil.bucketName, originalFilePath, OSSUtil.bucketName, newFilePath);
 		}else if(isMode(MODE_LOCAL_FILE)){
+			directoryInit(newFilePath);
 			FileUtil.copyFile(localFilePath + originalFilePath, localFilePath + newFilePath);
 		}
 	}
@@ -424,10 +428,42 @@ public class AttachmentFile {
 		if(isMode(MODE_ALIYUN_OSS)){
 			return OSSUtil.getFolderSize(path);
 		}else if(isMode(MODE_LOCAL_FILE)){
+			directoryInit(path);
 			return FileUtils.sizeOfDirectory(new File(localFilePath+path));
 		}
 		
 		return 0;
 	}
 	
+	/**
+	 * 目录检测，检测是否存在。若不存在，则自动创建目录。适用于使用本地磁盘进行存储
+	 * @param path 要检测的目录，相对路径，如 jar/file/  创建到file文件，末尾一定加/     或者jar/file/a.jar创建懂啊file文件
+	 */
+	public static void directoryInit(String path){
+		if(path == null){
+			return;
+		}
+		
+		if(path.length() - path.lastIndexOf("/") > 1){
+			//path最后是带了具体文件名的，把具体文件名过滤掉，只留文件/结尾
+			path = path.substring(0, path.lastIndexOf("/")+1);
+		}
+		
+		//如果目录或文件不存在，再进行创建目录的判断
+		if(!FileUtil.exists(path)){
+			String[] ps = path.split("/");
+			
+			String xiangdui = "";
+			//length-1，/最后面应该就是文件名了，所以要忽略最后一个
+			for (int i = 0; i < ps.length-1; i++) {
+				if(ps[i].length() > 0){
+					xiangdui = xiangdui + ps[i]+"/";
+					if(!FileUtil.exists(localFilePath+xiangdui)){
+						File file = new File(localFilePath+xiangdui);
+						file.mkdir();
+					}
+				}
+			}
+		}
+	}
 }
