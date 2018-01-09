@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.w3c.dom.Attr;
 
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CreateBucketRequest;
@@ -58,7 +59,9 @@ public class InitServlet extends HttpServlet {
 		if(AttachmentFile.isMode(AttachmentFile.MODE_ALIYUN_OSS)){
 			checkOssConfig();
 		}
-
+		
+		//附件、文件的请求网址(CDN会先查找数据库配置的此项，若此项没有配置，才会使用xnx3Config.xml中配置的oss的cdn)，本地服务器作为存储磁盘，必须使用数据库配置的此附件地址
+		AttachmentFile.netUrl = Global.get("ATTACHMENT_FILE_URL");
 		
 		/*以下为生成相关数据缓存*/
 		try {

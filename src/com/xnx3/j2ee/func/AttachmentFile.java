@@ -22,6 +22,7 @@ import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.OSSObject;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
+import com.xnx3.StringUtil;
 import com.xnx3.file.FileUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.vo.UploadFileVO;
@@ -78,12 +79,12 @@ public class AttachmentFile {
 	public static String netUrl(){
 		if(netUrl == null){
 			if(isMode(MODE_ALIYUN_OSS)){
-				return OSSUtil.url;
+				netUrl = OSSUtil.url;
 			}else if(isMode(MODE_LOCAL_FILE)){
 				//如果有当前网站的域名，那么返回域名，格式如"http://www.xnx3.com/" 。如果没有，则返回"/"
-				return "http://localhost:8081/";
+				return "请执行install/index.do进行安装,配置附件的访问域名";
 			}else{
-				return "";
+				return "请执行install/index.do进行安装，选择附件存储方式";
 			}
 		}
 		return netUrl;
@@ -158,8 +159,8 @@ public class AttachmentFile {
 				
 				vo.setFileName(file.getName());
 				vo.setInfo("success");
-				vo.setPath(file.getPath());
-				vo.setUrl(AttachmentFile.netUrl()+file.getPath());
+				vo.setPath(path);
+				vo.setUrl(AttachmentFile.netUrl()+path);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -174,20 +175,20 @@ public class AttachmentFile {
 	 * @return 返回其文本内容。若找不到，或出错，则返回 null
 	 */
 	public static String getTextByPath(String path){
-		OSSObject ossObject = OSSUtil.getOSSClient().getObject(OSSUtil.bucketName, path);
-		if(ossObject == null){
-			return null;
-		}else{
-			if(isMode(MODE_ALIYUN_OSS)){
+		if(isMode(MODE_ALIYUN_OSS)){
+			OSSObject ossObject = OSSUtil.getOSSClient().getObject(OSSUtil.bucketName, path);
+			if(ossObject == null){
+				return null;
+			}else{
 				try {
 					return IOUtils.toString(ossObject.getObjectContent(), "UTF-8");
 				} catch (IOException e) {
 					e.printStackTrace();
 					return null;
 				}
-			}else if(isMode(MODE_LOCAL_FILE)){
-				return FileUtil.read(localFilePath+path, FileUtil.UTF8);
 			}
+		}else if(isMode(MODE_LOCAL_FILE)){
+			return FileUtil.read(localFilePath+path, FileUtil.UTF8);
 		}
 		
 		return null;
@@ -444,26 +445,37 @@ public class AttachmentFile {
 			return;
 		}
 		
+		//windows取的路径是\，所以要将\替换为/
+		if(path.indexOf("\\") > 1){
+			path = StringUtil.replaceAll(path, "\\\\", "/");
+		}
+		
 		if(path.length() - path.lastIndexOf("/") > 1){
 			//path最后是带了具体文件名的，把具体文件名过滤掉，只留文件/结尾
 			path = path.substring(0, path.lastIndexOf("/")+1);
 		}
-		
+		System.out.println("判断目录："+path);
 		//如果目录或文件不存在，再进行创建目录的判断
 		if(!FileUtil.exists(path)){
 			String[] ps = path.split("/");
 			
 			String xiangdui = "";
 			//length-1，/最后面应该就是文件名了，所以要忽略最后一个
-			for (int i = 0; i < ps.length-1; i++) {
+			for (int i = 0; i < ps.length; i++) {
 				if(ps[i].length() > 0){
+					System.out.println("ps---"+ps[i]);
 					xiangdui = xiangdui + ps[i]+"/";
 					if(!FileUtil.exists(localFilePath+xiangdui)){
 						File file = new File(localFilePath+xiangdui);
 						file.mkdir();
+						System.out.println("创建目录"+file.getPath());
 					}
 				}
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		directoryInit("sitse/1/new/a.jpg");
 	}
 }
