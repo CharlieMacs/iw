@@ -188,7 +188,11 @@ public class AttachmentFile {
 				}
 			}
 		}else if(isMode(MODE_LOCAL_FILE)){
-			return FileUtil.read(localFilePath+path, FileUtil.UTF8);
+			String text = FileUtil.read(localFilePath+path, FileUtil.UTF8);
+			if(text != null && text.length() == 0){
+				text = null;
+			}
+			return text;
 		}
 		
 		return null;
@@ -463,12 +467,10 @@ public class AttachmentFile {
 			//length-1，/最后面应该就是文件名了，所以要忽略最后一个
 			for (int i = 0; i < ps.length; i++) {
 				if(ps[i].length() > 0){
-					System.out.println("ps---"+ps[i]);
 					xiangdui = xiangdui + ps[i]+"/";
 					if(!FileUtil.exists(localFilePath+xiangdui)){
 						File file = new File(localFilePath+xiangdui);
 						file.mkdir();
-						System.out.println("创建目录"+file.getPath());
 					}
 				}
 			}
