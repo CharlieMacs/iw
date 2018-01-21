@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+
 //import com.aliyun.openservices.oss.OSSClient;
 import com.qikemi.packages.alibaba.aliyun.oss.ObjectService;
 //import com.qikemi.packages.alibaba.aliyun.oss.properties.OSSClientProperties;
 import com.qikemi.packages.utils.SystemUtil;
+import com.xnx3.j2ee.func.Log;
 
 /**
  * 同步上传文件到阿里云OSS<br>
@@ -53,7 +57,7 @@ public class SynUploader extends Thread {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(new File(
 					SystemUtil.getProjectRootPath() + key));
-			
+			Log.debug("upload--fileInputStream file path: "+SystemUtil.getProjectRootPath() + key);
 //			PutObjectResult result = ObjectService.putObject(client, OSSClientProperties.bucketName, key, fileInputStream);
 			ObjectService.putObject(key, fileInputStream);
 			

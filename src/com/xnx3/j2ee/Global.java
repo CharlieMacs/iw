@@ -128,4 +128,8 @@ public class Global {
 		}
 		return projectPath;
 	}
+	
+	public static void main(String[] args) {
+		System.out.println("v2.0.20180113");
+	}
 }

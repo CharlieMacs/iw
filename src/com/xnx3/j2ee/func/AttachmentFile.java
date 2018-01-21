@@ -10,14 +10,11 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.OSSObject;
 import com.xnx3.ConfigManagerUtil;
@@ -36,6 +33,7 @@ import com.xnx3.net.ossbean.PutResult;
  * @author 管雷鸣
  */
 public class AttachmentFile {
+	
 	public static String mode;	//当前文件附件存储使用的模式，用的阿里云oss，还是服务器本身磁盘进行存储
 	public static final String MODE_ALIYUN_OSS = "aliyunOSS";		//阿里云OSS模式存储
 	public static final String MODE_LOCAL_FILE = "localFile";		//服务器本身磁盘进行附件存储
@@ -74,7 +72,7 @@ public class AttachmentFile {
 	
 	/**
 	 * 获取附件访问的url地址
-	 * @return 返回如 http://res.weiunity.com/ 
+	 * @return 返回如 http://res.weiunity.com/   若找不到，则返回null
 	 */
 	public static String netUrl(){
 		if(netUrl == null){
@@ -82,12 +80,24 @@ public class AttachmentFile {
 				netUrl = OSSUtil.url;
 			}else if(isMode(MODE_LOCAL_FILE)){
 				//如果有当前网站的域名，那么返回域名，格式如"http://www.xnx3.com/" 。如果没有，则返回"/"
-				return "请执行install/index.do进行安装,配置附件的访问域名";
+				netUrl = Global.get("ATTACHMENT_FILE_URL");
+				if(netUrl != null && netUrl.length() == 0){
+					netUrl = null;
+				}
 			}else{
-				return "请执行install/index.do进行安装，选择附件存储方式";
+				//未发现什么类型。此种情况是不应该存在的
+//				return "请执行install/index.do进行安装，选择附件存储方式";
 			}
 		}
 		return netUrl;
+	}
+	
+	/**
+	 * 设置当前的netUrl
+	 * @param url
+	 */
+	public static void setNetUrl(String url){
+		url = netUrl;
 	}
 	
 	/**
@@ -143,6 +153,7 @@ public class AttachmentFile {
 		if(isMode(MODE_ALIYUN_OSS)){
 			PutResult pr = OSSUtil.put(path, inputStream);
 			vo = PutResultToUploadFileVO(pr);
+			Log.debug("put-OSS上传:"+path);
 		}else if(isMode(MODE_LOCAL_FILE)){
 			directoryInit(path);
 			File file = new File(localFilePath+path);
@@ -161,6 +172,7 @@ public class AttachmentFile {
 				vo.setInfo("success");
 				vo.setPath(path);
 				vo.setUrl(AttachmentFile.netUrl()+path);
+				Log.debug("put-本地上传:"+path);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -237,8 +249,10 @@ public class AttachmentFile {
 			m.setContentLength(meta.getContentLength());
 			m.setUserMetadata(meta.getUserMetadata());
 			OSSUtil.getOSSClient().putObject(OSSUtil.bucketName, filePath, input, m);
+			Log.debug("putForUEditor-使用阿里云OSS上传文件："+filePath);
 		}else if(isMode(MODE_LOCAL_FILE)){
 			put(filePath, input);
+			Log.debug("putForUEditor-本地存储UEditor上传的文件："+filePath);
 		}
 	}
 	
@@ -344,7 +358,6 @@ public class AttachmentFile {
 			int i = 0;	//数组的下标
 			for (Map.Entry<String, String> entry : suffixMap.entrySet()) {
 				allowUploadSuffixs[i++] = entry.getKey();
-				System.out.println(entry.getKey());
 			}
 		}
 		
@@ -458,7 +471,7 @@ public class AttachmentFile {
 			//path最后是带了具体文件名的，把具体文件名过滤掉，只留文件/结尾
 			path = path.substring(0, path.lastIndexOf("/")+1);
 		}
-		System.out.println("判断目录："+path);
+		
 		//如果目录或文件不存在，再进行创建目录的判断
 		if(!FileUtil.exists(path)){
 			String[] ps = path.split("/");

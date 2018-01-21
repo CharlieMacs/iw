@@ -165,7 +165,7 @@ body{margin: 0;padding: 0px;height: 100%;overflow: hidden;}
 </div>
 
 
-<div id="content" style="width: 100%;height:100%;position: absolute;left: 150px;word-wrap: break-word;border-right: 150px;box-sizing: border-box;">
+<div id="content" style="border-width: 0px; width: 100%;height:100%;position: absolute;left: 150px;word-wrap: break-word;border-right: 150px;box-sizing: border-box; border-style: inset;">
 	<iframe name="iframe" id="iframe" frameborder="0" style="width:100%;height:100%;box-sizing: border-box;"></iframe>
 </div>
 
@@ -184,6 +184,28 @@ function loadUrl(url){
 
 //加载登录后的默认页面
 loadUrl('<%=basePath %>${indexUrl}');
+
+//当前系统版本检测，可做成自己系统的
+function systemVersionCheck(){
+	$.getJSON("../../getNewVersion.do",function(result){
+		if(result.findNewVersion){
+			layer.open({
+				  title: '版本提示'
+				  ,offset: 'rb'
+				  ,time: 3000
+				  ,content: '发现新版本&nbsp;v'+result.newVersion
+				  ,btn: ['查看']
+				  ,shadeClose: true
+				  ,yes: function(index, layero){
+					window.open(result.previewUrl);
+				  }
+			});
+		}
+	});
+}
+systemVersionCheck();
+
+
 </script>
 </body>
 </html>

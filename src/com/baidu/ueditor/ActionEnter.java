@@ -1,7 +1,11 @@
 package com.baidu.ueditor;
 
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
 import com.baidu.ueditor.define.ActionMap;
 import com.baidu.ueditor.define.AppInfo;
 import com.baidu.ueditor.define.BaseState;
@@ -9,9 +13,9 @@ import com.baidu.ueditor.define.State;
 import com.baidu.ueditor.hunter.FileManager;
 import com.baidu.ueditor.hunter.ImageHunter;
 import com.baidu.ueditor.upload.Uploader;
+import com.xnx3.j2ee.func.Log;
 
 public class ActionEnter {
-	
 	private HttpServletRequest request = null;
 	
 	private String rootPath = null;
@@ -50,7 +54,7 @@ public class ActionEnter {
 	}
 	
 	public String invoke() {
-		
+		Log.debug("invoke--into");
 		if ( actionType == null || !ActionMap.mapping.containsKey( actionType ) ) {
 			return new BaseState( false, AppInfo.INVALID_ACTION ).toJSONString();
 		}
@@ -65,6 +69,7 @@ public class ActionEnter {
 		
 		Map<String, Object> conf = null;
 		
+		Log.debug("invoke--switch before actionCode: "+actionCode);
 		switch ( actionCode ) {
 		
 			case ActionMap.CONFIG:
@@ -74,6 +79,7 @@ public class ActionEnter {
 			case ActionMap.UPLOAD_SCRAWL:
 			case ActionMap.UPLOAD_VIDEO:
 			case ActionMap.UPLOAD_FILE:
+				Log.debug("invoke--UPLOAD_IMAGE--actionCode: "+actionCode);
 				conf = this.configManager.getConfig( actionCode );
 				state = new Uploader( request, conf ).doExec();
 				break;

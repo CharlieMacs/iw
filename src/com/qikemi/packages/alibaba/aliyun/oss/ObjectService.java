@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-
 import com.aliyun.openservices.oss.OSSClient;
 //import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.model.ListObjectsRequest;
@@ -24,6 +23,7 @@ import com.aliyun.openservices.oss.model.ObjectMetadata;
 import com.aliyun.openservices.oss.model.PutObjectResult;
 import com.qikemi.packages.utils.SystemUtil;
 import com.xnx3.j2ee.func.AttachmentFile;
+import com.xnx3.j2ee.func.Log;
 
 /**
  * Object是OSS中最基本的数据单元，你可以把它简单地理解为文件<br>
@@ -135,7 +135,8 @@ public class ObjectService {
 		meta.setContentLength(Integer.parseInt(String.valueOf(content .available())));
 		// 用户自定义文件名称
 		meta.addUserMetadata("filename", key);
-
+		Log.debug("putObject--filename : "+key);
+		
 		// 上传Object.
 //		PutObjectResult result = client.putObject(bucketName, key, content, meta);
 		AttachmentFile.putForUEditor(key, content, meta);

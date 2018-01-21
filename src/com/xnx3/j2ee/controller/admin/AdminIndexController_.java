@@ -31,4 +31,5 @@ public class AdminIndexController_ extends BaseController{
 		return "/iw/admin/index/index";
 	}
 	
+	
 }

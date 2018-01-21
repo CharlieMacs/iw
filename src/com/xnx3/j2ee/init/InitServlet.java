@@ -61,7 +61,9 @@ public class InitServlet extends HttpServlet {
 		}
 		
 		//附件、文件的请求网址(CDN会先查找数据库配置的此项，若此项没有配置，才会使用xnx3Config.xml中配置的oss的cdn)，本地服务器作为存储磁盘，必须使用数据库配置的此附件地址
-		AttachmentFile.netUrl = Global.get("ATTACHMENT_FILE_URL");
+		if(AttachmentFile.netUrl() == null){
+			System.out.println("未发现当前上传图片、附件所使用的域名。建议进入总管理后台－系统管理－系统变量，设置ATTACHMENT_FILE_URL变量，加上图片等附件的访问域名，格式如： http://res.weiunity.com/  也或者，您在程序中自行进行设置AttachmentFile.setNetUrl(url)");
+		}
 		
 		/*以下为生成相关数据缓存*/
 		try {
