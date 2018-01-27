@@ -3,14 +3,17 @@
 整合权限、论坛、会员、日志、消息、系统、数据缓存、短信等功能
 <br/>Spring4、Spring MVC4、Hibernate4、Shiro、<a href="http://github.com/xnx3/xnx3" target="_black">xnx3-2.2</a>
 
-##[快速搭建项目运行Demo，下载后导入运行](https://github.com/xnx3/iw_demo)
+
 ##快速开发代码示例
-* 列表分页
-	* [单数据表、分页示例](http://www.xnx3.com/software/iw/20160527/946.html)
-	* [单数据表、搜索、分页示例](http://www.xnx3.com/software/iw/20160527/947.html)
-	* [单数据表、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160524/944.html)
-	* [多表查询、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160527/949.html)
-	* [多数据表联合查询、搜索、排序、状态码js缓存](http://www.xnx3.com/software/iw/20160527/950.html)
+1. 数据库相关
+	* [基础操作-增删查改](https://note.youdao.com/share/?id=a08498b2895e44596c4fceba411dacef#/)
+	* 列表分页
+		* [列表分页-单数据表，分页。最简单入门使用示例](https://note.youdao.com/share/?id=15bfd8227255a868dae007234e27fb0a#/)
+		* [列表分页-单数据表，搜索+分页示例](https://note.youdao.com/share/?id=ae27f6356b9ec6b52f50972e44523c63#/)
+		* [（旧）单数据表、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160524/944.html)
+		* [（旧）多表查询、搜索、排序、分页示例](http://www.xnx3.com/software/iw/20160527/949.html)
+		* [（旧）多数据表联合查询、搜索、排序、状态码js缓存](http://www.xnx3.com/software/iw/20160527/950.html)
+		* [搜索运算符的使用](https://note.youdao.com/share/?id=3ccef2de6a5cda01f95f832b02e356d0#/)
 * 日志
 	* [添加日志示例](http://www.xnx3.com/software/iw/20160527/951.html)
 	* [DOC文档](http://www.xnx3.com/software/iw/doc/com/xnx3/j2ee/service/LogService.html)

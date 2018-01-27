@@ -101,16 +101,30 @@ public class AttachmentFile {
 	}
 	
 	/**
-	 * 给出文本内容，写出文件
+	 * 给出文本内容，写出文件。写出UTF－8编码
 	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
 	 * @param text 文本内容
 	 */
 	public static void putStringFile(String path, String text){
+		putStringFile(path, text, FileUtil.UTF8);
+	}
+	
+	/**
+	 * 给出文本内容，写出文件。写出UTF－8编码
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文本内容
+	 * @param encode 编码格式，可传入 {@link FileUtil#GBK}、{@link FileUtil#UTF8}
+	 */
+	public static void putStringFile(String path, String text, String encode){
 		if(isMode(MODE_ALIYUN_OSS)){
-			OSSUtil.putStringFile(path, text);
+			OSSUtil.putStringFile(path, text, encode);
 		}else if(isMode(MODE_LOCAL_FILE)){
 			directoryInit(path);
-			FileUtil.write(localFilePath+path, text);
+			try {
+				FileUtil.write(localFilePath+path, text, encode);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
