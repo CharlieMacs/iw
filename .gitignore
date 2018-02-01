@@ -29,3 +29,5 @@ src/db.properties
 .springBeans
 .rpm
 .settings/org.eclipse.wst.common.project.facet.core.prefs.xml
+
+*.rpm
