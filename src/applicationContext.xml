@@ -136,6 +136,9 @@
 	<bean id="systemService" class="com.xnx3.j2ee.service.impl.SystemServiceImpl">
 		<property name="sqlDAO"><ref bean="SqlDAO" /></property>
 	</bean>
+	<bean id="apiService" class="com.xnx3.j2ee.service.impl.ApiServiceImpl">
+		<property name="sqlDAO"><ref bean="SqlDAO" /></property>
+	</bean>
 <!-- 数据库相关，若不用数据库，将以上配置删除！ -->	
 	
 	<!-- 支持上传文件 -->

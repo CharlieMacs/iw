@@ -31,3 +31,5 @@ src/db.properties
 .settings/org.eclipse.wst.common.project.facet.core.prefs.xml
 
 *.rpm
+
+support/apache-tomcat-8.0.32_x64.zip

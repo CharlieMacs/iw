@@ -17,6 +17,7 @@ import com.xnx3.ConfigManagerUtil;
 import com.xnx3.DateUtil;
 import com.xnx3.j2ee.Global;
 import com.xnx3.j2ee.func.AttachmentFile;
+import com.xnx3.j2ee.func.Log;
 import com.xnx3.j2ee.func.OSS;
 import com.xnx3.j2ee.generateCache.Bbs;
 import com.xnx3.j2ee.generateCache.Message;
@@ -97,6 +98,7 @@ public class InitServlet extends HttpServlet {
 	 */
 	public void readSystemTable(){
 		Global.system.clear();
+		Log.debug("开始装载System数据表信息");
 		
 		List<Map<String,Object>> list = sqlService.findMapBySqlQuery("SELECT name,value FROM system");
 		for (int i = 0; i < list.size(); i++) {
@@ -104,8 +106,10 @@ public class InitServlet extends HttpServlet {
 			String name = map.get("name").toString();
 			String value = map.get("value").toString();
 			Global.system.put(name, value);
+			Log.debug(name+"="+value);
 		}
 		
+		Log.debug("system 表数据载入内存完毕，共"+list.size()+"条数据");
 		System.out.println("system 表数据载入内存完毕，共"+list.size()+"条数据");
 	}
 	
