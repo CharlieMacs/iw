@@ -10,12 +10,17 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.aliyun.openservices.oss.model.ObjectMetadata;
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.OSSObject;
 import com.xnx3.ConfigManagerUtil;
 import com.xnx3.Lang;
@@ -202,7 +207,13 @@ public class AttachmentFile {
 	 */
 	public static String getTextByPath(String path){
 		if(isMode(MODE_ALIYUN_OSS)){
-			OSSObject ossObject = OSSUtil.getOSSClient().getObject(OSSUtil.bucketName, path);
+			OSSObject ossObject = null; 
+			try {
+				ossObject = OSSUtil.getOSSClient().getObject(OSSUtil.bucketName, path);
+			} catch (OSSException e) {
+			} catch (ClientException e) {
+			}
+			
 			if(ossObject == null){
 				return null;
 			}else{
